@@ -1,0 +1,339 @@
+/* ── Spotlight ──────────────────────────────────────────────────────────── */
+
+.cairn-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--cairn-z);
+  pointer-events: none;
+  font-family: var(--cairn-font);
+}
+
+/*
+ * Scrim, ring and glow in one animatable element. Every box-shadow layer
+ * respects border-radius, and top/left/width/height are ordinary animatable
+ * properties — so the cutout morphs between steps with no per-frame JS.
+ */
+.cairn-spotlight {
+  position: absolute;
+  box-shadow:
+    0 0 0 2px var(--cairn-accent),
+    0 0 0 6px rgb(var(--cairn-accent-rgb) / 0.22),
+    0 0 0 9999px var(--cairn-scrim);
+}
+
+.cairn-spotlight--flat {
+  position: absolute;
+  inset: 0;
+  background: var(--cairn-scrim);
+}
+
+.cairn-spotlight--moves,
+.cairn-halo--moves {
+  transition:
+    top var(--cairn-duration) var(--cairn-ease),
+    left var(--cairn-duration) var(--cairn-ease),
+    width var(--cairn-duration) var(--cairn-ease),
+    height var(--cairn-duration) var(--cairn-ease),
+    border-radius var(--cairn-duration) var(--cairn-ease);
+}
+
+/* Separate element so the breathing keyframes never fight the morph. */
+.cairn-halo {
+  position: absolute;
+  animation: cairn-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes cairn-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(var(--cairn-accent-rgb) / 0.35); }
+  50%      { box-shadow: 0 0 0 12px rgb(var(--cairn-accent-rgb) / 0); }
+}
+
+.cairn-beacon {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+.cairn-beacon span {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--cairn-radius-pill);
+  background: var(--cairn-accent);
+}
+.cairn-beacon span:first-child { animation: cairn-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+@keyframes cairn-ping {
+  0%   { transform: scale(1);   opacity: 0.75; }
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* ── Step card ──────────────────────────────────────────────────────────── */
+
+.cairn-card {
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(376px, calc(100vw - 32px));
+  padding: 18px;
+  background: var(--cairn-surface);
+  color: var(--cairn-text);
+  border: 1px solid var(--cairn-surface-border);
+  border-radius: var(--cairn-radius);
+  box-shadow: var(--cairn-shadow);
+  outline: none;
+  animation: cairn-card-in 220ms var(--cairn-ease);
+}
+
+@keyframes cairn-card-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.cairn-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cairn-card__count {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cairn-text-muted);
+}
+
+.cairn-card__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.cairn-card__body {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--cairn-text-muted);
+}
+
+.cairn-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.cairn-card__actions { display: flex; align-items: center; gap: 6px; }
+
+/* Bottom sheet below the mobile breakpoint. */
+.cairn-card--sheet {
+  width: 100%;
+  border-radius: var(--cairn-radius) var(--cairn-radius) 0 0;
+  border-bottom: 0;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+/*
+ * Rotated square that reads as a tooltip tail. Two of its four borders are
+ * hidden depending on which face it sits on, so it meets the card edge without
+ * drawing a seam across it.
+ */
+.cairn-arrow {
+  position: absolute;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  transform: rotate(45deg);
+  background: var(--cairn-surface);
+  border: 1px solid var(--cairn-surface-border);
+}
+.cairn-arrow[data-side="top"]    { border-top: 0; border-left: 0; }
+.cairn-arrow[data-side="bottom"] { border-bottom: 0; border-right: 0; }
+.cairn-arrow[data-side="left"]   { border-bottom: 0; border-left: 0; }
+.cairn-arrow[data-side="right"]  { border-top: 0; border-right: 0; }
+
+/* Movement between steps, matched to the spotlight so the two travel together. */
+.cairn-anchorbox[data-placed="true"] {
+  transition:
+    left var(--cairn-duration) var(--cairn-ease),
+    top var(--cairn-duration) var(--cairn-ease);
+}
+
+/* ── Rail ───────────────────────────────────────────────────────────────── */
+
+.cairn-rail { display: flex; align-items: center; gap: 3px; }
+.cairn-rail__seg {
+  height: 3px;
+  flex: 1;
+  border-radius: var(--cairn-radius-pill);
+  background: var(--cairn-rail);
+  transition: background var(--cairn-duration) var(--cairn-ease);
+}
+.cairn-rail__seg--done { background: var(--cairn-accent); }
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+
+.cairn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  border-radius: var(--cairn-radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--cairn-duration) var(--cairn-ease),
+    opacity var(--cairn-duration) var(--cairn-ease);
+}
+.cairn-btn:focus-visible { outline: 2px solid var(--cairn-accent); outline-offset: 2px; }
+
+.cairn-btn--primary { background: var(--cairn-accent); color: var(--cairn-accent-contrast); }
+.cairn-btn--primary:hover { opacity: 0.9; }
+
+.cairn-btn--ghost { background: transparent; color: var(--cairn-text-muted); }
+.cairn-btn--ghost:hover { background: var(--cairn-hover); color: var(--cairn-text); }
+
+.cairn-btn--quiet {
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 0;
+  font-size: 12px;
+  color: var(--cairn-text-muted);
+  cursor: pointer;
+}
+.cairn-btn--quiet:hover { color: var(--cairn-text); }
+
+/* 44px hit area without a 44px visual footprint. */
+.cairn-iconbtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--cairn-radius-sm);
+  background: transparent;
+  color: var(--cairn-text-muted);
+  cursor: pointer;
+}
+.cairn-iconbtn::after { content: ""; position: absolute; inset: -8px; }
+.cairn-iconbtn:hover { background: var(--cairn-hover); color: var(--cairn-text); }
+.cairn-iconbtn:focus-visible { outline: 2px solid var(--cairn-accent); outline-offset: 2px; }
+
+/* ── Notice ─────────────────────────────────────────────────────────────── */
+
+.cairn-notice {
+  position: fixed;
+  left: 50%;
+  bottom: var(--cairn-launcher-inset);
+  transform: translateX(-50%);
+  z-index: var(--cairn-z);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(460px, calc(100vw - 32px));
+  padding: 11px 12px 11px 16px;
+  font-family: var(--cairn-font);
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--cairn-text);
+  background: var(--cairn-surface);
+  border: 1px solid var(--cairn-surface-border);
+  border-radius: var(--cairn-radius);
+  box-shadow: var(--cairn-shadow);
+  animation: cairn-notice-in 240ms var(--cairn-ease);
+}
+
+@keyframes cairn-notice-in {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ── Launcher ───────────────────────────────────────────────────────────── */
+
+/*
+ * The bottom-right corner is contested territory — support chat widgets live
+ * there by default. Six placements plus an inline variant means the launcher
+ * can always be moved out of the way rather than fought with.
+ */
+.cairn-launcher {
+  position: fixed;
+  z-index: calc(var(--cairn-z) - 10);
+  pointer-events: auto;
+}
+
+.cairn-launcher--bottom-right  { bottom: var(--cairn-launcher-inset); right: var(--cairn-launcher-inset); }
+.cairn-launcher--bottom-left   { bottom: var(--cairn-launcher-inset); left: var(--cairn-launcher-inset); }
+.cairn-launcher--bottom-center { bottom: var(--cairn-launcher-inset); left: 50%; transform: translateX(-50%); }
+.cairn-launcher--top-right     { top: var(--cairn-launcher-inset); right: var(--cairn-launcher-inset); }
+.cairn-launcher--top-left      { top: var(--cairn-launcher-inset); left: var(--cairn-launcher-inset); }
+.cairn-launcher--top-center    { top: var(--cairn-launcher-inset); left: 50%; transform: translateX(-50%); }
+
+/* Sits in normal flow — beside a page title, in an empty state, wherever. */
+.cairn-launcher--inline { position: static; z-index: auto; display: inline-flex; }
+
+.cairn-launcher--inline .cairn-launcher__btn { width: 36px; height: 36px; }
+
+/*
+ * Constrain whatever `icon` was handed to us. A consumer passing a 64px logo
+ * should get a correctly sized launcher, not a broken one — the component owns
+ * the slot, the consumer owns the artwork.
+ */
+.cairn-launcher__btn > svg,
+.cairn-launcher__btn > img {
+  width: var(--cairn-launcher-icon, 20px);
+  height: var(--cairn-launcher-icon, 20px);
+  display: block;
+  object-fit: contain;
+}
+.cairn-launcher--inline .cairn-launcher__btn > svg,
+.cairn-launcher--inline .cairn-launcher__btn > img {
+  --cairn-launcher-icon: 17px;
+}
+
+.cairn-launcher__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--cairn-radius-pill);
+  border: 1px solid var(--cairn-surface-border);
+  background: var(--cairn-surface);
+  color: var(--cairn-text);
+  box-shadow: var(--cairn-shadow);
+  cursor: pointer;
+}
+.cairn-launcher__btn:focus-visible { outline: 2px solid var(--cairn-accent); outline-offset: 3px; }
+
+.cairn-launcher__wave {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: var(--cairn-radius-pill);
+  background: var(--cairn-accent);
+  animation: cairn-ping 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cairn-spotlight--moves,
+  .cairn-halo--moves { transition: none; }
+  .cairn-halo,
+  .cairn-beacon span,
+  .cairn-launcher__wave,
+  .cairn-card,
+  .cairn-notice { animation: none; }
+  .cairn-anchorbox[data-placed="true"] { transition: none; }
+}

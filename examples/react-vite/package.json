@@ -1,0 +1,29 @@
+{
+  "name": "@cairnkit/example-react-vite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 4200",
+    "build": "vite build",
+    "preview": "vite preview --port 4200",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@cairnkit/core": "workspace:*",
+    "@cairnkit/react": "workspace:*",
+    "@cairnkit/ui": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "@playwright/test": "^1.49.1",
+    "@cairnkit/cli": "workspace:*"
+  }
+}

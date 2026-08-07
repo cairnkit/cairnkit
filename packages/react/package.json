@@ -1,0 +1,68 @@
+{
+  "name": "@cairnkit/react",
+  "version": "0.1.0",
+  "description": "Headless React bindings for Cairn. No styling, no router assumptions.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cairnkit/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "keywords": [
+    "product-tour",
+    "onboarding",
+    "walkthrough",
+    "user-onboarding",
+    "guided-tour",
+    "spotlight",
+    "coachmark",
+    "product-adoption",
+    "react",
+    "nextjs",
+    "typescript",
+    "developer-tools",
+    "ci"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairnkit/cairnkit.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://cairnkit.dev",
+  "bugs": {
+    "url": "https://github.com/cairnkit/cairnkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

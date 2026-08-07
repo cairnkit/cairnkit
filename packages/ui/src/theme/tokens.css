@@ -1,0 +1,74 @@
+/*
+ * Cairn design tokens.
+ *
+ * Every value is a custom property so a host can rebrand the overlay in one
+ * line. Light and dark are both defined from the start: the media query is the
+ * default signal, and [data-cairn-theme] lets a host's own toggle win in both
+ * directions.
+ *
+ * Typography deliberately inherits — an overlay rendering inside someone
+ * else's product should not impose a typeface on it.
+ */
+
+:root {
+  /* Above app chrome, below nothing that matters. Override if you must. */
+  --cairn-z: 2147483000;
+
+  --cairn-accent: #4f46e5;
+  --cairn-accent-rgb: 79 70 229;
+  --cairn-accent-contrast: #ffffff;
+
+  --cairn-surface: #ffffff;
+  --cairn-surface-border: rgb(9 9 11 / 0.08);
+  --cairn-text: #18181b;
+  --cairn-text-muted: #71717a;
+  --cairn-rail: rgb(9 9 11 / 0.12);
+  --cairn-hover: rgb(9 9 11 / 0.05);
+  --cairn-scrim: rgb(9 9 11 / 0.55);
+
+  --cairn-radius: 14px;
+  --cairn-radius-sm: 9px;
+  --cairn-radius-pill: 999px;
+
+  --cairn-shadow:
+    0 1px 2px rgb(9 9 11 / 0.06),
+    0 8px 24px -6px rgb(9 9 11 / 0.16),
+    0 24px 48px -12px rgb(9 9 11 / 0.12);
+
+  /* Distance from the viewport edge. Raise it to clear a chat bubble. */
+  --cairn-launcher-inset: 24px;
+
+  --cairn-font: inherit;
+  --cairn-duration: 200ms;
+  --cairn-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-cairn-theme="light"]) {
+    --cairn-surface: #16171a;
+    --cairn-surface-border: rgb(255 255 255 / 0.1);
+    --cairn-text: #f4f4f5;
+    --cairn-text-muted: #a1a1aa;
+    --cairn-rail: rgb(255 255 255 / 0.14);
+    --cairn-hover: rgb(255 255 255 / 0.07);
+    --cairn-scrim: rgb(0 0 0 / 0.68);
+    --cairn-shadow:
+      0 1px 2px rgb(0 0 0 / 0.4),
+      0 8px 24px -6px rgb(0 0 0 / 0.5),
+      0 24px 48px -12px rgb(0 0 0 / 0.45);
+  }
+}
+
+[data-cairn-theme="dark"] {
+  --cairn-surface: #16171a;
+  --cairn-surface-border: rgb(255 255 255 / 0.1);
+  --cairn-text: #f4f4f5;
+  --cairn-text-muted: #a1a1aa;
+  --cairn-rail: rgb(255 255 255 / 0.14);
+  --cairn-hover: rgb(255 255 255 / 0.07);
+  --cairn-scrim: rgb(0 0 0 / 0.68);
+  --cairn-shadow:
+    0 1px 2px rgb(0 0 0 / 0.4),
+    0 8px 24px -6px rgb(0 0 0 / 0.5),
+    0 24px 48px -12px rgb(0 0 0 / 0.45);
+}

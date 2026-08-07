@@ -1,0 +1,67 @@
+{
+  "name": "@cairnkit/next",
+  "version": "0.1.0",
+  "description": "Next.js router adapters for Cairn (App Router and Pages Router).",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cairnkit/react": "workspace:*"
+  },
+  "peerDependencies": {
+    "next": ">=14",
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "next": "^15.1.0"
+  },
+  "keywords": [
+    "product-tour",
+    "onboarding",
+    "walkthrough",
+    "user-onboarding",
+    "guided-tour",
+    "spotlight",
+    "coachmark",
+    "product-adoption",
+    "react",
+    "nextjs",
+    "typescript",
+    "developer-tools",
+    "ci"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairnkit/cairnkit.git",
+    "directory": "packages/next"
+  },
+  "homepage": "https://cairnkit.dev",
+  "bugs": {
+    "url": "https://github.com/cairnkit/cairnkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

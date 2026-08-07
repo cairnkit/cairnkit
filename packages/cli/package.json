@@ -1,0 +1,55 @@
+{
+  "name": "@cairnkit/cli",
+  "version": "0.1.0",
+  "description": "cairn check — fails the build when a tour points at UI that no longer exists.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "cairn": "./dist/bin.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cairnkit/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0"
+  },
+  "keywords": [
+    "product-tour",
+    "onboarding",
+    "walkthrough",
+    "user-onboarding",
+    "guided-tour",
+    "spotlight",
+    "coachmark",
+    "product-adoption",
+    "react",
+    "nextjs",
+    "typescript",
+    "developer-tools",
+    "ci"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairnkit/cairnkit.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://cairnkit.dev",
+  "bugs": {
+    "url": "https://github.com/cairnkit/cairnkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
