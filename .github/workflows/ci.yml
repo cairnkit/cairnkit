@@ -19,6 +19,13 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
-      # Dogfooding: the example app is a real consumer, so the drift check
-      # that protects our users protects us first.
+      # Dogfooding: the example app and the site are real consumers, so the
+      # drift check that protects our users protects us first.
       - run: node packages/cli/dist/bin.js check examples/react-vite/src
+      - run: node packages/cli/dist/bin.js check apps/web
+
+      # Production dependencies only. A dev-tooling advisory (vite, vitest,
+      # esbuild) never reaches a consumer's bundle, and failing the build on
+      # one trains people to ignore the step.
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level high

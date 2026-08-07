@@ -1,4 +1,4 @@
-import type { Check } from "./types";
+import type { Check, Finding } from "./types";
 
 /**
  * A route cannot both pause a flow and hand it off — the engine would have to
@@ -7,7 +7,7 @@ import type { Check } from "./types";
  * Also catches a flow handing off to itself, which loops.
  */
 export const routeConflicts: Check = (ctx) => {
-  const findings = [];
+  const findings: Finding[] = [];
 
   for (const [flowId, routes] of ctx.flowRoutes) {
     const handoffPaths = routes.handoff.map((entry) => entry.pathname);
@@ -17,7 +17,7 @@ export const routeConflicts: Check = (ctx) => {
       findings.push({
         rule: "route-conflicts",
         message: `flow "${flowId}" lists the same route as both pause and handoff`,
-        detail: both,
+        detail: both.map((text) => ({ text })),
         hint: "Pick one. Handoff means another guide takes over; pause means nobody does.",
       });
     }
@@ -27,7 +27,7 @@ export const routeConflicts: Check = (ctx) => {
       findings.push({
         rule: "route-conflicts",
         message: `flow "${flowId}" hands off to itself`,
-        detail: selfHandoff.map((entry) => entry.pathname),
+        detail: selfHandoff.map((entry) => ({ text: entry.pathname })),
         hint: "Remove the entry — a flow already owns its own routes.",
       });
     }

@@ -7,5 +7,6 @@ export const site = {
   repo: "https://github.com/cairnkit/cairnkit",
   npm: "https://www.npmjs.com/package/@cairnkit/react",
   email: "hello@cairnkit.dev",
-  author: "Njoh Prince",
+  author: "theartisticprogrammer",
+  authorUrl: "https://github.com/NjohPrince",
 } as const;

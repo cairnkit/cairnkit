@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
-import type { CheckContext } from "./checks/types";
+import type { CheckContext, Location } from "./checks/types";
 
 const SOURCE = /\.(tsx?|jsx?)$/;
 const SKIP = new Set(["node_modules", "dist", "build", ".next", ".git", "coverage"]);
@@ -76,6 +76,9 @@ export function scanProject(rootDir: string): CheckContext {
 
   const registryPaths = new Map<string, string>();
   const sources = new Map<string, string>();
+  const declaredAt = new Map<string, Location>();
+  const stepAt = new Map<string, Location>();
+  const literalAt = new Map<string, Location>();
 
   for (const file of files) {
     const raw = readFileSync(file, "utf8");
@@ -88,13 +91,16 @@ export function scanProject(rootDir: string): CheckContext {
       for (const [path, id] of readRegistry(source)) {
         registryPaths.set(path, id);
         registered.add(id);
+
+        const at = source.indexOf(`"${id}"`);
+        if (at >= 0) declaredAt.set(id, { file, offset: at });
       }
     }
   }
 
   const isFlowFile = (source: string) => source.includes("defineFlow(");
 
-  for (const [, raw] of sources) {
+  for (const [file, raw] of sources) {
     const source = stripLiterals(raw);
 
     // Flow files *reference* anchors; only product code *applies* them.
@@ -109,6 +115,7 @@ export function scanProject(rootDir: string): CheckContext {
         if (!value) continue;
         literals.add(value);
         applied.add(value);
+        if (!literalAt.has(value)) literalAt.set(value, { file, offset: match.index ?? 0 });
       }
       continue;
     }
@@ -119,7 +126,9 @@ export function scanProject(rootDir: string): CheckContext {
     const anchors: string[] = [];
     for (const match of source.matchAll(/anchor:\s*[A-Za-z_$][\w$]*\.(\w+\.\w+)/g)) {
       const id = match[1] ? registryPaths.get(match[1]) : undefined;
-      if (id) anchors.push(id);
+      if (!id) continue;
+      anchors.push(id);
+      stepAt.set(`${flowId}::${id}`, { file, offset: match.index ?? 0 });
     }
     flowAnchors.set(flowId, anchors);
 
@@ -141,5 +150,5 @@ export function scanProject(rootDir: string): CheckContext {
     flowRoutes.set(flowId, { pause, handoff });
   }
 
-  return { registered, applied, literals, flowAnchors, flowRoutes };
+  return { registered, applied, literals, flowAnchors, flowRoutes, declaredAt, stepAt, literalAt };
 }

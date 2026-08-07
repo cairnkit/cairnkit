@@ -60,7 +60,7 @@ output. This is the differentiator and it should be above the fold:
 ```
 ✗ cairn check failed
   • questions.save is registered but never applied to an element
-      used by create-questions
+      breaks "create-questions"  src/walkthrough/flows.ts:35
 ```
 
 **3. Live playground.** An embedded StackBlitz of `examples/react-vite`, so

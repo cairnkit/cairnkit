@@ -14,8 +14,8 @@ npm i -D @cairnkit/cli
 ✗ cairn check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
-      - questions.save  (used by create-questions)
-      Spread {...anchor(...)} on the element, or remove the step pointing at it.
+      - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
+      Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it.
 ```
 
 ## What it checks

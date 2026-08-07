@@ -14,11 +14,22 @@ export const anchorsApplied: Check = (ctx) => {
     {
       rule: "anchors-applied",
       message: `${unapplied.length} anchor(s) are registered but never applied to an element`,
-      detail: unapplied.map((id) => {
+      // The element was deleted, so there is no location for the bug itself.
+      // Point at the step that just broke instead — that is what needs a
+      // decision, and it is the file the author has to open either way.
+      detail: unapplied.flatMap((id) => {
         const users = [...ctx.flowAnchors.entries()]
           .filter(([, anchors]) => anchors.includes(id))
           .map(([flowId]) => flowId);
-        return users.length ? `${id}  (used by ${users.join(", ")})` : id;
+
+        if (users.length === 0) {
+          return [{ text: id, at: ctx.declaredAt.get(id) }];
+        }
+
+        return users.map((flowId) => ({
+          text: `${id}  (breaks "${flowId}")`,
+          at: ctx.stepAt.get(`${flowId}::${id}`) ?? ctx.declaredAt.get(id),
+        }));
       }),
       hint: "Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it.",
     },

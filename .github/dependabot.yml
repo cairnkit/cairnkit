@@ -1,0 +1,46 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 8
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+
+    # Grouped so a quiet week is one PR, not fifteen. Ungrouped Dependabot on a
+    # monorepo produces enough noise that people stop reading it — which is how
+    # a critical advisory sits unmerged for months.
+    groups:
+      next:
+        patterns: ["next", "@next/*", "eslint-config-next"]
+      react:
+        patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
+      build-tooling:
+        patterns: ["tsup", "typescript", "vite", "@vitejs/*", "esbuild"]
+        update-types: ["minor", "patch"]
+      testing:
+        patterns: ["vitest", "@vitest/*", "@testing-library/*", "@playwright/*", "jsdom"]
+        update-types: ["minor", "patch"]
+      changesets:
+        patterns: ["@changesets/*"]
+
+    ignore:
+      # React and Next majors change the peer contract for every consumer, so
+      # they are a deliberate decision, not a merge.
+      - dependency-name: react
+        update-types: ["version-update:semver-major"]
+      - dependency-name: react-dom
+        update-types: ["version-update:semver-major"]
+      - dependency-name: next
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore(ci)"

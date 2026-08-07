@@ -29,5 +29,11 @@
     "react-dom": "^19.0.0",
     "@types/react": "^19.0.0",
     "@changesets/cli": "^2.27.11"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.23",
+      "sharp": "^0.35.0"
+    }
   }
 }

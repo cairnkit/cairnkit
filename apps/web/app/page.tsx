@@ -1,6 +1,10 @@
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
 import { Mark } from "@/components/mark";
+import {
+  IconArrow, IconFlow, IconForward, IconLayers, IconPause,
+  IconRegistry, IconShield, IconSwitch, IconTarget,
+} from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StartTour } from "@/components/start-tour";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -9,6 +13,8 @@ import { site } from "./site";
 
 const STEPS = [
   {
+    icon: <IconRegistry />,
+    file: "walkthrough/anchors.ts",
     title: "Declare your anchors",
     body: "One registry. Rename a key and every flow that used it stops compiling.",
     code: `export const anchors = defineAnchors({
@@ -16,6 +22,8 @@ const STEPS = [
 });`,
   },
   {
+    icon: <IconTarget />,
+    file: "QuestionsPage.tsx",
     title: "Mark the elements",
     body: "A single spread. Your components import nothing else from Cairn.",
     code: `<button {...anchor(anchors.questions.save)}>
@@ -23,6 +31,8 @@ const STEPS = [
 </button>`,
   },
   {
+    icon: <IconFlow />,
+    file: "walkthrough/flows.ts",
     title: "Write the flow",
     body: "Steps are data, not components. Reordering is an array edit.",
     code: `defineFlow({
@@ -35,6 +45,8 @@ const STEPS = [
 });`,
   },
   {
+    icon: <IconShield />,
+    file: "package.json",
     title: "Wire the check into CI",
     body: "Now a deleted button fails the build instead of a customer's onboarding.",
     code: `"scripts": {
@@ -42,6 +54,33 @@ const STEPS = [
 }`,
   },
 ];
+
+const OFFPATH = [
+  {
+    icon: <IconForward />,
+    did: "Clicked the button before the guide got there",
+    does: "Catches up, forward only",
+    field: "resumeAt",
+  },
+  {
+    icon: <IconSwitch />,
+    did: "Took a different route to the same goal",
+    does: "Hands over to the guide that covers it",
+    field: "handoffRoutes",
+  },
+  {
+    icon: <IconPause />,
+    did: "Wandered somewhere no guide covers",
+    does: "Sleeps and keeps their place",
+    field: "pauseRoutes",
+  },
+  {
+    icon: <IconLayers />,
+    did: "Opened a modal you did not plan for",
+    does: "Portals into the dialog, survives focus traps",
+    field: "automatic",
+  },
+] as const;
 
 const COMPARISON = [
   ["Targets elements by", "CSS selector", "CSS selector", "Visual picker", "Typed anchor"],
@@ -116,18 +155,18 @@ export default function Home() {
               element{"  "}
               <span className="t-dim">[anchors-applied]</span>
               {"\n"}
-              {"      - questions.save  "}
-              <span className="t-dim">(used by create-questions)</span>
+              {'      - questions.save  (breaks "create-questions")'}
+              <span className="t-dim">{"  src/walkthrough/flows.ts:35"}</span>
               {"\n"}
               <span className="t-dim">
-                {"      Spread {...anchor(...)} on the element, or remove the step pointing at it."}
+                {"      Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it."}
               </span>
             </pre>
           </div>
         </div>
       </section>
 
-      <section className="section" id="how">
+      <section className="section textured" id="how">
         <div className="wrap">
           <p className="eyebrow">How it works</p>
           <h2 className="h">Four steps, then it is yours</h2>
@@ -137,21 +176,32 @@ export default function Home() {
           </p>
 
           <Reveal>
-          <div {...anchor(anchors.site.steps)} className="steps demo-target">
-            {STEPS.map((step, index) => (
-              <article className="step" key={step.title}>
-                <span className="step__n">{index + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-                <pre className="code">{step.code}</pre>
-              </article>
-            ))}
-          </div>
+            <div {...anchor(anchors.site.steps)} className="flow demo-target">
+              {STEPS.map((step, index) => (
+                <article className="fstep glass" key={step.title}>
+                  <div className="fstep__top">
+                    <span className="fstep__icon">{step.icon}</span>
+                    <h3>{step.title}</h3>
+                    <span className="fstep__n">0{index + 1}</span>
+                  </div>
+                  <p>{step.body}</p>
+                  <div className="editor">
+                    <div className="editor__bar">
+                      <span className="editor__dot" />
+                      <span className="editor__dot" />
+                      <span className="editor__dot" />
+                      <span className="editor__file">{step.file}</span>
+                    </div>
+                    <pre>{step.code}</pre>
+                  </div>
+                </article>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="section" id="offpath">
+      <section className="section textured" id="offpath">
         <div className="wrap">
           <p className="eyebrow">Real users</p>
           <h2 className="h">Nobody follows the script</h2>
@@ -160,23 +210,22 @@ export default function Home() {
             Most tours die at that point. These three fields are the answer.
           </p>
           <Reveal>
-            <div className="features">
-              <article className="feature">
-                <code>resumeAt</code>
-                <p>They clicked the button before the guide got there. Catch up instead of dying — forward only, never rewinding into copy that no longer matches.</p>
-              </article>
-              <article className="feature">
-                <code>handoffRoutes</code>
-                <p>They chose a different route to the same goal. Switch them onto the guide that covers it rather than ending their tour.</p>
-              </article>
-              <article className="feature">
-                <code>pauseRoutes</code>
-                <p>They went somewhere no guide covers. Sleep, keep their place, and pick up when they return. Looking around costs nothing.</p>
-              </article>
-              <article className="feature">
-                <code>Modals</code>
-                <p>A step inside a dialog portals into that dialog, so it survives the focus trap, the stacking context, and <code>inert</code>.</p>
-              </article>
+            <div className="offpath glass">
+              {OFFPATH.map((row) => (
+                <div className="offrow" key={row.field}>
+                  <span className="offrow__did">{row.did}</span>
+                  <span className="offrow__arrow">
+                    <IconArrow />
+                  </span>
+                  <span className="offrow__does">
+                    <span className="fstep__icon" style={{ width: 28, height: 28, display: "inline-grid", verticalAlign: "-8px", marginRight: 9 }}>
+                      {row.icon}
+                    </span>
+                    <b>{row.does}</b>
+                    <span className="offrow__field">{row.field}</span>
+                  </span>
+                </div>
+              ))}
             </div>
           </Reveal>
         </div>
@@ -267,7 +316,12 @@ export default function Home() {
         <div className="wrap footer__row">
           <Mark size={17} />
           <span>MIT © {new Date().getFullYear()} {site.name}</span>
-          <span>Built by {site.author}</span>
+          <span>
+            Authored by{" "}
+            <a className="byline" href={site.authorUrl} target="_blank" rel="noreferrer">
+              {site.author}
+            </a>
+          </span>
           <a href={site.repo}>GitHub</a>
           <a href={site.npm}>npm</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>

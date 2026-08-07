@@ -9,7 +9,7 @@ export const anchorsRegistered: Check = (ctx) => {
     {
       rule: "anchors-registered",
       message: `${unknown.length} data-cairn value(s) are not in the registry`,
-      detail: unknown,
+      detail: unknown.map((id) => ({ text: id, at: ctx.literalAt.get(id) })),
       hint: "Add them to defineAnchors() so flows can reference them without a magic string.",
     },
   ];
