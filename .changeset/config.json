@@ -5,6 +5,18 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@cairnkit/example-next-app", "@cairnkit/example-react-vite"],
-  "fixed": [["@cairnkit/core", "@cairnkit/react", "@cairnkit/ui", "@cairnkit/next", "@cairnkit/cli"]]
+  "ignore": [
+    "@cairnkit/example-next-app",
+    "@cairnkit/example-react-vite",
+    "@cairnkit/web"
+  ],
+  "fixed": [
+    [
+      "@cairnkit/core",
+      "@cairnkit/react",
+      "@cairnkit/ui",
+      "@cairnkit/next",
+      "@cairnkit/cli"
+    ]
+  ]
 }
