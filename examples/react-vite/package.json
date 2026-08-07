@@ -15,15 +15,15 @@
     "@cairnkit/ui": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.1"
+    "react-router-dom": "^7.9.5"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
-    "vite": "^6.0.7",
-    "@playwright/test": "^1.49.1",
+    "vite": "^6.3.6",
+    "@playwright/test": "^1.56.1",
     "@cairnkit/cli": "workspace:*"
   }
 }
