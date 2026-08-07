@@ -8,5 +8,6 @@ declare module "@cairnkit/core" {
   interface CairnRegister {
     anchors: typeof anchors;
     flowIds: "invite-candidate" | "write-question";
+    events: "invite:sent" | "question:saved";
   }
 }

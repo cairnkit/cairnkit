@@ -3,7 +3,7 @@ export { defineAnchors, type AnchorsOf } from "./anchors/define-anchors";
 export { anchor, anchorSelector } from "./anchors/anchor";
 export { resolveAnchor } from "./anchors/resolve-anchor";
 export { ANCHOR_ATTRIBUTE, type AnchorId } from "./anchors/types";
-export type { CairnRegister, RegisteredAnchor, RegisteredFlowId } from "./register";
+export type { CairnRegister, RegisteredAnchor, RegisteredEvent, RegisteredFlowId } from "./register";
 
 // Flows
 export { defineFlow } from "./flows/define-flow";

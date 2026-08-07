@@ -28,3 +28,14 @@ export type RegisteredAnchor = CairnRegister extends { anchors: infer A }
 export type RegisteredFlowId = CairnRegister extends { flowIds: infer F }
   ? F & string
   : string;
+
+/**
+ * App event names, or any string if unregistered.
+ *
+ * Worth narrowing: a typo in an event name means a step waits forever for
+ * something that never fires — a tour that hangs rather than fails, which is
+ * harder to notice than a missing anchor.
+ */
+export type RegisteredEvent = CairnRegister extends { events: infer E }
+  ? E & string
+  : string;

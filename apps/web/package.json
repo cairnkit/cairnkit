@@ -1,0 +1,25 @@
+{
+  "name": "@cairnkit/web",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev -p 4300",
+    "build": "next build",
+    "start": "next start -p 4300",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cairnkit/core": "workspace:*",
+    "@cairnkit/next": "workspace:*",
+    "@cairnkit/react": "workspace:*",
+    "@cairnkit/ui": "workspace:*",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.2"
+  }
+}

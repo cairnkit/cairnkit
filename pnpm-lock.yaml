@@ -41,6 +41,40 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(@types/node@22.10.0)(jsdom@25.0.1)
 
+  apps/web:
+    dependencies:
+      '@cairnkit/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@cairnkit/next':
+        specifier: workspace:*
+        version: link:../../packages/next
+      '@cairnkit/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      '@cairnkit/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      next:
+        specifier: ^15.1.0
+        version: 15.1.0(react-dom@19.0.0)(react@19.0.0)
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.10.0
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.0.0
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
+
   examples/next-app:
     dependencies:
       '@cairnkit/core':

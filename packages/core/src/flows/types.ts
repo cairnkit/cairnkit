@@ -1,5 +1,4 @@
-import type { RegisteredAnchor, RegisteredFlowId } from "../register";
-import type { TourEventName } from "../events/types";
+import type { RegisteredAnchor, RegisteredEvent, RegisteredFlowId } from "../register";
 
 export type Placement =
   | "top" | "bottom" | "left" | "right"
@@ -19,7 +18,7 @@ export type AdvanceRule =
   | { type: "next" }
   | { type: "click" }
   | { type: "route"; pathname: string }
-  | { type: "event"; name: TourEventName }
+  | { type: "event"; name: RegisteredEvent }
   | { type: "condition"; awaitAnchor: RegisteredAnchor };
 
 export type TourStep = {
