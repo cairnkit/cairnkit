@@ -25,6 +25,26 @@ function walk(dir: string, root: string, out: string[] = []): string[] {
   return out;
 }
 
+/**
+ * Blanks out comments and string contents before scanning.
+ *
+ * The scanner is regex-based, so without this it cannot tell real code from
+ * code *quoted inside* a template literal — a docs page showing
+ * `defineAnchors({ ... })` in a sample would register phantom anchors and fail
+ * the check. Replacing literals with same-length padding keeps offsets intact
+ * while removing their content from consideration.
+ */
+function stripLiterals(source: string): string {
+  const blank = (match: string) => match.replace(/[^\n]/g, " ");
+
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, blank) // block comments
+    .replace(/\/\/[^\n]*/g, blank) // line comments
+    .replace(/`(?:\\.|[^`\\])*`/g, blank) // template literals
+    .replace(/"(?:\\.|[^"\\\n])*"/g, (m) => `"${" ".repeat(Math.max(0, m.length - 2))}"`)
+    .replace(/'(?:\\.|[^'\\\n])*'/g, (m) => `'${" ".repeat(Math.max(0, m.length - 2))}'`);
+}
+
 /** Maps `group.key` registry paths back to the id they hold. */
 function readRegistry(source: string): Map<string, string> {
   const paths = new Map<string, string>();
@@ -58,8 +78,11 @@ export function scanProject(rootDir: string): CheckContext {
   const sources = new Map<string, string>();
 
   for (const file of files) {
-    const source = readFileSync(file, "utf8");
-    sources.set(file, source);
+    const raw = readFileSync(file, "utf8");
+    // Comments and template literals cannot declare anything; only their
+    // presence would confuse the identifier scan below.
+    const source = stripLiterals(raw).includes("defineAnchors(") ? raw : "";
+    sources.set(file, raw);
 
     if (source.includes("defineAnchors(")) {
       for (const [path, id] of readRegistry(source)) {
@@ -71,7 +94,9 @@ export function scanProject(rootDir: string): CheckContext {
 
   const isFlowFile = (source: string) => source.includes("defineFlow(");
 
-  for (const [, source] of sources) {
+  for (const [, raw] of sources) {
+    const source = stripLiterals(raw);
+
     // Flow files *reference* anchors; only product code *applies* them.
     // Counting flow files here would make every anchor look applied forever.
     if (!isFlowFile(source)) {
@@ -88,7 +113,7 @@ export function scanProject(rootDir: string): CheckContext {
       continue;
     }
 
-    const flowId = /id:\s*["'`]([^"'`]+)["'`]/.exec(source)?.[1];
+    const flowId = /id:\s*["'`]([^"'`]+)["'`]/.exec(raw)?.[1];
     if (!flowId) continue;
 
     const anchors: string[] = [];
@@ -98,13 +123,13 @@ export function scanProject(rootDir: string): CheckContext {
     }
     flowAnchors.set(flowId, anchors);
 
-    const pauseBlock = /pauseRoutes:\s*\[([^\]]*)\]/.exec(source)?.[1] ?? "";
+    const pauseBlock = /pauseRoutes:\s*\[([^\]]*)\]/.exec(raw)?.[1] ?? "";
     const pause = [...pauseBlock.matchAll(/["'`]([^"'`]+)["'`]/g)]
       .map((m) => m[1])
       .filter((value): value is string => Boolean(value));
 
     const handoff = [
-      ...source.matchAll(
+      ...raw.matchAll(
         /\{\s*pathname:\s*["'`]([^"'`]+)["'`],\s*flowId:\s*["'`]([^"'`]+)["'`]\s*\}/g,
       ),
     ]

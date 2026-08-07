@@ -7,3 +7,10 @@ export type AnchorLeaves<T> = T extends string
   : { [K in keyof T]: AnchorLeaves<T[K]> }[keyof T];
 
 export const ANCHOR_ATTRIBUTE = "data-cairn";
+
+/**
+ * Marks a wrapper that carries an anchor on behalf of its child.
+ * `<TourAnchor>` uses `display: contents`, which leaves the wrapper with no
+ * box of its own — so the resolver measures the child instead.
+ */
+export const ANCHOR_PASSTHROUGH = "data-cairn-passthrough";

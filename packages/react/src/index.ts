@@ -6,3 +6,4 @@ export { useTourState } from "./hooks/use-cairn-store";
 export { useAnchorTarget, type AnchorStatus } from "./hooks/use-anchor-target";
 export { useStepCopy } from "./hooks/use-step-copy";
 export { memoryRouter, type RouterAdapter } from "./adapters/router";
+export { TourAnchor, type TourAnchorProps } from "./components/tour-anchor";

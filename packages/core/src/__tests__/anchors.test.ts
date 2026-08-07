@@ -42,3 +42,20 @@ describe("resolveAnchor outside a browser", () => {
     }
   });
 });
+
+describe("pass-through wrappers", () => {
+  it("measures the child, not the boxless wrapper", () => {
+    // <TourAnchor> uses display:contents, so the wrapper has no box. Without
+    // unwrapping, every such anchor would resolve to a 0x0 element.
+    document.body.innerHTML = `
+      <span data-cairn="wrapped.thing" data-cairn-passthrough style="display:contents">
+        <button id="real">Click</button>
+      </span>`;
+
+    const real = document.getElementById("real")!;
+    real.getBoundingClientRect = () => ({ width: 80, height: 30, top: 0, left: 0 }) as DOMRect;
+
+    expect(resolveAnchor("wrapped.thing")).toBe(real);
+    document.body.innerHTML = "";
+  });
+});

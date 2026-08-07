@@ -1,6 +1,15 @@
 import { devWarn } from "../internal/dev";
 import { anchorSelector } from "./anchor";
-import type { AnchorId } from "./types";
+import { ANCHOR_PASSTHROUGH, type AnchorId } from "./types";
+
+/**
+ * A pass-through wrapper has `display: contents`, so it occupies no space and
+ * would measure 0x0. The element worth spotlighting is its first child.
+ */
+function unwrap(element: HTMLElement): HTMLElement {
+  if (!element.hasAttribute(ANCHOR_PASSTHROUGH)) return element;
+  return (element.firstElementChild as HTMLElement | null) ?? element;
+}
 
 function isVisible(element: HTMLElement): boolean {
   if (!element.isConnected) return false;
@@ -23,7 +32,7 @@ export function resolveAnchor(id: AnchorId, doc?: Document): HTMLElement | null 
   const target = doc ?? (typeof document !== "undefined" ? document : null);
   if (!target) return null;
 
-  const matches = Array.from(target.querySelectorAll<HTMLElement>(anchorSelector(id)));
+  const matches = Array.from(target.querySelectorAll<HTMLElement>(anchorSelector(id))).map(unwrap);
   const visible = matches.filter(isVisible);
 
   if (visible.length > 1) {

@@ -63,6 +63,8 @@ packages/
 │   ├── provider/
 │   │   ├── cairn-provider.tsx    mounts the runtime, owns the portal
 │   │   └── cairn-context.ts
+│   ├── components/
+│   │   └── tour-anchor.tsx       escape hatch for components that swallow props
 │   ├── hooks/
 │   │   ├── use-tour.ts           the controller
 │   │   ├── use-anchor-target.ts  resolve + wait + track

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Providers } from "@/components/providers";
+import { themeScript } from "@/components/theme-toggle";
 import { site } from "./site";
 import "@cairnkit/ui/styles.css";
 import "./globals.css";
@@ -75,6 +76,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Before paint, so a dark-mode visitor never sees a white flash. */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <StructuredData />
       </head>
       <body>

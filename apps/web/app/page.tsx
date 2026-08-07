@@ -1,7 +1,9 @@
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
 import { Mark } from "@/components/mark";
+import { Reveal } from "@/components/reveal";
 import { StartTour } from "@/components/start-tour";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { anchors } from "@/walkthrough/anchors";
 import { site } from "./site";
 
@@ -65,9 +67,10 @@ export default function Home() {
             <Mark /> {site.name}
           </a>
           <div className="nav__links">
-            <a href="#how">How it works</a>
-            <a href="#compare">Comparison</a>
+            <a className="hide-sm" href="#how">How it works</a>
+            <a className="hide-sm" href="#compare">Comparison</a>
             <a href={site.repo}>GitHub</a>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
@@ -133,6 +136,7 @@ export default function Home() {
             they describe and move with it.
           </p>
 
+          <Reveal>
           <div {...anchor(anchors.site.steps)} className="steps demo-target">
             {STEPS.map((step, index) => (
               <article className="step" key={step.title}>
@@ -143,6 +147,38 @@ export default function Home() {
               </article>
             ))}
           </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section" id="offpath">
+        <div className="wrap">
+          <p className="eyebrow">Real users</p>
+          <h2 className="h">Nobody follows the script</h2>
+          <p className="lede">
+            They click ahead, wander into a different flow, or open a modal you did not plan for.
+            Most tours die at that point. These three fields are the answer.
+          </p>
+          <Reveal>
+            <div className="features">
+              <article className="feature">
+                <code>resumeAt</code>
+                <p>They clicked the button before the guide got there. Catch up instead of dying — forward only, never rewinding into copy that no longer matches.</p>
+              </article>
+              <article className="feature">
+                <code>handoffRoutes</code>
+                <p>They chose a different route to the same goal. Switch them onto the guide that covers it rather than ending their tour.</p>
+              </article>
+              <article className="feature">
+                <code>pauseRoutes</code>
+                <p>They went somewhere no guide covers. Sleep, keep their place, and pick up when they return. Looking around costs nothing.</p>
+              </article>
+              <article className="feature">
+                <code>Modals</code>
+                <p>A step inside a dialog portals into that dialog, so it survives the focus trap, the stacking context, and <code>inert</code>.</p>
+              </article>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -210,6 +246,19 @@ export default function Home() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="cta">
+        <div className="wrap">
+          <h2>Stop shipping broken tours</h2>
+          <p>
+            MIT licensed, 2.5 kb of engine, and a CI check that tells you before your users do.
+          </p>
+          <div className="cta__row">
+            <a className="btn btn--primary" href={site.repo}>Get started on GitHub</a>
+            <StartTour />
           </div>
         </div>
       </section>
