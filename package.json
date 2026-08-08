@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "changeset": "changeset",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "audit:published": "node scripts/audit-published.mjs --audit-level high"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
