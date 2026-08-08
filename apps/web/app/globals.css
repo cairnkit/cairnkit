@@ -346,6 +346,16 @@ body { overflow-x: clip; }
 /* ── proof strip ──────────────────────────────────────────────────────────
    Sits directly under the hero. Four numbers a reader can verify beat any
    number of adjectives, and it gives the page a beat before the terminal. */
+.compat { border-bottom: 1px solid var(--line); }
+.compat__in { display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 10px 18px; padding: 16px 0; }
+.compat__label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); }
+.compat__list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none;
+  margin: 0; padding: 0; }
+.compat__list li { font-size: 13px; color: var(--fg); padding: 4px 10px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--bg-soft); }
+
 .proof { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   background: color-mix(in srgb, var(--fg) 2%, transparent); }
 .proof__in { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;

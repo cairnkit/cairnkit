@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_ADVANCE,
   bindAdvanceRule,
@@ -58,18 +58,48 @@ export function useTour() {
     resetKey: pathname,
   });
 
+  /**
+   * Runs a step's `onExit`, then moves.
+   *
+   * Deliberately still `() => void` rather than async. Making it a promise
+   * would change the signature of `advance` and `back` for every consumer, to
+   * buy an await almost nobody needs — the caller is a click handler. The
+   * move is simply deferred until the hook settles.
+   *
+   * A hook that throws must not strand the user mid-tour, so `finally` moves
+   * on either way.
+   */
+  const leaveStep = useCallback(
+    (direction: "forward" | "back", move: () => void) => {
+      if (!step?.onExit) {
+        move();
+        return;
+      }
+
+      void Promise.resolve()
+        .then(() => step.onExit?.(direction))
+        .catch((error) => console.error("[cairn] onExit threw; continuing anyway.", error))
+        .finally(move);
+    },
+    [step],
+  );
+
   const advance = useCallback(() => {
     if (!flow) return;
-    if (stepIndex >= flow.steps.length - 1) {
-      store.complete(flow.id, flow.version);
-      return;
-    }
-    store.goToStep(stepIndex + 1);
-  }, [flow, stepIndex, store]);
+
+    leaveStep("forward", () => {
+      if (stepIndex >= flow.steps.length - 1) {
+        store.complete(flow.id, flow.version);
+        return;
+      }
+      store.goToStep(stepIndex + 1);
+    });
+  }, [flow, stepIndex, store, leaveStep]);
 
   const back = useCallback(() => {
-    if (stepIndex > 0) store.goToStep(stepIndex - 1);
-  }, [stepIndex, store]);
+    if (stepIndex === 0) return;
+    leaveStep("back", () => store.goToStep(stepIndex - 1));
+  }, [stepIndex, store, leaveStep]);
 
   const skip = useCallback(() => {
     if (!flow) return;
@@ -143,6 +173,34 @@ export function useTour() {
     if (isPaused) return;
     return bindAdvanceRule(rule, element, advance);
   }, [rule, element, advance, isPaused]);
+
+  /**
+   * Fires `onEnter` once per step entry.
+   *
+   * Keyed on flow + index rather than the step object, because a flow defined
+   * inline gets a fresh object identity on every render and would otherwise
+   * run the hook on each one. Clearing the key when the tour stops is what
+   * lets a restart re-enter step 0.
+   *
+   * An effect, so it never runs on the server.
+   */
+  const enteredKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!flow || !step) {
+      enteredKey.current = null;
+      return;
+    }
+    if (isPaused) return;
+
+    const key = `${flow.id}:${stepIndex}`;
+    if (enteredKey.current === key) return;
+    enteredKey.current = key;
+
+    void Promise.resolve()
+      .then(() => step.onEnter?.())
+      .catch((error) => console.error("[cairn] onEnter threw; continuing anyway.", error));
+  }, [flow, step, stepIndex, isPaused]);
 
   useEffect(() => {
     if (!step || isPaused) return;

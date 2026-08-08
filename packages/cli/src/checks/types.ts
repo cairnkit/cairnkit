@@ -31,6 +31,8 @@ export type CheckContext = {
   stepAt: Map<string, Location>;
   /** Raw `data-cairn` literal -> where it appears. */
   literalAt: Map<string, Location>;
+  /** Anchors applied by bare string rather than a typed registry reference. */
+  untypedUse: Map<string, Location>;
   /** Flow id -> route lists, for contradiction checks. */
   flowRoutes: Map<string, { pause: string[]; handoff: { pathname: string; flowId: string }[] }>;
 };

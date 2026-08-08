@@ -41,6 +41,29 @@ export type TourStep = {
   padding?: number;
   /** Pulsing dot on the target. Defaults on for `click` steps. */
   beacon?: boolean;
+
+  /**
+   * Runs when this step becomes active.
+   *
+   * For putting the app into the state the step describes — but not for doing
+   * the user's work. A tour that clicks the button teaches nothing.
+   */
+  onEnter?: () => void | Promise<void>;
+
+  /**
+   * Runs when leaving this step, before the next one is measured.
+   *
+   * The case this exists for: a step anchored inside a modal. Pressing Next
+   * leaves the modal open, so the next target sits behind it and the spotlight
+   * lands on something the user cannot reach. Closing it here is cleanup, not
+   * driving.
+   *
+   * Await it if the close is animated — the next step measures its target as
+   * soon as this resolves, and a rect read mid-transition is the wrong rect.
+   *
+   * Not called on skip: the tour is over and the user has taken control.
+   */
+  onExit?: (direction: "forward" | "back") => void | Promise<void>;
 };
 
 export type TourFlow = {
