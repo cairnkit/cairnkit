@@ -22,7 +22,7 @@
     "@cairnkit/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0"
+    "@types/node": "^26.1.2"
   },
   "keywords": [
     "product-tour",
