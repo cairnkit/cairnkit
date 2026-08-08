@@ -1,5 +1,16 @@
 # @cairnkit/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 5f4459d: Fix deep links being ignored when a tour was already running, and no longer restart a deep-linked tour after the user dismisses it. Expose package.json in the exports map so bundler plugins can read it.
+
+### Patch Changes
+
+- Updated dependencies [5f4459d]
+  - @cairnkit/core@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
