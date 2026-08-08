@@ -18,7 +18,7 @@ jobs:
         with: { fetch-depth: 0 }
       # Version comes from `packageManager` in package.json — passing it here
       # too makes action-setup fail with ERR_PNPM_BAD_PM_VERSION.
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm, registry-url: "https://registry.npmjs.org" }
 
