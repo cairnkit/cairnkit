@@ -14,12 +14,12 @@
     "@cairnkit/react": "workspace:*",
     "@cairnkit/ui": "workspace:*",
     "next": "^15.5.23",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
-    "@types/react": "^19.0.0",
+    "@types/react": "^19.2.18",
     "typescript": "^5.7.2"
   }
 }

@@ -29,9 +29,9 @@
     "jsdom": "^25.0.1",
     "@testing-library/react": "^16.1.0",
     "@testing-library/dom": "^10.4.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@types/react": "^19.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "@types/react": "^19.2.18",
     "@changesets/cli": "^2.27.11"
   },
   "pnpm": {
