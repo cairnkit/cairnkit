@@ -22,8 +22,12 @@ jobs:
 
       # Dogfooding: the example app and the site are real consumers, so the
       # drift check that protects our users protects us first.
-      - run: node packages/cli/dist/bin.js check examples/react-vite/src
-      - run: node packages/cli/dist/bin.js check apps/web
+      - run: node packages/cli/dist/bin.js check examples/react-vite/src apps/web
+
+      # The published size claims are load-bearing marketing. Fail if the
+      # landing page and the built output disagree.
+      - name: Verify advertised sizes
+        run: node scripts/measure-size.mjs --check
 
       # Scoped to the dependency closure we actually publish. A root-level
       # audit also walks the examples and the docs site, so an advisory in the

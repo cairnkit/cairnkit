@@ -3,7 +3,13 @@ export { defineAnchors, type AnchorsOf } from "./anchors/define-anchors";
 export { anchor, anchorSelector } from "./anchors/anchor";
 export { resolveAnchor } from "./anchors/resolve-anchor";
 export { ANCHOR_ATTRIBUTE, ANCHOR_PASSTHROUGH, type AnchorId } from "./anchors/types";
-export type { CairnRegister, RegisteredAnchor, RegisteredEvent, RegisteredFlowId } from "./register";
+export type {
+  CairnRegister,
+  RegisteredAction,
+  RegisteredAnchor,
+  RegisteredEvent,
+  RegisteredFlowId,
+} from "./register";
 
 // Flows
 export { defineFlow } from "./flows/define-flow";
@@ -12,6 +18,7 @@ export { resolveResumeStep } from "./flows/resume";
 export type {
   AdvanceRule,
   Placement,
+  StepContext,
   TourExitReason,
   TourFlow,
   TourStep,
@@ -20,6 +27,7 @@ export type {
 // Engine
 export { createTourStore, localStoragePersist } from "./engine/store";
 export { decideForRoute, type RouteDecision } from "./engine/lifecycle";
+export { createActionRegistry, type ActionRegistry, type TourAction } from "./engine/actions";
 export {
   DEFAULT_ADVANCE,
   bindAdvanceRule,

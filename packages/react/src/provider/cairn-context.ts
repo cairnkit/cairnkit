@@ -1,7 +1,12 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { CairnEventHandler, FlowRegistry, TourStore } from "@cairnkit/core";
+import type {
+  ActionRegistry,
+  CairnEventHandler,
+  FlowRegistry,
+  TourStore,
+} from "@cairnkit/core";
 import type { RouterAdapter } from "../adapters/router";
 
 export type CairnNotice =
@@ -12,6 +17,8 @@ export type CairnNotice =
 export type CairnContextValue = {
   store: TourStore;
   flows: FlowRegistry;
+  /** Actions published by mounted components, callable from step hooks. */
+  actions: ActionRegistry;
   router: RouterAdapter;
   onEvent?: CairnEventHandler;
   /** Resolves `titleKey` / `bodyKey` when copy lives in an i18n catalogue. */

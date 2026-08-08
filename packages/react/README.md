@@ -6,7 +6,7 @@ router assumptions — bring your own components, or add
 overlay.
 
 ```bash
-npm i @cairnkit/react
+npm i @cairnkit/core @cairnkit/react
 ```
 
 ```tsx

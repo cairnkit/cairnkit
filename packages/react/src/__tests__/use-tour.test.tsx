@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { defineFlow } from "@cairnkit/core";
 import type { ReactNode } from "react";
 import { CairnProvider } from "../provider/cairn-provider";
+import { useTourAction } from "../hooks/use-tour-action";
 import { useTour } from "../hooks/use-tour";
 import type { RouterAdapter } from "../adapters/router";
 
@@ -262,5 +263,70 @@ describe("step lifecycle hooks", () => {
     act(() => result.current.start("main"));
     await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
     expect(entered).toEqual([0, 0]);
+  });
+
+  it("lets a step call an action published by a component", async () => {
+    // The modal case end to end: state lives in a component, the step that
+    // needs to change it lives in a flow file that cannot see it.
+    let open = true;
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [
+        { anchor: "a.one", title: "One", body: "1",
+          onExit: (_dir, ctx) => ctx.run("close-modal") },
+        { anchor: "a.two", title: "Two", body: "2" },
+      ],
+    });
+
+    const { result } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>
+          <Publisher />
+          {children}
+        </CairnProvider>
+      ),
+    });
+
+    function Publisher() {
+      useTourAction("close-modal", () => { open = false; });
+      return null;
+    }
+
+    act(() => result.current.start("main"));
+    await act(async () => {
+      result.current.advance();
+      await new Promise((r) => setTimeout(r, 40));
+    });
+
+    expect(open).toBe(false);
+    expect(result.current.stepIndex).toBe(1);
+  });
+
+  it("keeps moving when the action was never published", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [
+        { anchor: "a.one", title: "One", body: "1",
+          onExit: (_dir, ctx) => ctx.run("never-registered") },
+        { anchor: "a.two", title: "Two", body: "2" },
+      ],
+    });
+
+    const { result } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>{children}</CairnProvider>
+      ),
+    });
+
+    act(() => result.current.start("main"));
+    await act(async () => {
+      result.current.advance();
+      await new Promise((r) => setTimeout(r, 40));
+    });
+
+    expect(result.current.stepIndex).toBe(1);
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
   });
 });

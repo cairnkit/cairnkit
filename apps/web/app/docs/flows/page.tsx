@@ -67,8 +67,8 @@ export const createQuestions = defineFlow({
           { name: "waitForMs", type: "number", default: "4000", description: "How long to wait for a missing anchor." },
           { name: "padding", type: "number", default: "8", description: "Spotlight padding around the target." },
           { name: "beacon", type: "boolean", description: "Pulsing dot. Defaults on for click steps." },
-          { name: "onEnter", type: "() => void | Promise<void>", description: "Runs when the step becomes active." },
-          { name: "onExit", type: '(dir: "forward" | "back") => void | Promise<void>', description: "Runs before leaving. Awaited, so an animated close finishes before the next step measures." },
+          { name: "onEnter", type: "(ctx) => void | Promise<void>", description: "Runs once when the step becomes active. `ctx.run(name)` calls an action published by useTourAction." },
+          { name: "onExit", type: '(dir, ctx) => void | Promise<void>', description: "Runs before leaving, in either direction. Awaited, so an animated close finishes before the next step measures." },
         ]}
       />
 

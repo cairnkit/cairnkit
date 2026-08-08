@@ -51,7 +51,7 @@ Ordered by what a developer actually scans:
 your users."* — plus a copy-button install snippet:
 
 ```
-npm i @cairnkit/react @cairnkit/ui
+npm i @cairnkit/core @cairnkit/react @cairnkit/ui
 ```
 
 **2. The failure, shown not claimed.** A terminal block of real `cairn check`
@@ -71,9 +71,9 @@ installing anything. For a tour library this is worth more than any prose.
 
 | Package           | gzipped | runtime deps      |
 | ----------------- | ------- | ----------------- |
-| `@cairnkit/core`  | 2.5 kb  | **zero**          |
-| `@cairnkit/react` | 2.6 kb  | core only         |
-| `@cairnkit/ui`    | 4.3 kb  | `@floating-ui/dom` |
+| `@cairnkit/core`  | 2.7 kb  | **zero**          |
+| `@cairnkit/react` | 3.1 kb  | core only         |
+| `@cairnkit/ui`    | 6.7 kb  | `@floating-ui/dom` |
 | `@cairnkit/next`  | 0.3 kb  | react only        |
 
 **5. Comparison — but not the one in the brief.**

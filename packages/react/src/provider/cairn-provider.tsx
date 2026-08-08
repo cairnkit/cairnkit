@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
+  createActionRegistry,
   createFlowRegistry,
   createTourStore,
   localStoragePersist,
@@ -40,17 +41,23 @@ export function CairnProvider({
   store,
   children,
 }: CairnProviderProps) {
+  // Held outside the memo below on purpose: that one recomputes whenever
+  // `flows` changes identity, and rebuilding the registry there would drop
+  // every action currently published by a mounted component.
+  const [actions] = useState(createActionRegistry);
+
   const value = useMemo(
     () => ({
       store: store ?? createTourStore({ persist: localStoragePersist(), onEvent }),
       flows: createFlowRegistry(flows),
+      actions,
       router,
       onEvent,
       translate,
       onNotice,
       mobileBreakpoint,
     }),
-    [flows, router, onEvent, translate, onNotice, mobileBreakpoint, store],
+    [flows, router, onEvent, translate, onNotice, mobileBreakpoint, store, actions],
   );
 
   return <CairnContext.Provider value={value}>{children}</CairnContext.Provider>;

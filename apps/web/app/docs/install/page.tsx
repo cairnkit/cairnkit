@@ -18,8 +18,15 @@ export default function Page() {
       ]}
     >
       <H2 id="packages">Packages</H2>
-      <Code>{`npm i @cairnkit/react @cairnkit/ui @cairnkit/next
+      <Code>{`npm i @cairnkit/core @cairnkit/react @cairnkit/ui @cairnkit/next
 npm i -D @cairnkit/cli`}</Code>
+      <Callout kind="note" title="Why core is in that list">
+        <C>@cairnkit/react</C> depends on <C>@cairnkit/core</C> anyway, so npm users get it
+        hoisted whether they ask for it or not. pnpm does not hoist, and the typed-anchor
+        registry below augments <C>@cairnkit/core</C> by name — so without it installed
+        directly, that augmentation does not compile. Listing it explicitly keeps the two
+        package managers behaving the same.
+      </Callout>
       <Ul>
         <li><C>@cairnkit/react</C> pulls in <C>core</C> — you rarely install it directly.</li>
         <li><C>@cairnkit/ui</C> is the prebuilt overlay. Skip it if you are building your own.</li>

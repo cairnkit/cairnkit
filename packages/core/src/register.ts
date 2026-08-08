@@ -39,3 +39,13 @@ export type RegisteredFlowId = CairnRegister extends { flowIds: infer F }
 export type RegisteredEvent = CairnRegister extends { events: infer E }
   ? E & string
   : string;
+
+/**
+ * Action names the app publishes, or any string if unregistered.
+ *
+ * Worth narrowing for the same reason as events: a typo means the modal never
+ * closes and the next step spotlights something behind it.
+ */
+export type RegisteredAction = CairnRegister extends { actions: infer A }
+  ? A & string
+  : string;
