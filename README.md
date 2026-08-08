@@ -27,11 +27,11 @@ verified in CI, and a broken tour fails the build.
 
 ## Supported versions
 
-| | Verified against |
-| --- | --- |
-| React | 18, 19 |
-| Next.js | 14, 15, 16 — App Router and Pages Router |
-| Anything else | a ten-line router adapter |
+|               | Verified against                         |
+| ------------- | ---------------------------------------- |
+| React         | 18, 19                                   |
+| Next.js       | 14, 15, 16 — App Router and Pages Router |
+| Anything else | a ten-line router adapter                |
 
 ---
 
@@ -140,13 +140,13 @@ cost the user nothing.
 
 ## Packages
 
-| Package                             | What it is                                            |
-| ----------------------------------- | ----------------------------------------------------- |
-| [`@cairnkit/core`](packages/core)   | Engine. **Zero runtime dependencies**, 2.6 kb gzipped |
-| [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 2.7 kb         |
-| [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 6.4 kb (JS + CSS)    |
-| [`@cairnkit/next`](packages/next)   | App Router and Pages Router adapters                  |
-| [`@cairnkit/cli`](packages/cli)     | `cairn check`                                         |
+| Package                             | What it is                                                    |
+| ----------------------------------- | ------------------------------------------------------------- |
+| [`@cairnkit/core`](packages/core)   | Engine. **Zero runtime dependencies**, 2.6 kb gzipped         |
+| [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 2.7 kb                 |
+| [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 6.4 kb (JS + CSS) |
+| [`@cairnkit/next`](packages/next)   | App Router and Pages Router adapters                          |
+| [`@cairnkit/cli`](packages/cli)     | `cairn check`                                                 |
 
 `core` is framework-free; React is one binding, not the architecture. Router
 access goes through a ten-line adapter, so react-router or TanStack Router is
@@ -191,6 +191,7 @@ Amplitude or your own endpoint.
 - [Theming](docs/THEMING.md) — tokens, light/dark, launcher placement, copy
 - [Structure](docs/STRUCTURE.md) — packages, and why Tailwind/Radix are not dependencies
 - [Releasing](docs/RELEASING.md) — changesets, provenance, publishing
+- [Contributing](CONTRIBUTING.md) — setup, the checks, and how to open a PR
 - [Security](SECURITY.md) — threat model, selector escaping, supply chain
 
 MIT © Cairn
