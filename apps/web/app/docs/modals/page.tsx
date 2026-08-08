@@ -75,31 +75,60 @@ export default function Page() {
         technically correct.
       </P>
       <P>
-        <C>onExit</C> runs before the next step is measured, so close the modal there:
+        Steps are data in a flow file, so <C>onExit</C> cannot close over the state that opens
+        the dialog — that state lives several components away. The component that owns it
+        publishes a named action instead:
       </P>
+      <Code>{`import { useTourAction } from "@cairnkit/react";
+
+function InviteSettings() {
+  const [open, setOpen] = useState(false);
+
+  // Published while this component is mounted, withdrawn when it unmounts.
+  useTourAction("settings:close", () => setOpen(false));
+
+  return <Dialog open={open} onOpenChange={setOpen}>…</Dialog>;
+}`}</Code>
+      <P>and the step calls it by name:</P>
       <Code>{`{
   anchor: anchors.settings.difficulty,
   title: "Inside a modal",
   body: "Set the difficulty, then continue.",
-  onExit: async () => {
-    closeSettings();
-    // Await the close animation. The next step measures its target as soon
-    // as this resolves, and a rect read mid-transition is the wrong rect.
-    await new Promise((r) => setTimeout(r, 300));
-  },
+  onExit: (direction, ctx) => ctx.run("settings:close"),
 }`}</Code>
       <P>
-        <C>onEnter</C> is the mirror image, for putting the app into the state a step describes.
+        <C>onExit</C> is awaited, so if your close is animated, return a promise that settles
+        when it finishes. The next step measures its target the moment this resolves, and a rect
+        read mid-transition is the wrong rect.
       </P>
+      <Code>{`useTourAction("settings:close", async () => {
+  setOpen(false);
+  await new Promise((r) => setTimeout(r, 300)); // match your close duration
+});`}</Code>
+      <P>
+        The <C>direction</C> argument is <C>"forward"</C> or <C>"back"</C>. Usually you want to
+        close either way — the control that opened the dialog is behind it too — but it is there
+        when the two differ. <C>onEnter(ctx)</C> is the mirror image, for putting the app into
+        the state a step describes.
+      </P>
+      <Callout kind="note" title="Name them like anchors">
+        Action names narrow to your own literals if you register them, so a typo fails to compile
+        rather than warning at runtime:
+        <Code>{`declare module "@cairnkit/core" {
+  interface CairnRegister {
+    actions: "settings:close" | "filters:close";
+  }
+}`}</Code>
+      </Callout>
       <Callout kind="note" title="Cleanup, not driving">
         This looks like it contradicts the rule below, so the line is worth naming: closing a modal
         the user already opened is <em>cleanup</em>. Opening it for them, or clicking the button a
         step is teaching, is <em>driving</em>. The first keeps the tour usable; the second means
         they learn nothing.
       </Callout>
-      <Callout kind="note" title="Both are forgiving">
-        A hook that throws is logged and the tour moves on. A broken hook should not strand someone
-        mid-flow.
+      <Callout kind="note" title="Everything here is forgiving">
+        A hook that throws is logged and the tour moves on. An action that was never published
+        warns and the tour moves on. Neither should strand someone mid-flow, so neither throws.
       </Callout>
 
       <Callout kind="warn" title="Do not drive it yourself">

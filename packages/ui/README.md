@@ -4,7 +4,7 @@ The prebuilt [Cairn](https://cairnkit.dev) overlay: spotlight, tooltip step
 card, and a positionable launcher. Plain CSS, light and dark from the start.
 
 ```bash
-npm i @cairnkit/ui
+npm i @cairnkit/core @cairnkit/react @cairnkit/ui
 ```
 
 ```tsx

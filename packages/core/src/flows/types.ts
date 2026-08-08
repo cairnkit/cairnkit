@@ -1,4 +1,16 @@
+import type { RegisteredAction } from "../register";
 import type { RegisteredAnchor, RegisteredEvent, RegisteredFlowId } from "../register";
+
+/**
+ * Handed to `onEnter` and `onExit`.
+ *
+ * Steps are data in a flow file, so a hook cannot close over the state it
+ * needs to change. `run` calls an action a mounted component published with
+ * `useTourAction` — that is how a step reaches the setter that closes a modal.
+ */
+export type StepContext = {
+  run: (name: RegisteredAction) => Promise<void>;
+};
 
 export type Placement =
   | "top" | "bottom" | "left" | "right"
@@ -48,7 +60,7 @@ export type TourStep = {
    * For putting the app into the state the step describes — but not for doing
    * the user's work. A tour that clicks the button teaches nothing.
    */
-  onEnter?: () => void | Promise<void>;
+  onEnter?: (ctx: StepContext) => void | Promise<void>;
 
   /**
    * Runs when leaving this step, before the next one is measured.
@@ -63,7 +75,7 @@ export type TourStep = {
    *
    * Not called on skip: the tour is over and the user has taken control.
    */
-  onExit?: (direction: "forward" | "back") => void | Promise<void>;
+  onExit?: (direction: "forward" | "back", ctx: StepContext) => void | Promise<void>;
 };
 
 export type TourFlow = {

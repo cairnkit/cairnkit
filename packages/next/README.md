@@ -4,7 +4,7 @@ Next.js router adapters for [Cairn](https://cairnkit.dev). App Router and Pages
 Router.
 
 ```bash
-npm i @cairnkit/next
+npm i @cairnkit/core @cairnkit/react @cairnkit/next
 ```
 
 ```tsx

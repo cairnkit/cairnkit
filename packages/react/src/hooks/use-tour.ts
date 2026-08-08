@@ -9,6 +9,7 @@ import {
   getFlow,
   showsNextButton,
   type RegisteredFlowId,
+  type StepContext,
 } from "@cairnkit/core";
 import { useCairn } from "../provider/cairn-context";
 import { useAnchorTarget } from "./use-anchor-target";
@@ -19,7 +20,7 @@ import { useTourState } from "./use-cairn-store";
  * step is satisfied, and handles routes the flow does not cover.
  */
 export function useTour() {
-  const { store, flows, router, onEvent, onNotice, mobileBreakpoint } = useCairn();
+  const { store, flows, router, onEvent, onNotice, mobileBreakpoint, actions } = useCairn();
   const pathname = router.usePathname();
 
   const activeFlowId = useTourState((state) => state.activeFlowId);
@@ -29,6 +30,9 @@ export function useTour() {
   const step = flow?.steps[stepIndex] ?? null;
   const isLastStep = Boolean(flow && stepIndex >= flow.steps.length - 1);
   const rule = step?.advanceOn ?? DEFAULT_ADVANCE;
+
+  /** What `onEnter` and `onExit` receive. Stable, so it never re-fires them. */
+  const stepContext = useMemo<StepContext>(() => ({ run: (name) => actions.run(name) }), [actions]);
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -77,11 +81,11 @@ export function useTour() {
       }
 
       void Promise.resolve()
-        .then(() => step.onExit?.(direction))
+        .then(() => step.onExit?.(direction, stepContext))
         .catch((error) => console.error("[cairn] onExit threw; continuing anyway.", error))
         .finally(move);
     },
-    [step],
+    [step, stepContext],
   );
 
   const advance = useCallback(() => {
@@ -198,9 +202,9 @@ export function useTour() {
     enteredKey.current = key;
 
     void Promise.resolve()
-      .then(() => step.onEnter?.())
+      .then(() => step.onEnter?.(stepContext))
       .catch((error) => console.error("[cairn] onEnter threw; continuing anyway.", error));
-  }, [flow, step, stepIndex, isPaused]);
+  }, [flow, step, stepIndex, isPaused, stepContext]);
 
   useEffect(() => {
     if (!step || isPaused) return;

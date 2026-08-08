@@ -99,15 +99,15 @@ const COMPARISON = [
 
 /** kb gzipped, measured from dist. `bar` is the share of the widest row. */
 const PACKAGES = [
-  { name: "@cairnkit/core", kb: "2.6 kb", bar: 41, note: "Engine. Zero dependencies.", optional: false },
-  { name: "@cairnkit/react", kb: "2.7 kb", bar: 42, note: "Headless hooks and provider.", optional: false },
-  { name: "@cairnkit/next", kb: "0.3 kb", bar: 5, note: "Router adapters.", optional: true },
-  { name: "@cairnkit/ui", kb: "6.4 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
+  { name: "@cairnkit/core", kb: "2.7 kb", bar: 40, note: "Engine. Zero dependencies.", optional: false },
+  { name: "@cairnkit/react", kb: "3.1 kb", bar: 46, note: "Headless hooks and provider.", optional: false },
+  { name: "@cairnkit/next", kb: "0.3 kb", bar: 4, note: "Router adapters.", optional: true },
+  { name: "@cairnkit/ui", kb: "6.7 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
 ] as const;
 
 const TOTALS = [
-  { label: "Headless", kb: "5.6 kb", bar: 30, note: "core + react + next. Bring your own overlay." },
-  { label: "Everything", kb: "18.8 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
+  { label: "Headless", kb: "6.1 kb", bar: 37, note: "core + react + next. Bring your own overlay." },
+  { label: "Everything", kb: "16.6 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
 ] as const;
 
 export default function Home() {
@@ -139,7 +139,7 @@ export default function Home() {
         {/* Install and the CTAs are different actions — copying a command is
             not choosing a path — so they get their own rows. */}
         <div {...anchor(anchors.site.install)} className="hero__install demo-target">
-          <Install command="npm i @cairnkit/react @cairnkit/ui" />
+          <Install command="npm i @cairnkit/core @cairnkit/react @cairnkit/ui" />
         </div>
 
         <div className="hero__cta">
@@ -156,7 +156,7 @@ export default function Home() {
       <section className="proof">
         <div className="wrap proof__in">
           {[
-            ["5.6 kb", "headless, gzipped"],
+            ["6.1 kb", "headless, gzipped"],
             ["0", "runtime dependencies"],
             ["~0.2s", "CI check, 2k files"],
             ["3", "layers of drift defence"],
@@ -338,7 +338,7 @@ export default function Home() {
           <h2 className="h">Small, and mostly optional</h2>
           <p className="lede">
             Take the engine alone and drive it with your own components, or take the overlay too.
-            Headless lands at 5.6 kb — about what driver.js costs, for rather more.
+            Headless lands at 6.1 kb — about what driver.js costs, for rather more.
           </p>
 
           <div {...anchor(anchors.site.packages)} className="pkgs glass demo-target">
@@ -381,7 +381,7 @@ export default function Home() {
         <div className="wrap">
           <h2>Stop shipping broken tours</h2>
           <p>
-            MIT licensed, 2.6 kb of engine, and a CI check that tells you before your users do.
+            MIT licensed, 2.7 kb of engine, and a CI check that tells you before your users do.
           </p>
           <div className="cta__row">
             <a className="btn btn--primary" href={site.repo}>Get started on GitHub</a>

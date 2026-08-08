@@ -31,6 +31,7 @@ export default function Page() {
           { name: "resolveResumeStep(flow, path, i)", type: "(...) => number | null", description: "Where to resume when the user is ahead. Pure, testable." },
           { name: "decideForRoute(flow, path, i)", type: "(...) => RouteDecision", description: "handoff / pause / resume / none, in that order." },
           { name: "createTourStore(options)", type: "(...) => TourStore", description: "Observable store, useSyncExternalStore-ready." },
+          { name: "createActionRegistry()", type: "() => ActionRegistry", description: "Backs ctx.run in step hooks. One per provider — never module-level, which would leak across SSR requests." },
           { name: "localStoragePersist(key?)", type: "(key?) => PersistAdapter", description: "Default persistence. Progress must survive a page transition." },
           { name: "emitTourEvent(name)", type: "(name) => void", description: "Signal from your app that a step is waiting on." },
           { name: "onTourEvent(name, fn)", type: "(...) => () => void", description: "Subscribe. Returns an unsubscribe." },
@@ -41,7 +42,8 @@ export default function Page() {
       />
       <H3 id="core-types">Key types</H3>
       <Code>{`TourFlow · TourStep · AdvanceRule · Placement · AnchorId
-CairnRegister · RegisteredAnchor · RegisteredFlowId · RegisteredEvent
+CairnRegister · RegisteredAnchor · RegisteredFlowId · RegisteredEvent · RegisteredAction
+StepContext · ActionRegistry · TourAction
 CairnEvent · CairnEventHandler · TargetRect · TourStore · PersistAdapter`}</Code>
 
       <H2 id="react">@cairnkit/react</H2>
@@ -54,9 +56,17 @@ CairnEvent · CairnEventHandler · TargetRect · TourStore · PersistAdapter`}</
           { name: "useStepCopy(flow, step)", type: "hook", description: "Resolves title and body, inline or via translate." },
           { name: "useTourDeepLink(param?)", type: "hook", description: "Starts a flow from ?tour=. Each value honoured once." },
           { name: "useCairn()", type: "hook", description: "Raw context — flows, router, store." },
+          { name: "useTourAction(name, fn)", type: "hook", description: "Publishes an action a step can call via ctx.run, for as long as the component is mounted." },
           { name: "<TourAnchor id>", type: "component", description: "Escape hatch for components that swallow props." },
         ]}
       />
+      <P>
+        Also re-exports <C>defineFlow</C>, <C>defineAnchors</C>, <C>anchor</C> and the flow types
+        from <C>@cairnkit/core</C>, so authoring a tour needs one import rather than two. Note
+        that augmenting <C>CairnRegister</C> still has to target <C>@cairnkit/core</C> — an
+        interface cannot be merged through a re-export — which is why core is a direct
+        dependency in the install command.
+      </P>
 
       <H2 id="ui">@cairnkit/ui</H2>
       <P>Prebuilt overlay. Plain prefixed CSS, light and dark.</P>
