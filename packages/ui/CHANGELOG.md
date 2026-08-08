@@ -1,5 +1,14 @@
 # @cairnkit/ui
 
+## 0.2.1
+
+### Patch Changes
+
+- e2f712d: Read the target's border-radius once per step instead of on every animation frame, halving the cost of the rect-tracking hot path.
+- Updated dependencies [e2f712d]
+  - @cairnkit/react@0.2.1
+  - @cairnkit/core@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
