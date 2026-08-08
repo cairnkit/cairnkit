@@ -74,7 +74,11 @@ function StructuredData() {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // The theme script below stamps data-theme on <html> before React
+    // hydrates, so the server markup and the live DOM legitimately differ.
+    // suppressHydrationWarning applies to this element's attributes only —
+    // one level deep — which is exactly the scope of that mutation.
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Before paint, so a dark-mode visitor never sees a white flash. */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
