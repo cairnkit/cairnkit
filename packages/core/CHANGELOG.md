@@ -1,5 +1,12 @@
 # @cairnkit/core
 
+## 0.2.3
+
+### Patch Changes
+
+- c0a7343: Fix the tooltip landing at the viewport origin when a step points inside a dialog, and stop the tooltip arrow overlapping the spotlight.
+- a99bce5: Fix the tooltip landing at the viewport origin when a step points inside a dialog, and stop the tooltip arrow overlapping the spotlight. The arrow is now slightly larger, and its distance from the target scales with the step's padding.
+
 ## 0.2.2
 
 ### Patch Changes
