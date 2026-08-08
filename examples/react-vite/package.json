@@ -23,7 +23,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
     "vite": "^6.3.6",
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.62.1",
     "@cairnkit/cli": "workspace:*"
   }
 }
