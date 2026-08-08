@@ -1,5 +1,13 @@
 # @cairnkit/next
 
+## 0.2.2
+
+### Patch Changes
+
+- eaa3de3: Read the target's border-radius once per step instead of on every animation frame, halving the cost of the rect-tracking hot path.
+- Updated dependencies [eaa3de3]
+  - @cairnkit/react@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes
