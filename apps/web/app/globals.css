@@ -363,3 +363,91 @@ body { overflow-x: clip; }
   .proof__in { grid-template-columns: repeat(2, 1fr); }
   .proof__item:nth-child(3)::before { display: none; }
 }
+
+/* ── scenarios ────────────────────────────────────────────────────────────
+   Four situations users actually create, each given enough room to read as a
+   story rather than a table row: what they did, what Cairn does, and the one
+   field that governs it. */
+.scenarios { display: grid; gap: 16px; }
+@media (min-width: 780px) { .scenarios { grid-template-columns: 1fr 1fr; } }
+
+.scenario {
+  position: relative; padding: 22px 22px 20px; overflow: hidden;
+  transition: transform .24s cubic-bezier(.16,1,.3,1), border-color .24s;
+}
+.scenario:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+.scenario__icon {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px;
+  color: var(--accent); background: rgb(var(--accent-rgb) / .12);
+  border: 1px solid rgb(var(--accent-rgb) / .22); margin-bottom: 16px;
+}
+.scenario__label {
+  display: block; font-size: 10.5px; font-weight: 660; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 3px;
+}
+.scenario__did { margin: 0 0 14px; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
+.scenario__does { margin: 0 0 16px; font-size: 15px; line-height: 1.5; font-weight: 540; }
+.scenario__field {
+  font-family: ui-monospace, Menlo, monospace; font-size: 12px;
+  color: var(--accent); background: rgb(var(--accent-rgb) / .1);
+  padding: 3px 9px; border-radius: 7px;
+}
+/* Oversized index, clipped by the card — depth without another border. */
+.scenario__n {
+  position: absolute; right: -6px; bottom: -18px; font-size: 68px; font-weight: 700;
+  letter-spacing: -.04em; line-height: 1; color: color-mix(in srgb, var(--fg) 4%, transparent);
+  pointer-events: none; user-select: none;
+}
+
+/* ── footer ─────────────────────────────────────────────────────────────── */
+.footer__row { justify-content: center; text-align: center; }
+.footer__brand { display: flex; align-items: center; gap: 8px; justify-content: center; }
+
+/* ── packages ─────────────────────────────────────────────────────────────
+   Proportional bars, so "small" is something you see rather than read. The
+   two totals at the bottom answer the question the table cannot: what does
+   the minimum cost, and what does everything cost. */
+.pkgs { overflow: hidden; }
+.pkg {
+  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(80px, 1fr) auto;
+  align-items: center; gap: 20px; padding: 15px 22px;
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+  transition: background .18s;
+}
+.pkg:last-child { border-bottom: 0; }
+.pkg:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+
+.pkg__id { min-width: 0; }
+.pkg__id code { font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; }
+.pkg__id strong { font-size: 14px; font-weight: 640; }
+.pkg__note { display: block; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+.pkg__note code { font-size: 11.5px; }
+
+.pkg__opt {
+  display: inline-block; margin-left: 8px; font-size: 10px; font-weight: 650;
+  letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--line); padding: 1px 6px; border-radius: 999px;
+  vertical-align: 1px;
+}
+
+.pkg__track { height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.pkg__fill {
+  display: block; height: 100%; border-radius: 999px; background: var(--accent);
+  transform-origin: left; animation: pkg-grow .8s cubic-bezier(.16,1,.3,1) both;
+}
+.pkg__fill--muted { background: color-mix(in srgb, var(--fg) 26%, transparent); }
+@keyframes pkg-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.pkg__size { font-size: 14px; font-weight: 620; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.pkg--totals {
+  background: color-mix(in srgb, var(--fg) 3%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
+}
+
+@media (max-width: 720px) {
+  .pkg { grid-template-columns: 1fr auto; gap: 8px 14px; }
+  .pkg__track { grid-column: 1 / -1; order: 3; }
+}
+@media (prefers-reduced-motion: reduce) { .pkg__fill { animation: none; } }

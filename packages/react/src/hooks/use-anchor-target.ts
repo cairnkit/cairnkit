@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  readRadius,
   readRect,
   rectsEqual,
   scrollAnchorIntoView,
@@ -74,6 +75,9 @@ export function useAnchorTarget(
 
     scrollAnchorIntoView(element);
 
+    // Constant for the life of this step; re-read only if the element changes.
+    const radius = readRadius(element);
+
     let frame = 0;
 
     // rAF rather than throttled scroll events: the spotlight has to stay glued
@@ -86,7 +90,7 @@ export function useAnchorTarget(
         return;
       }
 
-      const next = readRect(element);
+      const next = readRect(element, radius);
       if (!rectsEqual(rectRef.current, next)) {
         rectRef.current = next;
         setRect(next);

@@ -6,9 +6,20 @@ export type TargetRect = {
   radius: number;
 };
 
-export function readRect(element: HTMLElement): TargetRect {
+/**
+ * Reads the corner radius once, when the target resolves.
+ *
+ * `getComputedStyle` forces a style resolve and roughly doubles the cost of a
+ * rect read (measured 1.22µs → 2.47µs). That is still only 0.015% of a frame,
+ * so this is not fixing a bottleneck — but a value that cannot change mid-step
+ * has no business being read sixty times a second.
+ */
+export function readRadius(element: HTMLElement): number {
+  return Number.parseFloat(getComputedStyle(element).borderTopLeftRadius) || 0;
+}
+
+export function readRect(element: HTMLElement, radius = 0): TargetRect {
   const box = element.getBoundingClientRect();
-  const radius = Number.parseFloat(getComputedStyle(element).borderTopLeftRadius) || 0;
 
   return { top: box.top, left: box.left, width: box.width, height: box.height, radius };
 }

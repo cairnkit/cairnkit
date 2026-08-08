@@ -33,6 +33,6 @@ export { emitTourEvent, onTourEvent } from "./events/emit";
 export type { CairnEvent, CairnEventHandler, TourEventName } from "./events/types";
 
 // DOM
-export { readRect, rectsEqual, type TargetRect } from "./dom/rect";
+export { readRadius, readRect, rectsEqual, type TargetRect } from "./dom/rect";
 export { watchForAnchor, type WatchResult } from "./dom/observe-element";
 export { prefersReducedMotion, scrollAnchorIntoView } from "./dom/scroll-into-view";

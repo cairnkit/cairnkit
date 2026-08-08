@@ -91,12 +91,18 @@ const COMPARISON = [
   ["Step inside a modal", "Often breaks", "Often breaks", "Works", "Works"],
 ];
 
+/** kb gzipped, measured from dist. `bar` is the share of the widest row. */
 const PACKAGES = [
-  ["@cairnkit/core", "2.5 kb", "Zero dependencies"],
-  ["@cairnkit/react", "2.6 kb", "Headless hooks"],
-  ["@cairnkit/ui", "4.3 kb", "Prebuilt overlay"],
-  ["@cairnkit/next", "0.3 kb", "Router adapters"],
-];
+  { name: "@cairnkit/core", kb: "2.6 kb", bar: 41, note: "Engine. Zero dependencies.", optional: false },
+  { name: "@cairnkit/react", kb: "2.7 kb", bar: 42, note: "Headless hooks and provider.", optional: false },
+  { name: "@cairnkit/next", kb: "0.3 kb", bar: 5, note: "Router adapters.", optional: true },
+  { name: "@cairnkit/ui", kb: "6.4 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
+] as const;
+
+const TOTALS = [
+  { label: "Headless", kb: "5.6 kb", bar: 30, note: "core + react + next. Bring your own overlay." },
+  { label: "Everything", kb: "18.8 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
+] as const;
 
 export default function Home() {
   return (
@@ -137,6 +143,25 @@ export default function Home() {
           </Link>
         </div>
       </header>
+
+      {/* Four numbers a reader can verify, directly under the hero. Concrete
+          claims land harder than adjectives, and it gives the eye a beat
+          before the terminal block. */}
+      <section className="proof">
+        <div className="wrap proof__in">
+          {[
+            ["5.6 kb", "headless, gzipped"],
+            ["0", "runtime dependencies"],
+            ["~0.2s", "CI check, 2k files"],
+            ["3", "layers of drift defence"],
+          ].map(([value, label]) => (
+            <div className="proof__item" key={label}>
+              <b>{value}</b>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="section" id="failure">
         <div className="wrap">
@@ -217,21 +242,21 @@ export default function Home() {
             Most tours die at that point. These three fields are the answer.
           </p>
           <Reveal>
-            <div className="offpath glass">
-              {OFFPATH.map((row) => (
-                <div className="offrow" key={row.field}>
-                  <span className="offrow__did">{row.did}</span>
-                  <span className="offrow__arrow">
-                    <IconArrow />
-                  </span>
-                  <span className="offrow__does">
-                    <span className="fstep__icon" style={{ width: 28, height: 28, display: "inline-grid", verticalAlign: "-8px", marginRight: 9 }}>
-                      {row.icon}
-                    </span>
-                    <b>{row.does}</b>
-                    <span className="offrow__field">{row.field}</span>
-                  </span>
-                </div>
+            <div {...anchor(anchors.site.offpath)} className="scenarios demo-target">
+              {OFFPATH.map((row, index) => (
+                <article className="scenario glass" key={row.field}>
+                  <div className="scenario__icon">{row.icon}</div>
+                  <p className="scenario__did">
+                    <span className="scenario__label">They did</span>
+                    {row.did}
+                  </p>
+                  <p className="scenario__does">
+                    <span className="scenario__label">Cairn does</span>
+                    {row.does}
+                  </p>
+                  <code className="scenario__field">{row.field}</code>
+                  <span className="scenario__n">{String(index + 1).padStart(2, "0")}</span>
+                </article>
               ))}
             </div>
           </Reveal>
@@ -282,24 +307,45 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section" id="packages">
+      <section className="section textured" id="packages">
         <div className="wrap">
           <p className="eyebrow">Packages</p>
           <h2 className="h">Small, and mostly optional</h2>
           <p className="lede">
-            The engine is framework-free. React is one binding, not the architecture — a router
-            adapter is about ten lines.
+            Take the engine alone and drive it with your own components, or take the overlay too.
+            Headless lands at 5.6 kb — about what driver.js costs, for rather more.
           </p>
 
-          <div {...anchor(anchors.site.packages)} className="stats demo-target">
-            {PACKAGES.map(([name, size, note]) => (
-              <div className="statcard" key={name}>
-                <b>{size}</b>
-                <span>
-                  <code>{name}</code>
-                  <br />
-                  {note}
-                </span>
+          <div {...anchor(anchors.site.packages)} className="pkgs glass demo-target">
+            {PACKAGES.map((pkg) => (
+              <div className="pkg" key={pkg.name}>
+                <div className="pkg__id">
+                  <code>{pkg.name}</code>
+                  {pkg.optional && <span className="pkg__opt">optional</span>}
+                  <span className="pkg__note">{pkg.note}</span>
+                </div>
+                <div className="pkg__track" aria-hidden>
+                  <span className="pkg__fill" style={{ width: `${pkg.bar}%` }} />
+                </div>
+                <div className="pkg__size">{pkg.kb}</div>
+              </div>
+            ))}
+
+            {/* The comparison people actually want: what the minimum costs,
+                and what everything costs. */}
+            {TOTALS.map((total) => (
+              <div className="pkg pkg--totals" key={total.label}>
+                <div className="pkg__id">
+                  <strong>{total.label}</strong>
+                  <span className="pkg__note">{total.note}</span>
+                </div>
+                <div className="pkg__track" aria-hidden>
+                  <span
+                    className="pkg__fill pkg__fill--muted"
+                    style={{ width: `${total.bar}%` }}
+                  />
+                </div>
+                <div className="pkg__size">{total.kb}</div>
               </div>
             ))}
           </div>
@@ -310,7 +356,7 @@ export default function Home() {
         <div className="wrap">
           <h2>Stop shipping broken tours</h2>
           <p>
-            MIT licensed, 2.5 kb of engine, and a CI check that tells you before your users do.
+            MIT licensed, 2.6 kb of engine, and a CI check that tells you before your users do.
           </p>
           <div className="cta__row">
             <a className="btn btn--primary" href={site.repo}>Get started on GitHub</a>

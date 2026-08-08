@@ -6,6 +6,7 @@ export const anchors = defineAnchors({
     install: "site.install",
     failure: "site.failure",
     steps: "site.steps",
+    offpath: "site.offpath",
     comparison: "site.comparison",
     packages: "site.packages",
   },
