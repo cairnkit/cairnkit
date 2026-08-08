@@ -12,6 +12,7 @@ export default function Page() {
         { id: "why", label: "Why modals are hard" },
         { id: "how", label: "What Cairn does" },
         { id: "usage", label: "Nothing to configure" },
+        { id: "closing", label: "Closing it again" },
         { id: "opening", label: "Opening the modal mid-tour" },
       ]}
     >
@@ -67,6 +68,40 @@ export default function Page() {
   },
   { anchor: anchors.settings.difficulty, title: "Inside a modal" },
 ]`}</Code>
+      <H2 id="closing">Closing it again</H2>
+      <P>
+        The step after a modal step is usually <em>behind</em> the modal. Press Next and the
+        spotlight lands on something the user cannot reach — the tour looks broken while being
+        technically correct.
+      </P>
+      <P>
+        <C>onExit</C> runs before the next step is measured, so close the modal there:
+      </P>
+      <Code>{`{
+  anchor: anchors.settings.difficulty,
+  title: "Inside a modal",
+  body: "Set the difficulty, then continue.",
+  onExit: async () => {
+    closeSettings();
+    // Await the close animation. The next step measures its target as soon
+    // as this resolves, and a rect read mid-transition is the wrong rect.
+    await new Promise((r) => setTimeout(r, 300));
+  },
+}`}</Code>
+      <P>
+        <C>onEnter</C> is the mirror image, for putting the app into the state a step describes.
+      </P>
+      <Callout kind="note" title="Cleanup, not driving">
+        This looks like it contradicts the rule below, so the line is worth naming: closing a modal
+        the user already opened is <em>cleanup</em>. Opening it for them, or clicking the button a
+        step is teaching, is <em>driving</em>. The first keeps the tour usable; the second means
+        they learn nothing.
+      </Callout>
+      <Callout kind="note" title="Both are forgiving">
+        A hook that throws is logged and the tour moves on. A broken hook should not strand someone
+        mid-flow.
+      </Callout>
+
       <Callout kind="warn" title="Do not drive it yourself">
         It is tempting to open the dialog programmatically from the tour. Don&rsquo;t — the point is
         that the user performs the real action. A tour that clicks for you teaches nothing.

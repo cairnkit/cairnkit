@@ -64,9 +64,12 @@ function readRegistry(source: string): Map<string, string> {
   return paths;
 }
 
-export function scanProject(rootDir: string): CheckContext {
-  const root = resolve(rootDir);
-  const files = walk(root, root);
+export function scanProject(rootDirs: string | string[]): CheckContext {
+  // Several roots are normal: anchors in one folder, the components that use
+  // them in another. Scanning only the first silently reported every anchor as
+  // unapplied, which is a check that lies.
+  const roots = (Array.isArray(rootDirs) ? rootDirs : [rootDirs]).map((dir) => resolve(dir));
+  const files = roots.flatMap((root) => walk(root, root));
 
   const registered = new Set<string>();
   const applied = new Set<string>();
@@ -76,6 +79,9 @@ export function scanProject(rootDir: string): CheckContext {
 
   const registryPaths = new Map<string, string>();
   const sources = new Map<string, string>();
+  const registryFiles = new Set<string>();
+  /** Anchors applied via a bare string rather than a registry reference. */
+  const untypedUse = new Map<string, Location>();
   const declaredAt = new Map<string, Location>();
   const stepAt = new Map<string, Location>();
   const literalAt = new Map<string, Location>();
@@ -84,8 +90,10 @@ export function scanProject(rootDir: string): CheckContext {
     const raw = readFileSync(file, "utf8");
     // Comments and template literals cannot declare anything; only their
     // presence would confuse the identifier scan below.
-    const source = stripLiterals(raw).includes("defineAnchors(") ? raw : "";
+    const declaresRegistry = stripLiterals(raw).includes("defineAnchors(");
+    const source = declaresRegistry ? raw : "";
     sources.set(file, raw);
+    if (declaresRegistry) registryFiles.add(file);
 
     if (source.includes("defineAnchors(")) {
       for (const [path, id] of readRegistry(source)) {
@@ -102,6 +110,20 @@ export function scanProject(rootDir: string): CheckContext {
 
   for (const [file, raw] of sources) {
     const source = stripLiterals(raw);
+
+    // Config-driven UI passes the id as data — `{ cairnAnchor: "nav.invite" }`
+    // in a nav config, for instance. That is neither a data-cairn attribute nor
+    // a registry member reference, so it used to read as never applied. The
+    // registry file is excluded, or its own declarations would count as uses
+    // and the check would pass no matter what.
+    if (!registryFiles.has(file) && !isFlowFile(source)) {
+      for (const match of raw.matchAll(/["'`]([a-z0-9-]+\.[a-z0-9-]+)["'`]/gi)) {
+        const value = match[1];
+        if (!value || !registered.has(value)) continue;
+        applied.add(value);
+        if (!untypedUse.has(value)) untypedUse.set(value, { file, offset: match.index ?? 0 });
+      }
+    }
 
     // Flow files *reference* anchors; only product code *applies* them.
     // Counting flow files here would make every anchor look applied forever.
@@ -150,5 +172,15 @@ export function scanProject(rootDir: string): CheckContext {
     flowRoutes.set(flowId, { pause, handoff });
   }
 
-  return { registered, applied, literals, flowAnchors, flowRoutes, declaredAt, stepAt, literalAt };
+  return {
+    registered,
+    applied,
+    literals,
+    flowAnchors,
+    flowRoutes,
+    declaredAt,
+    stepAt,
+    literalAt,
+    untypedUse,
+  };
 }

@@ -3,7 +3,7 @@ import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
 import { Mark } from "@/components/mark";
 import {
-  IconArrow, IconFlow, IconForward, IconLayers, IconPause,
+  IconArrow, IconExit, IconFlow, IconForward, IconLayers, IconPause,
   IconRegistry, IconShield, IconSwitch, IconTarget,
 } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
@@ -80,6 +80,12 @@ const OFFPATH = [
     did: "Opened a modal you did not plan for",
     does: "Portals into the dialog, survives focus traps",
     field: "automatic",
+  },
+  {
+    icon: <IconExit />,
+    did: "Left a modal with the next target behind it",
+    does: "Runs your onExit, waits for the close, then measures",
+    field: "onExit",
   },
 ] as const;
 
@@ -163,6 +169,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Support matrix, stated plainly. It was the first thing people asked
+          and the site answered it nowhere. */}
+      <section className="compat">
+        <div className="wrap compat__in">
+          <span className="compat__label">Verified against</span>
+          <ul className="compat__list">
+            {[
+              "React 18 & 19",
+              "Next.js 14, 15, 16",
+              "App & Pages Router",
+              "Server-rendered",
+              "Vite & any router",
+            ].map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="section" id="failure">
         <div className="wrap">
           <p className="eyebrow">The whole idea</p>
@@ -239,7 +264,7 @@ export default function Home() {
           <h2 className="h">Nobody follows the script</h2>
           <p className="lede">
             They click ahead, wander into a different flow, or open a modal you did not plan for.
-            Most tours die at that point. These three fields are the answer.
+            Most tours die at that point. Cairn expects it.
           </p>
           <Reveal>
             <div {...anchor(anchors.site.offpath)} className="scenarios demo-target">

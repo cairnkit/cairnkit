@@ -111,3 +111,156 @@ describe("useTour", () => {
     expect(result.current.showBeacon).toBe(true);
   });
 });
+
+describe("step lifecycle hooks", () => {
+  it("runs onExit before moving, with the direction", async () => {
+    const calls: string[] = [];
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [
+        { anchor: "a.one", title: "One", body: "1",
+          onExit: (d) => { calls.push(`exit-one-${d}`); } },
+        { anchor: "a.two", title: "Two", body: "2",
+          onExit: (d) => { calls.push(`exit-two-${d}`); } },
+      ],
+    });
+
+    const { result } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>{children}</CairnProvider>
+      ),
+    });
+
+    act(() => result.current.start("main"));
+    await act(async () => {
+      result.current.advance();
+      await new Promise((r) => setTimeout(r, 60));
+    });
+    expect(calls).toEqual(["exit-one-forward"]);
+    expect(result.current.stepIndex).toBe(1);
+
+    await act(async () => {
+      result.current.back();
+      await new Promise((r) => setTimeout(r, 60));
+    });
+    expect(calls).toEqual(["exit-one-forward", "exit-two-back"]);
+    expect(result.current.stepIndex).toBe(0);
+  });
+
+  it("waits for an async onExit before advancing", async () => {
+    // A modal that animates closed must finish before the next step measures,
+    // or the rect is read mid-transition.
+    let closed = false;
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [
+        { anchor: "a.one", title: "One", body: "1",
+          onExit: async () => {
+            await new Promise((r) => setTimeout(r, 20));
+            closed = true;
+          } },
+        { anchor: "a.two", title: "Two", body: "2" },
+      ],
+    });
+
+    const { result } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>{children}</CairnProvider>
+      ),
+    });
+
+    act(() => result.current.start("main"));
+
+    act(() => result.current.advance());
+    // Mid-close: the hook has not resolved, so the tour must not have moved.
+    expect(closed).toBe(false);
+    expect(result.current.stepIndex).toBe(0);
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 60));
+    });
+    expect(closed).toBe(true);
+    expect(result.current.stepIndex).toBe(1);
+  });
+
+  it("keeps going when a hook throws", async () => {
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [
+        { anchor: "a.one", title: "One", body: "1",
+          onExit: () => { throw new Error("boom"); } },
+        { anchor: "a.two", title: "Two", body: "2" },
+      ],
+    });
+
+    const { result } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>{children}</CairnProvider>
+      ),
+    });
+
+    act(() => result.current.start("main"));
+    await act(async () => {
+      result.current.advance();
+      await new Promise((r) => setTimeout(r, 60));
+    });
+
+    // A broken hook must not strand the user mid-tour.
+    expect(result.current.stepIndex).toBe(1);
+  });
+
+  it("runs onEnter once per step, not once per render", async () => {
+    const entered: number[] = [];
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [
+        { anchor: "a.one", title: "One", body: "1", onEnter: () => { entered.push(0); } },
+        { anchor: "a.two", title: "Two", body: "2", onEnter: () => { entered.push(1); } },
+      ],
+    });
+
+    const { result, rerender } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>{children}</CairnProvider>
+      ),
+    });
+
+    act(() => result.current.start("main"));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(entered).toEqual([0]);
+
+    // Re-rendering is not re-entering.
+    rerender();
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(entered).toEqual([0]);
+
+    await act(async () => {
+      result.current.advance();
+      await new Promise((r) => setTimeout(r, 40));
+    });
+    expect(entered).toEqual([0, 1]);
+  });
+
+  it("re-enters the first step when a finished tour is restarted", async () => {
+    const entered: number[] = [];
+    const hooked = defineFlow({
+      id: "main", version: 1, entryRoute: LIST,
+      steps: [{ anchor: "a.one", title: "One", body: "1", onEnter: () => { entered.push(0); } }],
+    });
+
+    const { result } = renderHook(() => useTour(), {
+      wrapper: ({ children }) => (
+        <CairnProvider flows={[hooked]} router={makeRouter(LIST)}>{children}</CairnProvider>
+      ),
+    });
+
+    act(() => result.current.start("main"));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(entered).toEqual([0]);
+
+    act(() => result.current.stop());
+    act(() => result.current.start("main"));
+    await act(async () => { await new Promise((r) => setTimeout(r, 20)); });
+    expect(entered).toEqual([0, 0]);
+  });
+});

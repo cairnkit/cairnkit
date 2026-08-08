@@ -8,11 +8,15 @@ import { scanProject } from "../scan";
 const CHECKS = [anchorsApplied, anchorsRegistered, routeConflicts];
 
 /** Returns the process exit code. */
-export function runCheck(rootDir = "src"): number {
-  const context = scanProject(rootDir);
+export function runCheck(rootDirs: string | string[] = "src"): number {
+  const roots = Array.isArray(rootDirs) ? rootDirs : [rootDirs];
+  const context = scanProject(roots);
 
   if (context.registered.size === 0) {
-    console.error(`No anchors found under "${rootDir}". Is defineAnchors() in this directory?`);
+    console.error(
+      `No anchors found under ${roots.map((d) => `"${d}"`).join(", ")}. ` +
+        "Is defineAnchors() in one of these directories?",
+    );
     return 1;
   }
 

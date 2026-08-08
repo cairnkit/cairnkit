@@ -40,6 +40,9 @@ export const IconPause = () => (
 export const IconLayers = () => (
   <svg {...s}><path d="m12 3 8 4.5-8 4.5-8-4.5L12 3Z" /><path d="m4 12.5 8 4.5 8-4.5" /><path d="m4 16.8 8 4.5 8-4.5" /></svg>
 );
+export const IconExit = () => (
+  <svg {...s}><path d="M14 4h4.5a1.5 1.5 0 0 1 1.5 1.5v13a1.5 1.5 0 0 1-1.5 1.5H14" /><path d="M10 8l-4 4 4 4" /><path d="M6 12h9" /></svg>
+);
 export const IconArrow = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <path d="M5 12h14m-5-5 5 5-5 5" />
