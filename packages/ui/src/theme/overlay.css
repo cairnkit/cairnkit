@@ -146,8 +146,8 @@
 .cairn-arrow {
   position: absolute;
   z-index: 1;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   transform: rotate(45deg);
   background: var(--cairn-surface);
   border: 1px solid var(--cairn-surface-border);

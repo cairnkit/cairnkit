@@ -8,6 +8,13 @@ import { Spotlight } from "./spotlight";
 import { StepCard, type StepCardLabels } from "./step-card";
 import { useOverlayContainer } from "../lib/use-overlay-container";
 
+/** Arrow is a rotated square, so its corner reaches half the diagonal. */
+const ARROW_SIZE = 14;
+const ARROW_REACH = Math.round((ARROW_SIZE * Math.SQRT2) / 2);
+const SPOTLIGHT_PADDING = 8;
+const RING = 2;
+const GAP = 4;
+
 const DEFAULT_LABELS: StepCardLabels = {
   next: "Next",
   back: "Back",
@@ -86,7 +93,12 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
         placement: tour.step?.placement ?? "bottom",
         strategy: "fixed",
         middleware: [
-          offset(14),
+          // Clear the spotlight rather than poke into it. The cutout extends
+        // `padding` beyond the target plus a 2px ring, and the arrow's rotated
+        // corner reaches half its diagonal past the card edge — so a fixed
+        // offset put the tip 4.5px inside the ring at default padding, and
+        // further in whenever a step raised it.
+        offset((tour.step?.padding ?? SPOTLIGHT_PADDING) + RING + ARROW_REACH + GAP),
           flip({ padding: 12 }),
           shift({ padding: 12 }),
           arrowRef.current ? arrow({ element: arrowRef.current }) : undefined,
@@ -98,7 +110,9 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
         // placed it. Transitioning the first placement would fly the card in
         // from the top-left corner.
         if (!card.dataset.placed) {
-          requestAnimationFrame(() => { card.dataset.placed = "true"; });
+          requestAnimationFrame(() => {
+            card.dataset.placed = "true";
+          });
         }
 
         const arrowEl = arrowRef.current;
@@ -115,7 +129,7 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
           top: arrowData.y != null ? `${arrowData.y}px` : "",
           right: "",
           bottom: "",
-          [opposite]: "-6px",
+          [opposite]: `-${ARROW_SIZE / 2}px`,
         });
         arrowEl.dataset.side = side;
       });
@@ -123,7 +137,11 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
 
     update();
     return autoUpdate(card as unknown as HTMLElement, card, update);
-  }, [tour.rect, tour.step, isSheet]);
+    // `container` is load-bearing: portaling into a dialog gives React a *new*
+    // card element. Without it in the deps the effect never re-runs, the fresh
+    // node keeps its default position, and the card lands at the viewport
+    // origin while the spotlight still highlights correctly.
+  }, [tour.rect, tour.step, isSheet, container]);
 
   // Dropping the flag on teardown means the next tour opens without a slide.
   useEffect(() => () => {
