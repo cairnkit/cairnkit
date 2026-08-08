@@ -12,8 +12,8 @@ const BASE = "http://localhost:4200";
  */
 test("every step of every flow spotlights something", async ({ page }) => {
   await auditFlows(page, [
-    { url: BASE, flowId: inviteFlow.id, stepCount: inviteFlow.steps.length },
-    { url: `${BASE}/questions`, flowId: questionsFlow.id, stepCount: questionsFlow.steps.length },
+    { url: BASE, flow: inviteFlow },
+    { url: `${BASE}/questions`, flow: questionsFlow },
   ]);
 });
 

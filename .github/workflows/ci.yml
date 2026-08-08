@@ -30,3 +30,19 @@ jobs:
       # one trains people to ignore the step.
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
+
+      # The third drift check, and the only one that needs a browser.
+      # TypeScript catches a typo, `cairn check` catches a deleted element,
+      # and this catches an anchor that exists in source but never renders.
+      - name: Install Playwright browser
+        run: pnpm --filter @cairnkit/example-react-vite exec playwright install --with-deps chromium
+
+      - name: Audit tours in a real browser
+        run: pnpm --filter @cairnkit/example-react-vite exec playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: examples/react-vite/playwright-report/
+          retention-days: 7

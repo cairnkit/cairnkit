@@ -70,6 +70,7 @@ p.lede { color: var(--muted); font-size: 17px; max-width: 62ch; margin: 0 0 32px
 .hero h1 { font-size: clamp(38px, 6vw, 60px); line-height: 1.05; letter-spacing: -.035em;
   margin: 0 0 20px; font-weight: 680; max-width: 17ch; }
 .hero p { color: var(--muted); font-size: 19px; max-width: 58ch; margin: 0 0 32px; }
+.hero__install { max-width: 460px; margin-bottom: 16px; }
 .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 
 .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px;
@@ -341,3 +342,24 @@ body { overflow-x: clip; }
 .editor__file { margin-left: 6px; font-size: 11px; color: #7b818d; font-family: ui-monospace, Menlo, monospace; }
 .editor pre { margin: 0; padding: 14px 16px; background: var(--code-bg); color: var(--code-fg);
   font-size: 12.5px; line-height: 1.65; overflow-x: auto; }
+
+/* ── proof strip ──────────────────────────────────────────────────────────
+   Sits directly under the hero. Four numbers a reader can verify beat any
+   number of adjectives, and it gives the page a beat before the terminal. */
+.proof { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--fg) 2%, transparent); }
+.proof__in { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  padding-block: 0; }
+.proof__item { padding: 22px 4px; text-align: center; position: relative; }
+.proof__item + .proof__item::before {
+  content: ""; position: absolute; left: 0; top: 22%; bottom: 22%; width: 1px; background: var(--line);
+}
+.proof__item b { display: block; font-size: 24px; font-weight: 660; letter-spacing: -.02em; }
+.proof__item span { font-size: 13px; color: var(--muted); }
+
+.cta__row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 720px) {
+  .proof__in { grid-template-columns: repeat(2, 1fr); }
+  .proof__item:nth-child(3)::before { display: none; }
+}

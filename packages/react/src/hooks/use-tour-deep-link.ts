@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getFlow } from "@cairnkit/core";
 import { useCairn } from "../provider/cairn-context";
-import { useTourState } from "./use-cairn-store";
 
 /**
  * Starts a flow from `?tour=<flowId>` so support and sales can deep-link
@@ -16,15 +15,21 @@ import { useTourState } from "./use-cairn-store";
  */
 export function useTourDeepLink(param = "tour") {
   const { store, flows } = useCairn();
-  const activeFlowId = useTourState((state) => state.activeFlowId);
+  // Honour each distinct `?tour=` value exactly once.
+  //
+  // Keying off "is a tour running" fails in both directions: a stale tour in
+  // localStorage would swallow the link, and once the user skips, the param is
+  // still in the URL so the effect would restart the tour they just dismissed.
+  const honoured = useRef<string | null>(null);
 
   useEffect(() => {
-    if (activeFlowId) return;
     if (typeof window === "undefined") return;
 
     const requested = new URLSearchParams(window.location.search).get(param);
     if (!requested || !getFlow(flows, requested)) return;
+    if (honoured.current === requested) return;
 
+    honoured.current = requested;
     store.start(requested);
-  }, [activeFlowId, flows, store, param]);
+  }, [flows, store, param]);
 }

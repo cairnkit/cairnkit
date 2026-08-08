@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
 import { Mark } from "@/components/mark";
@@ -108,6 +109,7 @@ export default function Home() {
           <div className="nav__links">
             <a className="hide-sm" href="#how">How it works</a>
             <a className="hide-sm" href="#compare">Comparison</a>
+            <Link href="/docs">Docs</Link>
             <a href={site.repo}>GitHub</a>
             <ThemeToggle />
           </div>
@@ -122,12 +124,17 @@ export default function Home() {
           moment one points at UI that no longer exists.
         </p>
 
-        <div {...anchor(anchors.site.install)} className="hero__cta demo-target">
+        {/* Install and the CTAs are different actions — copying a command is
+            not choosing a path — so they get their own rows. */}
+        <div {...anchor(anchors.site.install)} className="hero__install demo-target">
           <Install command="npm i @cairnkit/react @cairnkit/ui" />
+        </div>
+
+        <div className="hero__cta">
           <StartTour className="btn btn--primary" />
-          <a className="btn btn--ghost" href={site.repo}>
-            GitHub
-          </a>
+          <Link className="btn btn--ghost" href="/docs">
+            Read the docs
+          </Link>
         </div>
       </header>
 
@@ -308,6 +315,23 @@ export default function Home() {
           <div className="cta__row">
             <a className="btn btn--primary" href={site.repo}>Get started on GitHub</a>
             <StartTour />
+          </div>
+        </div>
+      </section>
+
+      <section className="cta">
+        <div className="wrap">
+          <h2 className="h">Put it in your repo</h2>
+          <p className="lede" style={{ margin: "0 auto 26px" }}>
+            Five minutes to a working tour. An afternoon to a guide that cannot silently break.
+          </p>
+          <div className="cta__row">
+            <Link className="btn btn--primary" href="/docs/install">
+              Get started
+            </Link>
+            <Link className="btn btn--ghost" href="/docs">
+              Browse the docs
+            </Link>
           </div>
         </div>
       </section>

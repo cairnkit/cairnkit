@@ -25,6 +25,16 @@ verified in CI, and a broken tour fails the build.
 
 ---
 
+## Supported versions
+
+| | Verified against |
+| --- | --- |
+| React | 18, 19 |
+| Next.js | 14, 15, 16 — App Router and Pages Router |
+| Anything else | a ten-line router adapter |
+
+---
+
 ## Install
 
 ```bash
