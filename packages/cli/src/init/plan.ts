@@ -78,6 +78,22 @@ export function plan(context: Context, reader: Reader, dirOverride?: string): Pl
     add(`router-adapter.${ext}`, routerAdapterFile(context), "the one framework-specific file");
   }
 
+  /**
+   * A partial scaffold is the case that actually happens: someone ran this
+   * before, edited their anchors, then deleted or lost a file. We keep their
+   * registry — overwriting it is never what anyone wants — but the flow we
+   * generate points at example anchors that are almost certainly not in it,
+   * so it will not compile. Saying so beats letting them wonder why the tool
+   * produced broken code.
+   */
+  const keptAnchors = skip.some((entry) => entry.path.endsWith(`anchors.${ext}`));
+  const wroteFlows = write.some((file) => file.path.endsWith(`flows.${ext}`));
+  if (keptAnchors && wroteFlows) {
+    warnings.push(
+      `Kept your existing anchors, so the generated flow still points at example ids (nav.home, home.primary-action) that are probably not in it. Repoint the steps, or start clean with --dir.`,
+    );
+  }
+
   // The augmentation is inert if tsconfig does not compile the file. It fails
   // silently — ids just stay `string` — so it is worth saying out loud.
   if (context.typescript && !isCompiled(dir, context.tsconfigInclude)) {

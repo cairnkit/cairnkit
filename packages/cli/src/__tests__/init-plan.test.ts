@@ -180,6 +180,23 @@ describe("plan", () => {
     expect(result.skip).toEqual([{ path: "walkthrough/anchors.ts", why: "already exists" }]);
   });
 
+  it("warns when it regenerates a flow beside anchors it did not write", () => {
+    // The realistic partial case: they ran init before, edited anchors, lost
+    // flows. Keeping anchors is right; silently emitting a flow that points at
+    // ids those anchors no longer contain is not.
+    const reader = project({ ...NEXT_APP, "walkthrough/anchors.ts": "their own anchors" });
+    const result = plan(detect(reader), reader);
+
+    expect(result.write.map((f) => f.path)).toContain("walkthrough/flows.ts");
+    expect(result.warnings.join(" ")).toContain("example ids");
+  });
+
+  it("does not warn when it writes both files itself", () => {
+    expect(plan(detect(project(NEXT_APP)), project(NEXT_APP)).warnings.join(" ")).not.toContain(
+      "example ids",
+    );
+  });
+
   it("always installs @cairnkit/core explicitly", () => {
     // Under pnpm, `declare module "@cairnkit/core"` does not compile unless
     // core is a direct dependency. npm hoists it and hides the problem.
