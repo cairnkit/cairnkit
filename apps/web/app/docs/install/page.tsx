@@ -43,11 +43,6 @@ npm i -D @cairnkit/cli`}</Code>
         turns a rename into a compile error, and <C>init</C> says so rather than pretending
         otherwise.
       </P>
-      <Callout kind="note" title="Why the scoped name">
-        <C>cairn</C> is somebody else&apos;s package on npm, so <C>npx cairn init</C> would run
-        theirs. Once <C>@cairnkit/cli</C> is a dev dependency, <C>npx cairn check</C> works
-        normally — npx finds the local binary first.
-      </Callout>
       <Callout kind="note" title="Why core is in that list">
         <C>@cairnkit/react</C> depends on <C>@cairnkit/core</C> anyway, so npm users get it
         hoisted whether they ask for it or not. pnpm does not hoist, and the typed-anchor
