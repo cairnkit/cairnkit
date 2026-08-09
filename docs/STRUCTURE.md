@@ -116,7 +116,8 @@ The host's own theme toggle wins in both directions by stamping `data-cairn-them
 
 ## What is deliberately not here
 
-You asked for Tailwind, shadcn and Radix. For the *published packages* I'd argue against all three, for one reason each:
+Tailwind, shadcn and Radix are all absent from the *published packages*, each
+for its own reason.
 
 **Tailwind** — a library shipping Tailwind classes forces every consumer to add our `dist` to their `content` globs, and pins them to our major version. Precompiling the utilities instead ships `.flex` and `.p-4` into their bundle, where it collides with theirs. `ui` ships plain `cairn-`prefixed CSS that drops into any React app, Tailwind or not.
 
@@ -124,7 +125,7 @@ You asked for Tailwind, shadcn and Radix. For the *published packages* I'd argue
 
 **Radix** — its Popover and Dialog trap focus. Our whole design depends on the user reaching *past* the popover to click the real element underneath. We would spend more effort defeating Radix than writing the behaviour.
 
-All three are right for the **`examples/next-app`** and for a later `npx cairn add` registry that copies component source into the consumer's repo — where those deps already exist and are theirs to own. That gets you the shadcn ergonomics you want without taxing every install.
+All three are right for **`examples/next-app`**, and for a future `npx cairn add` registry that copies component source into the consumer's repo — where those dependencies already exist and are theirs to own. That gives the shadcn ergonomics without taxing every install.
 
 ---
 
@@ -135,8 +136,14 @@ All three are right for the **`examples/next-app`** and for a later `npx cairn a
 
 ---
 
-## Open for review
+## Questions that were open, and how they landed
 
-1. Does `ui` earn a separate package, or should styled components be a subpath export (`@cairnkit/react/ui`)?
-2. Is `dom/` right inside `core`, given core is otherwise environment-free?
-3. Naming: `use-tour` vs `use-walkthrough` vs `use-cairn`.
+1. **Does `ui` earn a separate package?** Yes. It carries the only third-party
+   runtime dependency (`@floating-ui/dom`) and a stylesheet, neither of which
+   belongs in a headless install. Headless is 6.2 kb; the overlay adds 6.9.
+2. **Does `dom/` belong in `core`, given core is otherwise environment-free?**
+   Yes, but it must stay SSR-safe. `resolveAnchor` once read `document` in a
+   default parameter, which threw during server rendering before any guard
+   could run; there is a Node-environment test suite for that class of bug now.
+3. **Naming.** `use-tour`. `walkthrough` is what the files are called, `cairn`
+   is the brand, and the hook is about the tour.

@@ -9,9 +9,9 @@ with customer data behind it.
 | `cairnkit.dev`          | `cairnkit`       | developers evaluating | yes     |
 | `app.cairnkit.dev`      | `cairnkit-cloud` | paying customers      | no      |
 
-Everything in the "dev-focused landing page" brief belongs to **`cairnkit.dev`**.
-None of it belongs to the cloud — a dashboard behind auth has no install
-snippet and no bundle badge.
+Everything developer-facing belongs to **`cairnkit.dev`**. None of it belongs
+to the cloud — a dashboard behind auth has no install snippet and no bundle
+badge.
 
 ---
 
@@ -76,13 +76,13 @@ installing anything. For a tour library this is worth more than any prose.
 | `@cairnkit/ui`    | 6.9 kb  | `@floating-ui/dom` |
 | `@cairnkit/next`  | 0.3 kb  | react only        |
 
-**5. Comparison — but not the one in the brief.**
+**5. Comparison — on the right axis.**
 
-The brief suggests performance benchmarks against legacy packages. I would not
-do that. Cairn is not faster than driver.js, and claiming a speed advantage
-invites a rebuttal on the one axis we do not win.
+The obvious move is a performance benchmark against the older packages. That is
+a mistake. Cairn is not faster than driver.js, and claiming a speed advantage
+invites a rebuttal on the one axis it does not win.
 
-Compare on the axis we actually own — **what happens when the UI changes**:
+Compare on the axis it actually owns — **what happens when the UI changes**:
 
 | | driver.js | Shepherd | Pendo | Cairn |
 | --- | --- | --- | --- | --- |
