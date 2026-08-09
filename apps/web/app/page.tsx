@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mark } from "@/components/mark";
+import { FLOOR, format, getStats } from "@/lib/stats";
 import { ExternalLink } from "lucide-react";
 import { highlight } from "@/components/ui/highlight";
 import { SiteNav } from "@/components/site-nav";
@@ -112,7 +113,30 @@ const TOTALS = [
   { label: "Everything", kb: "16.9 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
 ] as const;
 
-export default function Home() {
+export default async function Home() {
+  const { downloads, stars } = await getStats();
+
+  /**
+   * Durable facts first; live counts displace them only once they clear the
+   * floor. A giant "0 downloads" on a launch-week page argues against you far
+   * more effectively than it argues for you.
+   */
+  const metrics: { value: string; label: string; live?: boolean }[] = [
+    { value: "6.2 kb", label: "headless, gzipped" },
+    { value: "0", label: "runtime dependencies" },
+    { value: "~0.2s", label: "CI check, 2k files" },
+    { value: "3", label: "layers of drift defence" },
+  ];
+
+  if (downloads !== null && downloads >= FLOOR.downloads) {
+    metrics.unshift({ value: format(downloads), label: "installs a month", live: true });
+    metrics.pop();
+  }
+  if (stars !== null && stars >= FLOOR.stars) {
+    metrics.splice(1, 0, { value: format(stars), label: "GitHub stars", live: true });
+    metrics.pop();
+  }
+
   return (
     <>
       <SiteNav
@@ -149,17 +173,17 @@ export default function Home() {
       {/* Four numbers a reader can verify, directly under the hero. Concrete
           claims land harder than adjectives, and it gives the eye a beat
           before the terminal block. */}
+      {/* Four numbers a reader can verify. The live ones only join once they
+          are worth reading — see `FLOOR` in lib/stats. */}
       <section className="proof">
         <div className="wrap proof__in">
-          {[
-            ["6.2 kb", "headless, gzipped"],
-            ["0", "runtime dependencies"],
-            ["~0.2s", "CI check, 2k files"],
-            ["3", "layers of drift defence"],
-          ].map(([value, label]) => (
-            <div className="proof__item" key={label}>
+          {metrics.map(({ value, label, live }) => (
+            <div className={`proof__item${live ? " proof__item--live" : ""}`} key={label}>
               <b>{value}</b>
-              <span>{label}</span>
+              <span>
+                {live && <i className="proof__pulse" aria-hidden />}
+                {label}
+              </span>
             </div>
           ))}
         </div>

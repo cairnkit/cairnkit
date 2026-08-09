@@ -81,13 +81,19 @@ p.lede { color: var(--muted); font-size: 17px; max-width: 62ch; margin: 0 0 32px
 .btn:hover { opacity: .9; }
 
 /* ── code ────────────────────────────────────────────────────────── */
-.snippet { display: flex; align-items: center; gap: 10px; background: var(--code-bg); color: var(--code-fg);
-  border: 1px solid var(--line); border-radius: 11px; padding: 0 8px 0 16px; height: 44px; font-size: 14px; }
-.snippet code { color: var(--code-fg); }
-.snippet__dollar { color: #6b7280; user-select: none; }
-.copy { margin-left: auto; height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid #2a2e37;
-  background: transparent; color: #cbd0da; font: inherit; font-size: 12.5px; cursor: pointer; }
-.copy:hover { background: #181b21; }
+/* Items align to the top so the $ and the Copy button stay on the first line
+   when the command wraps to three. */
+.snippet { display: flex; align-items: flex-start; gap: 10px;
+  background: var(--snip-bg); color: var(--snip-fg);
+  border: 1px solid var(--snip-line); border-radius: 11px; padding: 6px 8px 6px 16px;
+  min-height: 44px; font-size: 14px; }
+.snippet__dollar, .copy { margin-top: 3px; }
+.snippet code { color: var(--snip-fg); }
+.snippet__dollar { color: var(--snip-bar); user-select: none; flex: none; }
+.copy { margin-left: auto; flex: none; height: 30px; padding: 0 11px; border-radius: 8px;
+  border: 1px solid var(--snip-line); background: transparent; color: var(--snip-fg);
+  font: inherit; font-size: 12.5px; cursor: pointer; transition: background .14s; }
+.copy:hover { background: color-mix(in srgb, var(--snip-fg) 10%, transparent); }
 
 .terminal { background: var(--snip-bg); border: 1px solid var(--snip-line); border-radius: var(--radius); overflow: hidden; }
 .terminal__bar { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--snip-line);
@@ -101,7 +107,7 @@ p.lede { color: var(--muted); font-size: 17px; max-width: 62ch; margin: 0 0 32px
 .t-dim { color: var(--tk-comment); }
 .t-green { color: var(--tk-string); }
 
-pre.code { background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--line);
+pre.code { background: var(--snip-bg); color: var(--snip-fg); border: 1px solid var(--line);
   border-radius: var(--radius); padding: 18px 20px; overflow-x: auto; font-size: 13.5px; line-height: 1.65; margin: 0; }
 
 /* ── steps ───────────────────────────────────────────────────────── */
@@ -147,8 +153,10 @@ th.ours, td.ours { background: rgb(var(--accent-rgb) / .05); }
 .feature { min-width: 0; }
 
 pre { max-width: 100%; }
-.snippet { min-width: 0; overflow: hidden; }
-.snippet code { overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+.snippet { min-width: 0; }
+/* Wraps rather than clipping. The command names three packages and simply does
+   not fit one line on a narrow screen; hiding the tail loses the point. */
+.snippet code { min-width: 0; white-space: normal; overflow-wrap: anywhere; padding: 9px 0; }
 .snippet code::-webkit-scrollbar { display: none; }
 
 @media (max-width: 640px) {
@@ -484,7 +492,7 @@ body { overflow-x: clip; }
 
 /* ── Shared code block ─────────────────────────────────────────────── */
 .snip {
-  border-radius: 12px; overflow: hidden; background: var(--code-bg);
+  border-radius: 12px; overflow: hidden; background: var(--snip-bg);
   border: 1px solid rgb(255 255 255 / .07);
 }
 .snip__bar {
@@ -502,7 +510,7 @@ body { overflow-x: clip; }
 .snip__pre {
   margin: 0; padding: 15px 17px; overflow: auto;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 12.6px; line-height: 1.68; color: var(--code-fg);
+  font-size: 12.6px; line-height: 1.68; color: var(--snip-fg);
 }
 .snip__pre code { font: inherit; background: none; padding: 0; }
 
@@ -986,4 +994,26 @@ body { overflow-x: clip; }
   .pkg { grid-template-columns: 1fr auto; }
   .pkg__note { grid-column: 1 / -1; order: 3; }
   .totals { grid-template-columns: 1fr; }
+}
+
+/* Proof numbers carry the hero, so they are sized like a headline rather than
+   a caption — and they wrap to two columns instead of shrinking to nothing. */
+.proof__in { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.proof__item { padding: 26px 10px; }
+.proof__item b { font-size: clamp(28px, 4.6vw, 40px); letter-spacing: -.03em; line-height: 1.05; }
+.proof__item span { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; margin-top: 4px; }
+.proof__item--live b { color: var(--accent); }
+.proof__pulse {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--ok); flex: none;
+  box-shadow: 0 0 0 0 rgb(22 163 74 / .5); animation: proof-pulse 2.2s ease-out infinite;
+}
+@keyframes proof-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(22 163 74 / .5); }
+  70% { box-shadow: 0 0 0 7px rgb(22 163 74 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(22 163 74 / 0); }
+}
+@media (prefers-reduced-motion: reduce) { .proof__pulse { animation: none; } }
+@media (max-width: 560px) {
+  .proof__in { grid-template-columns: 1fr 1fr; }
+  .proof__item:nth-child(2)::before { display: none; }
 }
