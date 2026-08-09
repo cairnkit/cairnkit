@@ -363,12 +363,17 @@ body { overflow-x: clip; }
    Sits directly under the hero. Four numbers a reader can verify beat any
    number of adjectives, and it gives the page a beat before the terminal. */
 .compat { border-bottom: 1px solid var(--line); }
+/* `padding-block`, not the shorthand: this class sits on the same element as
+   `.wrap`, and `padding: 16px 0` resets its 24px inset, which put the pills
+   against the screen edge on a phone. */
 .compat__in { display: flex; align-items: center; justify-content: center;
-  flex-wrap: wrap; gap: 10px 18px; padding: 16px 0; }
+  flex-wrap: wrap; gap: 10px 18px; padding-block: 16px; }
 .compat__label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
   color: var(--muted); }
-.compat__list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none;
-  margin: 0; padding: 0; }
+/* Centred in its own right. As a wrapping flex child it forms its own rows,
+   and the parent's centring does not reach them. */
+.compat__list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  list-style: none; margin: 0; padding: 0; }
 .compat__list li { font-size: 13px; color: var(--fg); padding: 4px 10px;
   border: 1px solid var(--line); border-radius: 999px; background: var(--bg-soft); }
 
