@@ -2,7 +2,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { scanProject } from "../scan";
+import { MissingRoots, defaultRoots, scanProject } from "../scan";
 
 function project(files: Record<string, string>) {
   const dir = mkdtempSync(join(tmpdir(), "cairn-scan-"));
@@ -70,6 +70,43 @@ export const anchors = defineAnchors({ q: { save: "q.save" } });`,
 
     expect(scanProject([a, b]).applied.has("q.save")).toBe(true);
     expect(scanProject(a).applied.has("q.save")).toBe(false);
+  });
+});
+
+describe("default roots", () => {
+  it("does not insist on src", () => {
+    // `src` was the only default, and readdirSync throws on a directory that is
+    // not there — so a Next app made with --no-src-dir crashed with a raw
+    // ENOENT stack trace instead of checking anything.
+    expect(defaultRoots((path) => path === "app")).toEqual(["app"]);
+    expect(defaultRoots((path) => path === "src")).toEqual(["src"]);
+    expect(defaultRoots((path) => path === "walkthrough")).toEqual(["walkthrough"]);
+  });
+
+  it("takes every recognisable root, not just the first", () => {
+    expect(defaultRoots((path) => path === "src" || path === "app")).toEqual(["src", "app"]);
+  });
+
+  it("falls back to the working directory when it recognises nothing", () => {
+    expect(defaultRoots(() => false)).toEqual(["."]);
+  });
+});
+
+describe("missing roots", () => {
+  it("reports them instead of throwing ENOENT", () => {
+    // The caller needs to tell the user something useful; a stack trace out of
+    // node:fs is neither actionable for a person nor parseable by an agent.
+    expect(() => scanProject(["definitely-not-here"])).toThrow(MissingRoots);
+  });
+
+  it("names every missing path", () => {
+    try {
+      scanProject(["nope-one", "nope-two"]);
+      throw new Error("should have thrown");
+    } catch (error) {
+      expect(error).toBeInstanceOf(MissingRoots);
+      expect((error as MissingRoots).roots).toHaveLength(2);
+    }
   });
 });
 

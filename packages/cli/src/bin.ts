@@ -39,4 +39,4 @@ if (command !== "check") {
 // Every path, not just the first — dropping the rest made the check report
 // false failures with no clue that anything had been ignored.
 const dirs = rest.filter((arg) => !arg.startsWith("-"));
-process.exit(runCheck(dirs.length > 0 ? dirs : "src"));
+process.exit(runCheck(dirs.length > 0 ? dirs : undefined));

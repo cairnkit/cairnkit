@@ -1,6 +1,14 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve, sep } from "node:path";
 import type { CheckContext, Location } from "./checks/types";
+
+/** Thrown rather than printed, so the command owns how it reads. */
+export class MissingRoots extends Error {
+  constructor(readonly roots: string[]) {
+    super(`Missing: ${roots.join(", ")}`);
+    this.name = "MissingRoots";
+  }
+}
 
 const SOURCE = /\.(tsx?|jsx?)$/;
 const SKIP = new Set(["node_modules", "dist", "build", ".next", ".git", "coverage"]);
@@ -64,11 +72,34 @@ function readRegistry(source: string): Map<string, string> {
   return paths;
 }
 
+/**
+ * Where to look when the caller names nothing.
+ *
+ * `src` was the only default, and `readdirSync` throws on a directory that is
+ * not there — so any project without one (a Next app created with
+ * --no-src-dir, for instance) got an unhandled ENOENT stack trace instead of
+ * an answer. These are tried in order and the ones that exist are scanned.
+ */
+const DEFAULT_ROOTS = ["src", "app", "pages", "walkthrough", "lib", "components"];
+
+export function defaultRoots(exists: (path: string) => boolean): string[] {
+  const found = DEFAULT_ROOTS.filter(exists);
+  // Nothing recognisable: scan the working directory. The skip list already
+  // prunes node_modules and build output, and the pre-filter makes it cheap.
+  return found.length > 0 ? found : ["."];
+}
+
 export function scanProject(rootDirs: string | string[]): CheckContext {
   // Several roots are normal: anchors in one folder, the components that use
   // them in another. Scanning only the first silently reported every anchor as
   // unapplied, which is a check that lies.
   const roots = (Array.isArray(rootDirs) ? rootDirs : [rootDirs]).map((dir) => resolve(dir));
+
+  const missing = roots.filter((root) => !existsSync(root));
+  if (missing.length > 0) {
+    throw new MissingRoots(missing);
+  }
+
   const files = roots.flatMap((root) => walk(root, root));
 
   const registered = new Set<string>();
