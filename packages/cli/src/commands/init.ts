@@ -2,12 +2,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { detect } from "../init/detect";
 import { plan } from "../init/plan";
+import { block, bold, cyan, dim, green, heading, rule, yellow } from "../init/render";
 import type { Reader } from "../init/types";
-
-const bold = (text: string) => `[1m${text}[0m`;
-const dim = (text: string) => `[2m${text}[0m`;
-const green = (text: string) => `[32m${text}[0m`;
-const yellow = (text: string) => `[33m${text}[0m`;
 
 export type InitOptions = {
   cwd?: string;
@@ -37,66 +33,103 @@ export function runInit(options: InitOptions = {}): number {
 
   const context = detect(reader);
   const result = plan(context, reader, options.dir);
+  const out = (line = "") => console.log(line);
 
-  console.log("");
-  console.log(`${bold("Detected")}  ${describe(context)}`);
-  console.log("");
+  out();
+  out(`  ${bold("cairn init")}   ${dim(describe(context))}`);
+  out();
 
   if (result.write.length === 0) {
-    console.log(green("Everything is already in place — nothing to write."));
-    if (result.skip.length > 0) {
-      for (const entry of result.skip) console.log(dim(`  kept  ${entry.path}`));
-    }
+    out(`  ${green("Everything is already in place.")} Nothing to write.`);
+    for (const entry of result.skip) out(`    ${dim(entry.path)}`);
+    out();
     return 0;
   }
 
+  const width = Math.max(...result.write.map((file) => file.path.length));
   for (const file of result.write) {
-    console.log(`  ${green("create")}  ${file.path}  ${dim(file.reason)}`);
+    out(`  ${green("+")}  ${file.path.padEnd(width)}  ${dim(file.reason)}`);
   }
   for (const entry of result.skip) {
-    console.log(`  ${dim("keep")}    ${entry.path}  ${dim(entry.why)}`);
+    out(`  ${dim("·")}  ${dim(entry.path.padEnd(width))}  ${dim(entry.why)}`);
   }
 
-  // Guard against writing outside the project even if a path is coaxed in.
-  for (const file of options.dryRun ? [] : result.write) {
-    const target = resolve(cwd, file.path);
-    if (!target.startsWith(cwd + "/")) {
-      console.error(`Refusing to write outside the project: ${file.path}`);
-      return 1;
+  if (!options.dryRun) {
+    // Guard against writing outside the project even if a path is coaxed in.
+    for (const file of result.write) {
+      const target = resolve(cwd, file.path);
+      if (!target.startsWith(cwd + "/")) {
+        console.error(`Refusing to write outside the project: ${file.path}`);
+        return 1;
+      }
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, file.contents, "utf8");
     }
-    mkdirSync(dirname(target), { recursive: true });
-    writeFileSync(target, file.contents, "utf8");
   }
 
-  console.log("");
-  console.log(
+  out();
+  out(
     options.dryRun
-      ? dim(`Dry run — nothing written. The rest of the plan follows.`)
-      : green(
-          `Wrote ${result.write.length} files to ${relative(cwd, resolve(cwd, result.dir)) || "."}`,
-        ),
+      ? dim("  Dry run — nothing written. The rest of the plan follows.")
+      : dim(`  Written to ${relative(cwd, resolve(cwd, result.dir)) || "."}/`),
   );
+  out();
+  out(rule());
+  out();
+  out(`  ${bold("What is left to you")}`);
+  out(`  ${dim("We do not edit your layout — a mangled root file is not worth")}`);
+  out(`  ${dim("the minute it would save.")}`);
+  out();
+
+  let step = 0;
 
   if (result.install) {
-    console.log("");
-    console.log(bold("Install the packages"));
-    for (const line of result.install.command.split("\n")) console.log(`    ${line}`);
+    step += 1;
+    out(heading(step, "Install the packages"));
+    out();
+    out(block(result.install.command.split("\n"), "     "));
+    out();
   }
 
-  console.log("");
-  console.log(bold("Then, by hand"));
-  console.log(dim("  (we do not edit your layout — a mangled root file is not worth the minute saved)"));
-  for (const line of result.nextSteps) console.log(line ? `  ${line}` : "");
+  for (const next of result.nextSteps) {
+    step += 1;
+    out(heading(step, next.text));
+    if (next.file) out(`     ${dim(next.file)}`);
+    if (next.code) {
+      out();
+      out(block(next.code, "     "));
+    }
+    out();
+  }
 
   if (result.warnings.length > 0) {
-    console.log("");
-    for (const warning of result.warnings) console.log(`${yellow("!")} ${warning}`);
+    out(rule());
+    out();
+    for (const warning of result.warnings) out(`  ${yellow("!")}  ${wrap(warning, 68, "     ")}`);
+    out();
   }
 
-  console.log("");
-  console.log(dim("Docs: https://cairnkit.dev/docs/install"));
-  console.log("");
+  out(`  ${dim("Docs")}  ${cyan("https://cairnkit.dev/docs/install")}`);
+  out();
   return 0;
+}
+
+/** Soft-wraps a warning so long sentences do not run off a narrow terminal. */
+function wrap(text: string, width: number, indent: string): string {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let line = "";
+
+  for (const word of words) {
+    if (line.length + word.length + 1 > width) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = line ? `${line} ${word}` : word;
+    }
+  }
+  if (line) lines.push(line);
+  return lines.join(`\n${indent}`);
 }
 
 function describe(context: ReturnType<typeof detect>): string {
@@ -104,20 +137,20 @@ function describe(context: ReturnType<typeof detect>): string {
 
   const name =
     framework.kind === "next-app"
-      ? "Next.js (App Router)"
+      ? "Next.js App Router"
       : framework.kind === "next-pages"
-        ? "Next.js (Pages Router)"
+        ? "Next.js Pages Router"
         : framework.kind === "react-router"
-          ? `React + ${framework.pkg}`
+          ? `React · ${framework.pkg}`
           : framework.kind === "react"
             ? "React"
             : framework.hint
-              ? `React + ${framework.hint} (no adapter yet)`
+              ? `React · ${framework.hint} (no adapter yet)`
               : "unrecognised framework";
 
   const parts = [name];
   if (bundler === "vite") parts.push("Vite");
   parts.push(typescript ? "TypeScript" : "JavaScript");
   parts.push(packageManager);
-  return parts.join(dim(" · "));
+  return parts.join(" · ");
 }

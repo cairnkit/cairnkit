@@ -54,7 +54,13 @@ export type Plan = {
   /** Files that already exist. Never overwritten without being asked. */
   skip: { path: string; why: string }[];
   install: { packages: string[]; command: string } | null;
-  /** Printed after writing — the parts we deliberately do not automate. */
-  nextSteps: string[];
+  /**
+   * The parts we deliberately do not automate.
+   *
+   * Structured rather than pre-formatted so the planner stays about content
+   * and the command decides how it looks — which is also what lets the same
+   * plan render with or without colour.
+   */
+  nextSteps: { text: string; file?: string; code?: string[] }[];
   warnings: string[];
 };

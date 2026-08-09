@@ -156,49 +156,67 @@ function isCompiled(dir: string, include: string[]): boolean {
  * exact snippet and the exact path is slower for the user by about a minute
  * and costs nothing if we are wrong about their setup.
  */
-function nextSteps(context: Context, dir: string): string[] {
-  // The same alias rule the generated files use. Printing a bare `walkthrough/…`
-  // specifier tells people to write an import that does not resolve.
+function nextSteps(context: Context, dir: string): Plan["nextSteps"] {
   const provider =
     aliasSpecifier(context, dir, "cairn-provider") ?? `./${dir}/cairn-provider`;
 
+  const mount = (file: string, body: string[]) => ({
+    text: "Mount the provider — it has to wrap your app, not sit beside it.",
+    file,
+    code: [
+      `import { CairnRuntime } from "${provider}";`,
+      `import "@cairnkit/ui/styles.css";`,
+      "",
+      ...body,
+    ],
+  });
+
+  const apply = {
+    text: "Apply an anchor to a real element.",
+    file: "any component",
+    code: [
+      `import { anchor } from "@cairnkit/core";`,
+      "",
+      `<button {...anchor(anchors.home.primaryAction)}>Upgrade</button>`,
+    ],
+  };
+
   if (context.framework.kind === "next-app") {
     return [
-      `Wrap your app in ${context.framework.dir}/layout.tsx:`,
-      `    import { CairnRuntime } from "${provider}";`,
-      `    import "@cairnkit/ui/styles.css";`,
-      `    …`,
-      `    <body><CairnRuntime>{children}</CairnRuntime></body>`,
-      "",
-      `Then apply an anchor to a real element:`,
-      `    import { anchor } from "@cairnkit/core";`,
-      `    <button {...anchor(anchors.home.primaryAction)}>…</button>`,
+      mount(`${context.framework.dir}/layout.tsx`, [
+        "<body>",
+        "  <CairnRuntime>{children}</CairnRuntime>",
+        "</body>",
+      ]),
+      apply,
     ];
   }
 
   if (context.framework.kind === "next-pages") {
     return [
-      `Wrap your app in ${context.framework.dir}/_app.tsx:`,
-      `    import { CairnRuntime } from "${provider}";`,
-      `    import "@cairnkit/ui/styles.css";`,
-      `    …`,
-      `    <CairnRuntime><Component {...pageProps} /></CairnRuntime>`,
+      mount(`${context.framework.dir}/_app.tsx`, [
+        "<CairnRuntime>",
+        "  <Component {...pageProps} />",
+        "</CairnRuntime>",
+      ]),
+      apply,
     ];
   }
 
-  const steps = [
-    `Wrap your app where you render it (usually main.tsx or App.tsx):`,
-    `    import { CairnRuntime } from "${provider}";`,
-    `    import "@cairnkit/ui/styles.css";`,
-    `    …`,
-    `    <CairnRuntime><App /></CairnRuntime>`,
+  const steps: Plan["nextSteps"] = [
+    mount(context.bundler === "vite" ? "src/main.tsx" : "your root component", [
+      "<CairnRuntime>",
+      "  <App />",
+      "</CairnRuntime>",
+    ]),
+    apply,
   ];
 
   if (context.framework.kind === "unknown") {
-    steps.push(
-      "",
-      `Finish ${dir}/router-adapter — we could not tell which router you use, so it is a stub.`,
-    );
+    steps.push({
+      text: "Finish the router adapter — we could not tell which router you use.",
+      file: `${dir}/router-adapter`,
+    });
   }
   return steps;
 }

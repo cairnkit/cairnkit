@@ -301,17 +301,27 @@ describe("plan", () => {
   it("prints an import specifier that actually resolves", () => {
     // A bare "walkthrough/cairn-provider" is not resolvable; if we detected an
     // alias, the instructions have to use it too.
-    const aliased = plan(detect(project(NEXT_APP)), project(NEXT_APP));
-    expect(aliased.nextSteps.join("\n")).toContain('"@/walkthrough/cairn-provider"');
+    const codeOf = (reader: Reader) =>
+      plan(detect(reader), reader)
+        .nextSteps.flatMap((step) => step.code ?? [])
+        .join("\n");
+
+    expect(codeOf(project(NEXT_APP))).toContain('"@/walkthrough/cairn-provider"');
 
     const bare = project({
       "package.json": JSON.stringify({ dependencies: { next: "15" } }),
       "tsconfig.json": "{}",
       "app/layout.tsx": "",
     });
-    expect(plan(detect(bare), bare).nextSteps.join("\n")).toContain(
-      '"./walkthrough/cairn-provider"',
-    );
+    expect(codeOf(bare)).toContain('"./walkthrough/cairn-provider"');
+  });
+
+  it("names the file each manual step applies to", () => {
+    // "Wrap your app" is useless without saying where. Structured steps make
+    // that a field rather than something buried in prose.
+    const steps = plan(detect(project(NEXT_APP)), project(NEXT_APP)).nextSteps;
+    expect(steps[0]?.file).toBe("app/layout.tsx");
+    expect(steps.every((step) => step.text.length > 0)).toBe(true);
   });
 
   it('marks the Next provider "use client"', () => {
