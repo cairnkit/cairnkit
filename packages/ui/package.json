@@ -1,6 +1,6 @@
 {
   "name": "@cairnkit/ui",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Prebuilt Cairn overlay: spotlight, step card and launcher. Plain CSS, light and dark.",
   "license": "MIT",
   "type": "module",
