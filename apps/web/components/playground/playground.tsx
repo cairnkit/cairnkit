@@ -16,26 +16,37 @@ export function PlaygroundStage() {
 
   return (
     <div className="pg">
-      <div className="pg__stage">
-        <ScenarioTabs
-          active={config.scenario}
-          onPick={(scenario) => {
-            setSettingsOpen(false);
-            set("scenario", scenario);
-          }}
-        />
-        <DemoApp
-          settingsOpen={settingsOpen}
-          onSettingsOpen={() => setSettingsOpen(true)}
-          onSettingsClose={() => setSettingsOpen(false)}
-        />
-        <Runner onReset={() => setSettingsOpen(false)} />
+      {/* One instrument, not three cards floating near each other: a toolbar
+          that owns the run controls, the stage under it, the source below,
+          and the inspector docked to the side. */}
+      <div className="wb">
+        <div className="wb__bar">
+          <ScenarioTabs
+            active={config.scenario}
+            onPick={(scenario) => {
+              setSettingsOpen(false);
+              set("scenario", scenario);
+            }}
+          />
+          <Runner onReset={() => setSettingsOpen(false)} />
+        </div>
+
+        <div className="wb__stage">
+          <DemoApp
+            settingsOpen={settingsOpen}
+            onSettingsOpen={() => setSettingsOpen(true)}
+            onSettingsClose={() => setSettingsOpen(false)}
+          />
+        </div>
+
+        <div className="wb__source">
+          <Snippet code={code} file="walkthrough/flows.ts" max={280} />
+        </div>
       </div>
 
-      <div className="pg__panel">
+      <aside className="insp">
         <Controls config={config} set={set} />
-        <Snippet code={code} file="walkthrough/flows.ts" max={430} />
-      </div>
+      </aside>
     </div>
   );
 }
@@ -52,20 +63,20 @@ function ScenarioTabs({
   const { stop } = useTour();
 
   return (
-    <div className="pg__tabs" role="tablist" aria-label="Scenario">
+    <div className="wb__tabs" role="tablist" aria-label="Scenario">
       {SCENARIOS.map((scenario) => (
         <button
           key={scenario.id}
           role="tab"
           aria-selected={active === scenario.id}
-          className={`pg__tab${active === scenario.id ? " pg__tab--on" : ""}`}
+          title={scenario.blurb}
+          className={`wb__tab${active === scenario.id ? " wb__tab--on" : ""}`}
           onClick={() => {
             stop();
             onPick(scenario.id);
           }}
         >
-          <b>{scenario.label}</b>
-          <span>{scenario.blurb}</span>
+          {scenario.label}
         </button>
       ))}
     </div>
@@ -77,19 +88,15 @@ function Runner({ onReset }: { onReset: () => void }) {
   const running = Boolean(flow);
 
   return (
-    <div className="pg__run">
-      <button
-        className="btn btn--primary"
-        onClick={() => {
-          onReset();
-          start("playground");
-        }}
-      >
-        {running ? "Restart tour" : "Run the tour"}
-      </button>
+    <div className="wb__run">
+      <span className={`wb__status${running ? " wb__status--live" : ""}`}>
+        <i />
+        {running ? `${stepIndex + 1}/${flow!.steps.length}` : "idle"}
+        {running && <em>{String(step?.anchor)}</em>}
+      </span>
       {running && (
         <button
-          className="btn btn--ghost"
+          className="wb__ghost"
           onClick={() => {
             stop();
             onReset();
@@ -98,11 +105,15 @@ function Runner({ onReset }: { onReset: () => void }) {
           Stop
         </button>
       )}
-      <span className="pg__state">
-        {running
-          ? `Step ${stepIndex + 1} of ${flow!.steps.length} · ${String(step?.anchor)}`
-          : "Idle"}
-      </span>
+      <button
+        className="wb__go"
+        onClick={() => {
+          onReset();
+          start("playground");
+        }}
+      >
+        {running ? "Restart" : "Run tour"}
+      </button>
     </div>
   );
 }
@@ -114,17 +125,30 @@ function Controls({
   config: Config;
   set: <K extends keyof Config>(key: K, value: Config[K]) => void;
 }) {
-  return (
-    <div className="pg__controls">
-      <h3 className="pg__h">Step options</h3>
+  const index = PLACEMENTS.indexOf(config.placement);
 
-      <div className="pg__ctl">
-        <label htmlFor="pg-placement">placement</label>
-        <div className="pg__seg" id="pg-placement">
+  return (
+    <>
+      <div className="insp__head">Step options</div>
+
+      <div className="insp__row">
+        <div className="insp__top">
+          <label>placement</label>
+        </div>
+        {/* The indicator slides to the active segment; `--i` drives it so the
+            movement is CSS rather than a second piece of state. */}
+        <div
+          className="insp__seg"
+          style={{ ["--i" as string]: index }}
+          role="radiogroup"
+          aria-label="placement"
+        >
           {PLACEMENTS.map((placement) => (
             <button
               key={placement}
-              className={`pg__segbtn${config.placement === placement ? " pg__segbtn--on" : ""}`}
+              role="radio"
+              aria-checked={config.placement === placement}
+              className={config.placement === placement ? "on" : undefined}
               onClick={() => set("placement", placement)}
             >
               {placement}
@@ -133,12 +157,14 @@ function Controls({
         </div>
       </div>
 
-      <div className="pg__ctl">
-        <label htmlFor="pg-padding">
-          padding <code>{config.padding}px</code>
-        </label>
+      <div className="insp__row">
+        <div className="insp__top">
+          <label htmlFor="pg-padding">padding</label>
+          <span className="insp__val">{config.padding}px</span>
+        </div>
         <input
           id="pg-padding"
+          className="insp__range"
           type="range"
           min={0}
           max={24}
@@ -147,20 +173,27 @@ function Controls({
         />
       </div>
 
-      <div className="pg__ctl pg__ctl--row">
-        <label htmlFor="pg-beacon">beacon</label>
-        <input
-          id="pg-beacon"
-          type="checkbox"
-          checked={config.beacon}
-          onChange={(event) => set("beacon", event.target.checked)}
-        />
+      <div className="insp__row">
+        <div className="insp__top" style={{ marginBottom: 0 }}>
+          <span className="insp__lbl">beacon</span>
+          {/* A label, not a span: the input is visually hidden under the
+              track, so only a label makes the track itself clickable. */}
+          <label className="insp__switch" htmlFor="pg-beacon">
+            <input
+              id="pg-beacon"
+              type="checkbox"
+              checked={config.beacon}
+              onChange={(event) => set("beacon", event.target.checked)}
+            />
+            <span />
+          </label>
+        </div>
       </div>
 
-      <p className="pg__hint">
-        Changes apply to the next run. Everything here is a plain field on a step object — there
-        is no playground-only API.
+      <p className="insp__note">
+        Plain fields on a step object. There is no playground-only API, and no runtime config to
+        learn.
       </p>
-    </div>
+    </>
   );
 }

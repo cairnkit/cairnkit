@@ -57,6 +57,34 @@ const ICONS: { id: string; label: string; node: ReactNode; source: string }[] = 
   },
 ];
 
+/** The same switch the inspector uses, so the page has one control language. */
+function Toggle({
+  id,
+  label,
+  checked,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  checked: boolean;
+  onChange: (next: boolean) => void;
+}) {
+  return (
+    <span className="lab__toggle">
+      <label className="insp__switch" htmlFor={id}>
+        <input
+          id={id}
+          type="checkbox"
+          checked={checked}
+          onChange={(event) => onChange(event.target.checked)}
+        />
+        <span />
+      </label>
+      <label htmlFor={id}>{label}</label>
+    </span>
+  );
+}
+
 export function LauncherLab() {
   const [position, setPosition] = useState<LauncherPosition>("bottom-right");
   const [iconId, setIconId] = useState("default");
@@ -121,14 +149,8 @@ export function LauncherLab() {
         </div>
 
         <div className="lab__row">
-          <label>
-            <input type="checkbox" checked={pulse} onChange={(e) => setPulse(e.target.checked)} />
-            pulse
-          </label>
-          <label>
-            <input type="checkbox" checked={shown} onChange={(e) => setShown(e.target.checked)} />
-            mounted
-          </label>
+          <Toggle id="lab-pulse" label="pulse" checked={pulse} onChange={setPulse} />
+          <Toggle id="lab-mounted" label="mounted" checked={shown} onChange={setShown} />
         </div>
 
         <p className="lab__note">

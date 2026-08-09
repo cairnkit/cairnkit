@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mark } from "@/components/mark";
+import { highlight } from "@/components/ui/highlight";
 import { SiteNav } from "@/components/site-nav";
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
@@ -243,7 +244,7 @@ export default function Home() {
                       <span className="editor__dot" />
                       <span className="editor__file">{step.file}</span>
                     </div>
-                    <pre>{step.code}</pre>
+                    <pre>{highlight(step.code)}</pre>
                   </div>
                 </article>
               ))}

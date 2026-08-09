@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
+import {
+  Compass,
+  Database,
+  EyeOff,
+  MousePointerClick,
+  PanelTopClose,
+  SlidersHorizontal,
+} from "lucide-react";
+import { DriftLab } from "@/components/playground/drift-lab";
 import { LauncherLab } from "@/components/playground/launcher-lab";
 import { PlaygroundRoot } from "@/components/playground/playground-root";
 import { PlaygroundStage } from "@/components/playground/playground";
@@ -44,6 +53,16 @@ export default function PlaygroundPage() {
           <LauncherLab />
         </section>
       </PlaygroundRoot>
+
+      <section className="wrap pg__section">
+        <h2>Proving it stays correct</h2>
+        <p className="pg__lede">
+          Running a tour is the easy half. The half that matters is what happens six months later
+          when someone renames the button it points at. Three layers, each catching what the one
+          before it cannot — with the output each actually produces.
+        </p>
+        <DriftLab />
+      </section>
 
       <section className="wrap pg__section">
         <h2>Set it up, end to end</h2>
@@ -102,35 +121,80 @@ export default function PlaygroundPage() {
 
         <h2>Things that will catch you out</h2>
         <ul className="pg__cautions">
-          <li>
-            <b>An anchor must be visible to be found.</b> Resolution skips hidden and zero-size
-            elements, so a step pointing at something behind a collapsed accordion waits rather than
-            resolving. Open it first, or mark the step <code>optional</code>.
-          </li>
-          <li>
-            <b>A step inside a modal needs a way out.</b> Every later step is behind the dialog.
-            Close it in <code>onExit</code> — try the third scenario above with that line removed
-            and you will watch the spotlight land on covered layout.
-          </li>
-          <li>
-            <b>Do not drive the UI for the user.</b> Closing a dialog they opened is cleanup.
-            Clicking the button a step is teaching is not — they learn nothing, and the tour breaks
-            the moment the handler changes.
-          </li>
-          <li>
-            <b>Mount the launcher per view, not in the shell.</b> In the shell it follows people
-            onto pages its guide says nothing about. Put it on the view the tour describes.
-          </li>
-          <li>
-            <b>Two providers need two storage keys.</b> This page runs its own provider so the
-            playground cannot mark the site&apos;s own tour as complete. Pass a key to{" "}
-            <code>localStoragePersist(&quot;your-key&quot;)</code> whenever a second provider
-            exists.
-          </li>
-          <li>
-            <b>The controls here are not an API.</b> Placement, padding and beacon are ordinary
-            fields on a step. There is no runtime config object to learn.
-          </li>
+          {[
+            {
+              Icon: EyeOff,
+              title: "An anchor must be visible to be found",
+              body: (
+                <>
+                  Resolution skips hidden and zero-size elements, so a step pointing at something
+                  behind a collapsed accordion waits rather than resolving. Open it first, or mark
+                  the step <code>optional</code>.
+                </>
+              ),
+            },
+            {
+              Icon: PanelTopClose,
+              title: "A step inside a modal needs a way out",
+              body: (
+                <>
+                  Every later step is behind the dialog. Close it in <code>onExit</code> — try the
+                  third scenario above with that line removed and you will watch the spotlight land
+                  on covered layout.
+                </>
+              ),
+            },
+            {
+              Icon: MousePointerClick,
+              title: "Do not drive the UI for the user",
+              body: (
+                <>
+                  Closing a dialog they opened is cleanup. Clicking the button a step is teaching is
+                  not — they learn nothing, and the tour breaks the moment the handler changes.
+                </>
+              ),
+            },
+            {
+              Icon: Compass,
+              title: "Mount the launcher per view, not in the shell",
+              body: (
+                <>
+                  In the shell it follows people onto pages its guide says nothing about. Put it on
+                  the view the tour describes.
+                </>
+              ),
+            },
+            {
+              Icon: Database,
+              title: "Two providers need two storage keys",
+              body: (
+                <>
+                  This page runs its own provider so the playground cannot mark the site&apos;s own
+                  tour as complete. Pass a key to{" "}
+                  <code>localStoragePersist(&quot;your-key&quot;)</code> whenever a second provider
+                  exists.
+                </>
+              ),
+            },
+            {
+              Icon: SlidersHorizontal,
+              title: "The controls here are not an API",
+              body: (
+                <>
+                  Placement, padding and beacon are ordinary fields on a step. There is no runtime
+                  config object to learn.
+                </>
+              ),
+            },
+          ].map(({ Icon, title, body }) => (
+            <li key={title}>
+              <span className="pg__cauticon" aria-hidden>
+                <Icon size={17} strokeWidth={1.8} />
+              </span>
+              <b>{title}</b>
+              <p>{body}</p>
+            </li>
+          ))}
         </ul>
 
         <p className="pg__next">
