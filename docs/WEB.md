@@ -73,7 +73,7 @@ installing anything. For a tour library this is worth more than any prose.
 | ----------------- | ------- | ----------------- |
 | `@cairnkit/core`  | 2.7 kb  | **zero**          |
 | `@cairnkit/react` | 3.2 kb  | core only         |
-| `@cairnkit/ui`    | 6.7 kb  | `@floating-ui/dom` |
+| `@cairnkit/ui`    | 6.9 kb  | `@floating-ui/dom` |
 | `@cairnkit/next`  | 0.3 kb  | react only        |
 
 **5. Comparison — but not the one in the brief.**

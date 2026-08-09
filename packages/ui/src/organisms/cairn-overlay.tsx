@@ -42,7 +42,45 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
 
   const cardRef = useRef<HTMLDivElement>(null);
   const arrowRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const [isSheet, setIsSheet] = useState(false);
+  const [origin, setOrigin] = useState({ x: 0, y: 0 });
+
+  /**
+   * Where our own root actually sits.
+   *
+   * `.cairn-root` is `position: fixed; inset: 0`, so normally its box *is* the
+   * viewport and target rects — which come from `getBoundingClientRect`, i.e.
+   * viewport space — can be used directly.
+   *
+   * Not so once we portal into a dialog. Any ancestor with `transform`,
+   * `filter`, `backdrop-filter`, `perspective`, `contain` or `will-change`
+   * becomes the containing block for fixed descendants, so the root shrinks to
+   * that element and every coordinate is off by its origin. Drawers hit this
+   * every time, because sliding one in means transforming it.
+   *
+   * Measuring the root and subtracting its origin is correct in both cases: it
+   * is (0, 0) when the containing block really is the viewport.
+   */
+  useLayoutEffect(() => {
+    const node = rootRef.current;
+    if (!node) return;
+
+    const measure = () => {
+      const box = node.getBoundingClientRect();
+      setOrigin((prev) =>
+        prev.x === box.left && prev.y === box.top ? prev : { x: box.left, y: box.top },
+      );
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", measure, true);
+    return () => {
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure, true);
+    };
+  }, [container, tour.rect]);
 
   useEffect(() => {
     // jsdom has no matchMedia. A library must not take down a consumer's test
@@ -151,9 +189,10 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
   if (!container || !tour.flow || !tour.step || tour.isPaused) return null;
 
   return createPortal(
-    <div className="cairn-root">
+    <div className="cairn-root" ref={rootRef}>
       <Spotlight
         rect={tour.rect}
+        origin={origin}
         anchorKey={String(tour.step.anchor)}
         padding={tour.step.padding}
         beacon={tour.showBeacon}

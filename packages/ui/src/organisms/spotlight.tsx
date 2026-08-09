@@ -19,9 +19,21 @@ export type SpotlightProps = {
   anchorKey?: string | null;
   padding?: number;
   beacon?: boolean;
+  /**
+   * Top-left of the positioning root in viewport space. Non-zero only when the
+   * overlay is portaled inside a dialog whose ancestor established a
+   * containing block for fixed elements.
+   */
+  origin?: { x: number; y: number };
 };
 
-export function Spotlight({ rect, anchorKey, padding = DEFAULT_PADDING, beacon }: SpotlightProps) {
+export function Spotlight({
+  rect,
+  anchorKey,
+  padding = DEFAULT_PADDING,
+  beacon,
+  origin = { x: 0, y: 0 },
+}: SpotlightProps) {
   const [shown, setShown] = useState<TargetRect | null>(rect);
   const positioned = useRef(false);
 
@@ -46,8 +58,8 @@ export function Spotlight({ rect, anchorKey, padding = DEFAULT_PADDING, beacon }
   if (!shown) return <div className="cairn-spotlight--flat" aria-hidden />;
 
   const geometry = {
-    top: shown.top - padding,
-    left: shown.left - padding,
+    top: shown.top - origin.y - padding,
+    left: shown.left - origin.x - padding,
     width: shown.width + padding * 2,
     height: shown.height + padding * 2,
     borderRadius: Math.max(shown.radius, 6) + padding / 2,
