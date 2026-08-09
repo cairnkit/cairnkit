@@ -21,6 +21,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           </Link>
           <span className="doc-badge">Docs</span>
           <div className="nav__links">
+            <Link href="/playground">Playground</Link>
             <Link href="/docs">Docs</Link>
             <a href={site.repo}>GitHub</a>
             <ThemeToggle />

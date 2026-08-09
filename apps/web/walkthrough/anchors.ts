@@ -10,4 +10,12 @@ export const anchors = defineAnchors({
     comparison: "site.comparison",
     packages: "site.packages",
   },
+  /** Targets inside the playground's fake product UI. */
+  demo: {
+    nav: "demo.nav",
+    create: "demo.create",
+    settings: "demo.settings",
+    panel: "demo.panel",
+    save: "demo.save",
+  },
 });

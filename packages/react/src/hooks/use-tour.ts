@@ -5,6 +5,7 @@ import {
   DEFAULT_ADVANCE,
   bindAdvanceRule,
   decideForRoute,
+  devWarn,
   defaultsToBeacon,
   getFlow,
   showsNextButton,
@@ -119,7 +120,18 @@ export function useTour() {
   const start = useCallback(
     (flowId: RegisteredFlowId) => {
       const target = getFlow(flows, flowId);
-      if (!target) return;
+
+      if (!target) {
+        // Silent here means a launcher that does nothing and gives no clue
+        // why — usually a flow that was never passed to the provider, or a
+        // second provider that does not know about it.
+        const known = Object.keys(flows);
+        devWarn(
+          `No flow "${flowId}" is registered with this provider. ` +
+            `Known flows: ${known.length ? known.join(", ") : "none"}.`,
+        );
+        return;
+      }
 
       if (pathname !== target.entryRoute) router.navigate(target.entryRoute);
       store.start(flowId);

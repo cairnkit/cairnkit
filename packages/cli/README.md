@@ -10,6 +10,14 @@ npm i -D @cairnkit/cli
 "scripts": { "lint": "eslint . && cairn check" }
 ```
 
+Run it directly with `npx`, since the binary is a local dev dependency rather
+than a global one:
+
+```bash
+npx cairn check                    # defaults to src
+npx cairn check src app            # several roots, scanned as one project
+```
+
 ```
 ✗ cairn check failed
 
