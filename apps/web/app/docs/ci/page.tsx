@@ -18,6 +18,11 @@ export default function Page() {
         { id: "safe", label: "What it does not do" },
       ]}
     >
+      <Callout kind="note" title="The other command">
+        <C>@cairnkit/cli</C> also ships <C>cairn init</C>, which scaffolds anchors, a flow and a
+        provider into an existing app. See <a href="/docs/install">Installation</a>.
+      </Callout>
+
       <H2 id="run">Running it</H2>
       <Code>{`npx cairn check`}</Code>
       <P>

@@ -38,6 +38,16 @@ verified in CI, and a broken tour fails the build.
 ## Install
 
 ```bash
+npx @cairnkit/cli init
+```
+
+Detects your framework and scaffolds the files below. It never overwrites
+anything, and it prints the provider wiring rather than editing your layout.
+`--dry-run` shows the plan; `--dir` chooses where files land.
+
+Or by hand:
+
+```bash
 npm i @cairnkit/core @cairnkit/react @cairnkit/ui @cairnkit/next
 npm i -D @cairnkit/cli
 ```

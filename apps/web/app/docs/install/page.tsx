@@ -24,7 +24,25 @@ npm i -D @cairnkit/cli`}</Code>
         Or let the CLI do it. It detects your framework, writes the files below, and prints the
         two steps it deliberately leaves to you:
       </P>
-      <Code>{`npx @cairnkit/cli init`}</Code>
+      <Code>{`npx @cairnkit/cli init
+
+  --dir <path>   where the files go. Defaults to src/walkthrough
+  --dry-run      print the whole plan and write nothing`}</Code>
+      <P>
+        It reads your framework, whether source sits under <C>src/</C>, your tsconfig path alias
+        and your package manager, then writes an anchor registry, a starter flow, the type
+        registry and a provider. It never overwrites a file, and running it twice does nothing.
+      </P>
+      <Callout kind="note" title="It will not touch your layout">
+        Mounting the provider is the one step it prints rather than performs. Rewriting someone
+        else&apos;s root layout on first contact is not worth the minute it saves — if the edit
+        goes wrong there is nothing to undo.
+      </Callout>
+      <P>
+        JavaScript projects get JavaScript. You lose the type registry, which is the part that
+        turns a rename into a compile error, and <C>init</C> says so rather than pretending
+        otherwise.
+      </P>
       <Callout kind="note" title="Why the scoped name">
         <C>cairn</C> is somebody else&apos;s package on npm, so <C>npx cairn init</C> would run
         theirs. Once <C>@cairnkit/cli</C> is a dev dependency, <C>npx cairn check</C> works
