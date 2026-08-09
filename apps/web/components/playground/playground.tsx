@@ -6,7 +6,7 @@ import { useTour } from "@cairnkit/react";
 import { DemoApp } from "./demo-app";
 import { usePlayground } from "./playground-root";
 import { SCENARIOS, buildCode, type Config, type ScenarioId } from "./scenarios";
-import { Snippet } from "./snippet";
+import { Snippet } from "@/components/ui/snippet";
 
 const PLACEMENTS: Placement[] = ["top", "bottom", "left", "right"];
 

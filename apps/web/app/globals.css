@@ -205,6 +205,10 @@ pre { max-width: 100%; }
   background: var(--accent); transition: right .22s cubic-bezier(.16,1,.3,1);
 }
 .nav__links a:hover::after { right: 0; }
+/* Tells you where you are. Three separate navs could not do this — none of
+   them knew the current route. */
+.nav__links a[aria-current="page"] { color: var(--fg); font-weight: 570; }
+.nav__links a[aria-current="page"]::after { right: 0; }
 
 /* ── CTA band ─────────────────────────────────────────────────────────── */
 .cta { text-align: center; padding-block: 76px; border-top: 1px solid var(--line); }
@@ -378,8 +382,29 @@ body { overflow-x: clip; }
    Four situations users actually create, each given enough room to read as a
    story rather than a table row: what they did, what Cairn does, and the one
    field that governs it. */
+/* Bento: two half-width cards, then three thirds. Five equal cards left the
+   last one stranded on a row of its own, which read as a mistake rather than
+   a layout. The two that get more room are the two that need it — resumeAt
+   and handoffRoutes are the least obvious of the five. */
 .scenarios { display: grid; gap: 16px; }
-@media (min-width: 780px) { .scenarios { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 480px) and (max-width: 779px) {
+  .scenarios { grid-template-columns: 1fr 1fr; }
+  .scenario:nth-child(1) { grid-column: span 2; }
+}
+@media (min-width: 780px) {
+  .scenarios { grid-template-columns: repeat(6, 1fr); }
+  .scenario:nth-child(-n + 2) { grid-column: span 3; }
+  .scenario:nth-child(n + 3) { grid-column: span 2; }
+
+  /* The featured pair earns larger type and a hint of accent, so the size
+     difference reads as deliberate rather than as a reflow. */
+  .scenario:nth-child(-n + 2) { padding: 26px 26px 24px; }
+  .scenario:nth-child(-n + 2) .scenario__does { font-size: 16.5px; }
+  .scenario:nth-child(-n + 2)::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 90% at 100% 0%, rgb(var(--accent-rgb) / .07), transparent 60%);
+  }
+}
 
 .scenario {
   position: relative; padding: 22px 22px 20px; overflow: hidden;
@@ -814,3 +839,33 @@ body { overflow-x: clip; }
 .tk-t { color: var(--tk-tag); }
 .tk-f { color: var(--tk-fn); }
 .tk-n { color: var(--tk-num); }
+
+/* Playground band on the landing page. */
+.tryband { display: grid; gap: 26px; align-items: center; }
+@media (min-width: 860px) { .tryband { grid-template-columns: 1.15fr 1fr; gap: 44px; } }
+.tryband__copy .lede { margin-bottom: 22px; }
+.tryband__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.tryband__list li {
+  position: relative; padding: 14px 16px 14px 44px; font-size: 15px; line-height: 1.5;
+  color: var(--muted); border: 1px solid var(--line); border-radius: 12px; background: var(--bg-soft);
+}
+.tryband__list li::before {
+  content: ""; position: absolute; left: 17px; top: 50%; width: 9px; height: 9px;
+  margin-top: -4px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / .16);
+}
+
+/* The docs badge and five nav items do not fit a 375px phone together; the
+   badge is the least load-bearing of them. */
+@media (max-width: 640px) {
+  .doc-badge { display: none; }
+  .nav__links { gap: 15px; font-size: 14px; }
+}
+
+/* A snippet must be allowed to shrink below its content. Without min-width:0
+   a grid or flex parent sizes to the widest line instead of scrolling it,
+   which pushed whole docs pages sideways on a phone. */
+.snip { min-width: 0; max-width: 100%; }
+.snip__pre { max-width: 100%; }
+.doc-callout { min-width: 0; }
+.doc-callout > * { min-width: 0; max-width: 100%; }

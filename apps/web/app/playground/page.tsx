@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SiteNav } from "@/components/site-nav";
 import { LauncherLab } from "@/components/playground/launcher-lab";
 import { PlaygroundRoot } from "@/components/playground/playground-root";
 import { PlaygroundStage } from "@/components/playground/playground";
 import { SetupGuide } from "@/components/playground/setup-guide";
-import { Snippet } from "@/components/playground/snippet";
-import { Mark } from "@/components/mark";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Snippet } from "@/components/ui/snippet";
 import { site } from "../site";
 
 export const metadata: Metadata = {
@@ -19,19 +18,7 @@ export const metadata: Metadata = {
 export default function PlaygroundPage() {
   return (
     <>
-      <nav className="nav">
-        <div className="wrap nav__in">
-          <Link className="nav__brand" href="/">
-            <Mark /> {site.name}
-          </Link>
-          <div className="nav__links">
-            <Link href="/playground">Playground</Link>
-            <Link href="/docs">Docs</Link>
-            <a href={site.repo}>GitHub</a>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+      <SiteNav />
 
       <header className="wrap pg__head">
         <span className="pg__eyebrow">Interactive</span>

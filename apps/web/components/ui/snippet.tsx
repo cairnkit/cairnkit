@@ -36,7 +36,9 @@ export function Snippet({
   return (
     <div className="snip">
       <div className="snip__bar">
-        <span className="snip__file">{file ?? "example.ts"}</span>
+        {/* Empty span keeps the copy button right-aligned when there is no
+            filename to show — docs blocks often have none. */}
+        <span className="snip__file">{file ?? ""}</span>
         <button className="snip__copy" onClick={copy} aria-label={`Copy ${file ?? "code"}`}>
           {copied ? "Copied" : "Copy"}
         </button>

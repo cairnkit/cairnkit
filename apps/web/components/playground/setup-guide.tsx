@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SETUPS } from "./setup-data";
-import { Snippet } from "./snippet";
+import { Snippet } from "@/components/ui/snippet";
 
 /**
  * A file browser rather than a wall of snippets.

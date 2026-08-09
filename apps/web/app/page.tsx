@@ -1,14 +1,14 @@
 import Link from "next/link";
+import { Mark } from "@/components/mark";
+import { SiteNav } from "@/components/site-nav";
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
-import { Mark } from "@/components/mark";
 import {
   IconArrow, IconExit, IconFlow, IconForward, IconLayers, IconPause,
   IconRegistry, IconShield, IconSwitch, IconTarget,
 } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StartTour } from "@/components/start-tour";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { anchors } from "@/walkthrough/anchors";
 import { site } from "./site";
 
@@ -113,21 +113,14 @@ const TOTALS = [
 export default function Home() {
   return (
     <>
-      <nav className="nav">
-        <div className="wrap nav__in">
-          <a className="nav__brand" href="/">
-            <Mark /> {site.name}
-          </a>
-          <div className="nav__links">
+      <SiteNav
+        extra={
+          <>
             <a className="hide-sm" href="#how">How it works</a>
             <a className="hide-sm" href="#compare">Comparison</a>
-            <Link href="/playground">Playground</Link>
-            <Link href="/docs">Docs</Link>
-            <a href={site.repo}>GitHub</a>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+          </>
+        }
+      />
 
       <header className="wrap hero">
         <h1>Product tours that fail your build, not your users.</h1>
@@ -256,6 +249,29 @@ export default function Home() {
               ))}
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* The page can describe a tour, or it can let you run one. This is the
+          cheapest possible route to the second. */}
+      <section className="section" id="try">
+        <div className="wrap tryband">
+          <div className="tryband__copy">
+            <p className="eyebrow">Try it</p>
+            <h2 className="h">Run one, right now</h2>
+            <p className="lede">
+              A real tour against a real UI. Change the placement, padding and advance rule, watch
+              the spotlight move, then copy the flow that produced it. Nothing to install.
+            </p>
+            <Link className="btn btn--primary" href="/playground">
+              Open the playground <IconArrow />
+            </Link>
+          </div>
+          <ul className="tryband__list">
+            <li>Three scenarios, including a step anchored inside a modal</li>
+            <li>Launcher positions and icons, on a launcher that really works</li>
+            <li>End-to-end React and Next.js setups, file by file</li>
+          </ul>
         </div>
       </section>
 

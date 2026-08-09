@@ -5,7 +5,7 @@ import type { LauncherPosition } from "@cairnkit/ui";
 import { TourLauncher } from "@cairnkit/ui";
 import { usePlayground } from "./playground-root";
 import { SCENARIOS } from "./scenarios";
-import { Snippet } from "./snippet";
+import { Snippet } from "@/components/ui/snippet";
 
 const POSITIONS: LauncherPosition[] = [
   "top-left",
