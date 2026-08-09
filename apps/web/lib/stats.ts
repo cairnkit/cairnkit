@@ -10,13 +10,15 @@
  * take the site down, so every failure resolves to `null` and the caller is
  * expected to render nothing.
  */
-const PACKAGES = [
-  "@cairnkit/core",
-  "@cairnkit/react",
-  "@cairnkit/ui",
-  "@cairnkit/next",
-  "@cairnkit/cli",
-] as const;
+/**
+ * One package, not the sum of all five.
+ *
+ * Installing the SDK pulls core plus react plus ui, and often next and cli
+ * too, so adding the five together counts a single adopter up to five times.
+ * `core` is the honest proxy: every other package depends on it, so any
+ * install downloads it exactly once.
+ */
+const BELLWETHER = "@cairnkit/core";
 
 /** Re-fetch hourly. Download figures update roughly daily, so this is ample. */
 const REVALIDATE = 3600;
@@ -41,21 +43,10 @@ async function json<T>(url: string): Promise<T | null> {
 }
 
 async function downloads(): Promise<number | null> {
-  // The bulk endpoint explicitly rejects scoped packages, so this is one
-  // request per package. Five is cheap once an hour.
-  const results = await Promise.all(
-    PACKAGES.map((name) =>
-      json<{ downloads?: number }>(
-        `https://api.npmjs.org/downloads/point/last-month/${name}`,
-      ),
-    ),
+  const result = await json<{ downloads?: number }>(
+    `https://api.npmjs.org/downloads/point/last-month/${BELLWETHER}`,
   );
-
-  // If every request failed we know nothing; a partial failure would understate
-  // the total, which is the safe direction to be wrong in.
-  if (results.every((entry) => entry === null)) return null;
-
-  return results.reduce((total, entry) => total + (entry?.downloads ?? 0), 0);
+  return result?.downloads ?? null;
 }
 
 async function stars(): Promise<number | null> {

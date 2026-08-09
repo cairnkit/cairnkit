@@ -61,7 +61,7 @@ npx cairn check src app packages/ui`}</Code>
       <Code file="package.json">{`"scripts": { "lint": "eslint . && cairn check src" }`}</Code>
       <Code file=".github/workflows/ci.yml">{`- run: npx cairn check src`}</Code>
       <P>
-        Roughly 0.2s across 2,000 files, so it belongs in the fast lane next to your linter rather
+        Around 0.1s across 700 source files, so it belongs in the fast lane next to your linter rather
         than in a nightly job.
       </P>
 

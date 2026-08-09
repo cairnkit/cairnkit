@@ -86,13 +86,35 @@ export function scanProject(rootDirs: string | string[]): CheckContext {
   const stepAt = new Map<string, Location>();
   const literalAt = new Map<string, Location>();
 
+  /**
+   * `stripLiterals` is a character-by-character pass, and it used to run on
+   * every file twice — once here and once below. On a 700-file app that was
+   * ~420ms of the ~470ms total, nearly all of it spent proving that files with
+   * no anchors in them have no anchors in them.
+   *
+   * Guarding on the raw text first is safe because stripping only ever removes
+   * matches: if the raw source does not contain `defineAnchors(`, the stripped
+   * source cannot either.
+   */
+  const stripped = new Map<string, string>();
+  const strip = (file: string, raw: string) => {
+    let value = stripped.get(file);
+    if (value === undefined) {
+      value = stripLiterals(raw);
+      stripped.set(file, value);
+    }
+    return value;
+  };
+
   for (const file of files) {
     const raw = readFileSync(file, "utf8");
+    sources.set(file, raw);
+
     // Comments and template literals cannot declare anything; only their
     // presence would confuse the identifier scan below.
-    const declaresRegistry = stripLiterals(raw).includes("defineAnchors(");
+    const declaresRegistry =
+      raw.includes("defineAnchors(") && strip(file, raw).includes("defineAnchors(");
     const source = declaresRegistry ? raw : "";
-    sources.set(file, raw);
     if (declaresRegistry) registryFiles.add(file);
 
     if (source.includes("defineAnchors(")) {
@@ -108,8 +130,28 @@ export function scanProject(rootDirs: string | string[]): CheckContext {
 
   const isFlowFile = (source: string) => source.includes("defineFlow(");
 
+  /**
+   * A file can only matter to this pass if it mentions Cairn by name, spreads
+   * an anchor, or contains one of the registered ids as a bare string.
+   *
+   * That last clause is load-bearing: config-driven UI passes ids as data —
+   * `{ tourTarget: "nav.invite" }` names neither `cairn` nor `anchor`, and
+   * dropping it would silently mark a live anchor as unapplied. One alternation
+   * over the known ids keeps that case while skipping the ~94% of files that
+   * cannot possibly contribute.
+   */
+  const ids = [...registered];
+  const idPattern =
+    ids.length > 0
+      ? new RegExp(ids.map((id) => id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"))
+      : null;
+
+  const isRelevant = (raw: string) =>
+    raw.includes("cairn") || raw.includes("anchor") || (idPattern?.test(raw) ?? false);
+
   for (const [file, raw] of sources) {
-    const source = stripLiterals(raw);
+    if (!isRelevant(raw)) continue;
+    const source = strip(file, raw);
 
     // Config-driven UI passes the id as data — `{ cairnAnchor: "nav.invite" }`
     // in a nav config, for instance. That is neither a data-cairn attribute nor

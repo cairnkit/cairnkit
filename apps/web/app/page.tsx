@@ -124,12 +124,12 @@ export default async function Home() {
   const metrics: { value: string; label: string; live?: boolean }[] = [
     { value: "6.2 kb", label: "headless, gzipped" },
     { value: "0", label: "runtime dependencies" },
-    { value: "~0.2s", label: "CI check, 2k files" },
+    { value: "~0.1s", label: "CI check, 700 files" },
     { value: "3", label: "layers of drift defence" },
   ];
 
   if (downloads !== null && downloads >= FLOOR.downloads) {
-    metrics.unshift({ value: format(downloads), label: "installs a month", live: true });
+    metrics.unshift({ value: format(downloads), label: "downloads a month", live: true });
     metrics.pop();
   }
   if (stars !== null && stars >= FLOOR.stars) {

@@ -86,6 +86,22 @@ export const anchors = defineAnchors({ nav: { invite: "nav.invite" } });`,
     expect(ctx.untypedUse.has("nav.invite")).toBe(true);
   });
 
+  it("finds an id in a file that never says cairn or anchor", () => {
+    // The scan skips files that cannot contribute, which is what makes it fast.
+    // This fixture is the case that filter can get wrong: the id is present as
+    // plain data under a name of the app's own choosing, so the only thing
+    // linking the file to Cairn is the id string itself. Miss it and a live
+    // anchor reads as unapplied — the check fails a build for no reason.
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ nav: { invite: "nav.invite" } });`,
+      "menu.ts": `export const menu = [{ path: "/invite", tourTarget: "nav.invite" }];`,
+    });
+
+    const ctx = scanProject(dir);
+    expect(ctx.applied.has("nav.invite")).toBe(true);
+  });
+
   it("never counts the registry's own declaration as a use", () => {
     // Otherwise every anchor is trivially "applied" and the check is worthless.
     const dir = project({

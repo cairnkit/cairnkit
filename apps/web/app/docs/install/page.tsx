@@ -20,6 +20,16 @@ export default function Page() {
       <H2 id="packages">Packages</H2>
       <Code>{`npm i @cairnkit/core @cairnkit/react @cairnkit/ui @cairnkit/next
 npm i -D @cairnkit/cli`}</Code>
+      <P>
+        Or let the CLI do it. It detects your framework, writes the files below, and prints the
+        two steps it deliberately leaves to you:
+      </P>
+      <Code>{`npx @cairnkit/cli init`}</Code>
+      <Callout kind="note" title="Why the scoped name">
+        <C>cairn</C> is somebody else&apos;s package on npm, so <C>npx cairn init</C> would run
+        theirs. Once <C>@cairnkit/cli</C> is a dev dependency, <C>npx cairn check</C> works
+        normally — npx finds the local binary first.
+      </Callout>
       <Callout kind="note" title="Why core is in that list">
         <C>@cairnkit/react</C> depends on <C>@cairnkit/core</C> anyway, so npm users get it
         hoisted whether they ask for it or not. pnpm does not hoist, and the typed-anchor

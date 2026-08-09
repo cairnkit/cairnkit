@@ -10,6 +10,18 @@ npm i -D @cairnkit/cli
 "scripts": { "lint": "eslint . && cairn check" }
 ```
 
+## Getting set up
+
+```bash
+npx @cairnkit/cli init
+```
+
+Detects your framework and scaffolds anchors, a flow, the typed registry and a
+provider. It never overwrites a file and never edits your layout — it prints
+that step instead. `--dry-run` shows the plan; `--dir` chooses where files go.
+
+## Checking
+
 Run it directly with `npx`, since the binary is a local dev dependency rather
 than a global one:
 
