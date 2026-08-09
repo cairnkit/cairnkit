@@ -97,23 +97,35 @@ declare module "@cairnkit/core" {
       <H2 id="mount">Mount the provider</H2>
       <Code file="app/providers.tsx">{`"use client";
 
+import type { ReactNode } from "react";
 import { CairnProvider } from "@cairnkit/react";
 import { useAppRouterAdapter } from "@cairnkit/next";
 import { CairnOverlay, TourLauncher } from "@cairnkit/ui";
 import "@cairnkit/ui/styles.css";
 import { upgradeFlow } from "./flows";
 
-export function Providers({ children }) {
+export function Providers({ children }: { children: ReactNode }) {
   return (
-    <CairnProvider
-      flows={[upgradeFlow]}
-      router={useAppRouterAdapter()}
-      onEvent={(e) => analytics.capture(e.name, e.props)}
-    >
+    <CairnProvider flows={[upgradeFlow]} router={useAppRouterAdapter()}>
       {children}
       <CairnOverlay />
       <TourLauncher flowId="upgrade-plan" />
     </CairnProvider>
+  );
+}`}</Code>
+      <P>
+        Then wrap your app with it. The provider has to be an ancestor of every anchor — rendered
+        as a sibling it supplies context to nothing, and every <C>useTour()</C> below throws.
+      </P>
+      <Code file="app/layout.tsx">{`import { Providers } from "./providers";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 }`}</Code>
       <Callout kind="warn" title="The overlay is not optional">
