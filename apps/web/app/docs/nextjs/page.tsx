@@ -17,6 +17,13 @@ export default function Page() {
         { id: "gotchas", label: "Known gotchas" },
       ]}
     >
+      <Callout kind="note" title="Read these first">
+        This page covers only the wiring for your framework. The anchor registry and the flow it
+        points at are the same everywhere and are defined on{" "}
+        <a href="/docs/anchors">Anchors</a> and <a href="/docs/flows">Flows and steps</a>. Or skip
+        both and run <C>npx @cairnkit/cli init</C>, which writes them for you.
+      </Callout>
+
       <H2 id="app-router">App Router</H2>
       <P>
         The provider is a client component. Put it in its own file so your layout can stay a server

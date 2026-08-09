@@ -19,6 +19,13 @@ export default function Page() {
         { id: "vite", label: "Vite notes" },
       ]}
     >
+      <Callout kind="note" title="Read these first">
+        This page covers only the wiring for your framework. The anchor registry and the flow it
+        points at are the same everywhere and are defined on{" "}
+        <a href="/docs/anchors">Anchors</a> and <a href="/docs/flows">Flows and steps</a>. Or skip
+        both and run <C>npx @cairnkit/cli init</C>, which writes them for you.
+      </Callout>
+
       <H2 id="adapter">The router adapter</H2>
       <P>
         Cairn is not a Next library. Everything route-related — <C>resumeAt</C>,{" "}
@@ -32,7 +39,13 @@ export default function Page() {
       <P>That is the entire surface. Any router is about ten lines.</P>
 
       <H2 id="react-router">react-router</H2>
-      <Code file="src/router-adapter.ts">{`import { useLocation, useNavigate } from "react-router-dom";
+      <Callout kind="warn" title="v6 and v7 are different packages">
+        react-router v7 moved everything into <C>react-router</C>; <C>react-router-dom</C> is a
+        compat shim that a v7 project may not have installed at all. Import from whichever one is
+        in your <C>package.json</C> — the wrong one simply does not resolve.
+      </Callout>
+      <Code file="src/router-adapter.ts">{`// v7: import from "react-router". v6: from "react-router-dom".
+import { useLocation, useNavigate } from "react-router";
 import type { RouterAdapter } from "@cairnkit/react";
 
 export function useReactRouterAdapter(): RouterAdapter {
@@ -72,7 +85,7 @@ export function useTanStackAdapter(): RouterAdapter {
       </Callout>
 
       <H2 id="mount">Mounting</H2>
-      <Code file="src/App.tsx">{`import { BrowserRouter } from "react-router-dom";
+      <Code file="src/App.tsx">{`import { BrowserRouter } from "react-router";  // v6: react-router-dom
 import { CairnProvider } from "@cairnkit/react";
 import { CairnOverlay, TourLauncher } from "@cairnkit/ui";
 import "@cairnkit/ui/styles.css";
