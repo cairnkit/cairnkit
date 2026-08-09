@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mark } from "@/components/mark";
+import { ExternalLink } from "lucide-react";
 import { highlight } from "@/components/ui/highlight";
 import { SiteNav } from "@/components/site-nav";
 import { anchor } from "@cairnkit/core";
@@ -286,7 +287,7 @@ export default function Home() {
           </p>
           <Reveal>
             <div {...anchor(anchors.site.offpath)} className="scenarios demo-target">
-              {OFFPATH.map((row, index) => (
+              {OFFPATH.map((row) => (
                 <article className="scenario glass" key={row.field}>
                   <div className="scenario__icon">{row.icon}</div>
                   <p className="scenario__did">
@@ -298,7 +299,6 @@ export default function Home() {
                     {row.does}
                   </p>
                   <code className="scenario__field">{row.field}</code>
-                  <span className="scenario__n">{String(index + 1).padStart(2, "0")}</span>
                 </article>
               ))}
             </div>
@@ -359,36 +359,35 @@ export default function Home() {
             Headless lands at 6.2 kb — about what driver.js costs, for rather more.
           </p>
 
-          <div {...anchor(anchors.site.packages)} className="pkgs glass demo-target">
+          <div {...anchor(anchors.site.packages)} className="pkgs demo-target">
             {PACKAGES.map((pkg) => (
-              <div className="pkg" key={pkg.name}>
-                <div className="pkg__id">
+              <a
+                className="pkg"
+                key={pkg.name}
+                href={`https://www.npmjs.com/package/${pkg.name}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="pkg__id">
                   <code>{pkg.name}</code>
                   {pkg.optional && <span className="pkg__opt">optional</span>}
-                  <span className="pkg__note">{pkg.note}</span>
-                </div>
-                <div className="pkg__track" aria-hidden>
-                  <span className="pkg__fill" style={{ width: `${pkg.bar}%` }} />
-                </div>
-                <div className="pkg__size">{pkg.kb}</div>
-              </div>
+                </span>
+                <span className="pkg__note">{pkg.note}</span>
+                <span className="pkg__size">{pkg.kb}</span>
+                <ExternalLink className="pkg__go" size={14} strokeWidth={1.8} aria-hidden />
+              </a>
             ))}
+          </div>
 
-            {/* The comparison people actually want: what the minimum costs,
-                and what everything costs. */}
+          {/* The comparison people actually want: what the minimum costs, and
+              what everything costs. Kept apart from the list — these are sums
+              of it, not more rows in it. */}
+          <div className="totals">
             {TOTALS.map((total) => (
-              <div className="pkg pkg--totals" key={total.label}>
-                <div className="pkg__id">
-                  <strong>{total.label}</strong>
-                  <span className="pkg__note">{total.note}</span>
-                </div>
-                <div className="pkg__track" aria-hidden>
-                  <span
-                    className="pkg__fill pkg__fill--muted"
-                    style={{ width: `${total.bar}%` }}
-                  />
-                </div>
-                <div className="pkg__size">{total.kb}</div>
+              <div className="total" key={total.label}>
+                <span className="total__kb">{total.kb}</span>
+                <span className="total__label">{total.label}</span>
+                <span className="total__note">{total.note}</span>
               </div>
             ))}
           </div>

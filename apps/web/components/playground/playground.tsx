@@ -40,7 +40,7 @@ export function PlaygroundStage() {
         </div>
 
         <div className="wb__source">
-          <Snippet code={code} file="walkthrough/flows.ts" max={280} />
+          <Snippet code={code} file="walkthrough/flows.ts" max={340} />
         </div>
       </div>
 

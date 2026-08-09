@@ -272,20 +272,7 @@ body { overflow-x: clip; }
 }
 
 /* ── packages: proportional size bars ─────────────────────────────────── */
-.pkgs { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); overflow: hidden; }
-.pkg { display: grid; grid-template-columns: minmax(150px, 200px) 1fr auto; align-items: center;
-  gap: 20px; padding: 15px 22px; border-bottom: 1px solid var(--line); transition: background .18s; }
-.pkg:last-child { border-bottom: 0; }
-.pkg:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
-.pkg__name { font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; }
-.pkg__note { display: block; font-family: inherit; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-.pkg__track { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; min-width: 60px; }
-.pkg__fill { height: 100%; border-radius: 999px; background: var(--accent);
-  transform-origin: left; animation: pkg-grow .9s cubic-bezier(.16,1,.3,1) both; }
 @keyframes pkg-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-.pkg__size { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.pkg__zero { font-size: 11.5px; color: var(--ok); font-weight: 600; letter-spacing: .03em;
-  text-transform: uppercase; }
 @media (max-width: 720px) {
   .pkg { grid-template-columns: 1fr auto; gap: 10px 14px; }
   .pkg__track { grid-column: 1 / -1; }
@@ -331,7 +318,13 @@ body { overflow-x: clip; }
 .flow { display: grid; gap: 16px; }
 @media (min-width: 900px) { .flow { grid-template-columns: 1fr 1fr; } }
 
-.fstep { padding: 20px; min-width: 0; transition: transform .24s cubic-bezier(.16,1,.3,1), border-color .24s; }
+/* A column, so the editor can take whatever height the prose leaves. Bodies
+   differ in length across the four; without this the code blocks start at
+   four different heights and the row looks accidental. */
+.fstep {
+  padding: 20px; min-width: 0; display: flex; flex-direction: column;
+  transition: transform .24s cubic-bezier(.16,1,.3,1), border-color .24s;
+}
 .fstep:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
 .fstep__top { display: flex; align-items: center; gap: 11px; }
 .fstep__icon {
@@ -345,7 +338,12 @@ body { overflow-x: clip; }
 .fstep p { color: var(--muted); font-size: 14px; margin: 9px 0 14px; }
 
 /* Small window chrome so a code block reads as an editor, not a grey slab. */
-.editor { border-radius: 11px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent); }
+.editor {
+  border-radius: 11px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
+}
+.fstep .editor { flex: 1; display: flex; flex-direction: column; }
+.fstep .editor pre { flex: 1; }
 .editor__bar { display: flex; align-items: center; gap: 6px; padding: 8px 11px;
   background: color-mix(in srgb, var(--snip-fg) 6%, var(--snip-bg)); }
 .editor__dot { width: 9px; height: 9px; border-radius: 999px; background: color-mix(in srgb, var(--snip-fg) 22%, transparent); }
@@ -435,11 +433,6 @@ body { overflow-x: clip; }
   padding: 3px 9px; border-radius: 7px;
 }
 /* Oversized index, clipped by the card — depth without another border. */
-.scenario__n {
-  position: absolute; right: -6px; bottom: -18px; font-size: 68px; font-weight: 700;
-  letter-spacing: -.04em; line-height: 1; color: color-mix(in srgb, var(--fg) 4%, transparent);
-  pointer-events: none; user-select: none;
-}
 
 /* ── footer ─────────────────────────────────────────────────────────────── */
 .footer__row { justify-content: center; text-align: center; }
@@ -449,43 +442,12 @@ body { overflow-x: clip; }
    Proportional bars, so "small" is something you see rather than read. The
    two totals at the bottom answer the question the table cannot: what does
    the minimum cost, and what does everything cost. */
-.pkgs { overflow: hidden; }
-.pkg {
-  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(80px, 1fr) auto;
-  align-items: center; gap: 20px; padding: 15px 22px;
-  border-bottom: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
-  transition: background .18s;
-}
-.pkg:last-child { border-bottom: 0; }
-.pkg:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
 
-.pkg__id { min-width: 0; }
-.pkg__id code { font-family: ui-monospace, Menlo, monospace; font-size: 13.5px; }
-.pkg__id strong { font-size: 14px; font-weight: 640; }
-.pkg__note { display: block; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-.pkg__note code { font-size: 11.5px; }
 
-.pkg__opt {
-  display: inline-block; margin-left: 8px; font-size: 10px; font-weight: 650;
-  letter-spacing: .05em; text-transform: uppercase; color: var(--muted);
-  border: 1px solid var(--line); padding: 1px 6px; border-radius: 999px;
-  vertical-align: 1px;
-}
 
-.pkg__track { height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
-.pkg__fill {
-  display: block; height: 100%; border-radius: 999px; background: var(--accent);
-  transform-origin: left; animation: pkg-grow .8s cubic-bezier(.16,1,.3,1) both;
-}
-.pkg__fill--muted { background: color-mix(in srgb, var(--fg) 26%, transparent); }
 @keyframes pkg-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-.pkg__size { font-size: 14px; font-weight: 620; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-.pkg--totals {
-  background: color-mix(in srgb, var(--fg) 3%, transparent);
-  border-top: 1px solid color-mix(in srgb, var(--fg) 10%, transparent);
-}
 
 @media (max-width: 720px) {
   .pkg { grid-template-columns: 1fr auto; gap: 8px 14px; }
@@ -557,7 +519,11 @@ body { overflow-x: clip; }
    One instrument. Card-per-thing reads as a template; a toolbar, a stage, a
    source pane and a docked inspector read as a tool. Tighter radii than the
    marketing sections on purpose — this part is machinery. */
-.pg { display: grid; grid-template-columns: minmax(0, 1fr) 268px; gap: 18px; align-items: start; }
+/* `align-items: start` on purpose. Stretching made the short column match the
+   tall one, and since the flow source is long, that left ~500px of dead space
+   beside the demo. The inspector is sticky instead: it follows you down the
+   source rather than padding itself out to meet it. */
+.pg { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
 
 .wb {
   min-width: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
@@ -981,4 +947,43 @@ body { overflow-x: clip; }
 .lab__toggle { display: inline-flex; align-items: center; gap: 9px; }
 .lab__toggle label:last-child {
   font-family: ui-monospace, monospace; font-size: 13px; color: var(--fg); cursor: pointer;
+}
+
+/* ── Packages ──────────────────────────────────────────────────────────
+   Bars compared the packages against each other, which is not a question
+   anyone actually has. What you want is what it does, what it costs, and a
+   way to go read more — so each row is a link to npm. */
+.pkgs { display: grid; gap: 8px; }
+.pkg {
+  display: grid; grid-template-columns: minmax(190px, auto) 1fr auto auto;
+  align-items: center; gap: 8px 16px; text-decoration: none;
+  padding: 15px 17px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--panel); color: var(--fg);
+  transition: border-color .16s, transform .16s;
+}
+.pkg:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); transform: translateY(-1px); }
+.pkg__id { display: inline-flex; align-items: center; gap: 9px; }
+.pkg__id code { font-family: ui-monospace, Menlo, monospace; font-size: 14px; font-weight: 560; }
+.pkg__opt {
+  font-size: 10px; font-weight: 640; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px;
+}
+.pkg__note { font-size: 14px; color: var(--muted); }
+.pkg__size { font-family: ui-monospace, monospace; font-size: 13.5px; color: var(--fg); }
+.pkg__go { color: var(--muted); opacity: .55; transition: opacity .16s, color .16s; }
+.pkg:hover .pkg__go { opacity: 1; color: var(--accent); }
+
+.totals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.total {
+  padding: 18px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--bg-soft); display: grid; gap: 3px;
+}
+.total__kb { font-size: 26px; font-weight: 680; letter-spacing: -.025em; }
+.total__label { font-size: 14.5px; font-weight: 600; }
+.total__note { font-size: 13px; color: var(--muted); }
+
+@media (max-width: 720px) {
+  .pkg { grid-template-columns: 1fr auto; }
+  .pkg__note { grid-column: 1 / -1; order: 3; }
+  .totals { grid-template-columns: 1fr; }
 }

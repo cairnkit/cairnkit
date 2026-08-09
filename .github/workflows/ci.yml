@@ -18,6 +18,14 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm typecheck
+
+      # `pnpm typecheck` and `pnpm build` filter to ./packages/**, so the docs
+      # site was never checked here at all — Vercel was the only thing that
+      # would notice a broken page, and only after merge.
+      - name: Typecheck and build the site
+        run: |
+          pnpm --filter @cairnkit/web exec tsc --noEmit
+          pnpm --filter @cairnkit/web build
       - run: pnpm test
 
       # Dogfooding: the example app and the site are real consumers, so the
