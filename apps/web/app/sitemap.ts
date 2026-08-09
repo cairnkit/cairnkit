@@ -7,6 +7,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: site.url, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    {
+      url: `${site.url}/playground`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
     ...FLAT.map((page) => ({
       url: `${site.url}${href(page.slug)}`,
       lastModified: now,

@@ -19,11 +19,22 @@ export default function Page() {
       ]}
     >
       <H2 id="run">Running it</H2>
-      <Code>{`npx cairn check src`}</Code>
+      <Code>{`npx cairn check`}</Code>
       <P>
-        Point it at the directory containing your anchors, flows and components. It exits{" "}
-        <C>0</C> when clean and <C>1</C> on any finding.
+        The path defaults to <C>src</C>. Pass one or more directories if your code lives
+        elsewhere or spans several roots — everything is scanned as a single project, so a flow
+        in one directory can point at a component in another:
       </P>
+      <Code>{`npx cairn check src
+npx cairn check src app packages/ui`}</Code>
+      <P>
+        It exits <C>0</C> when clean and <C>1</C> on any finding.
+      </P>
+      <Callout kind="note" title="npx, or an npm script">
+        <C>@cairnkit/cli</C> installs as a local dev dependency, so bare <C>cairn</C> is not on
+        your shell PATH — use <C>npx</C>. Inside an npm script it is on PATH, so{" "}
+        <C>"lint": "cairn check"</C> works without <C>npx</C>.
+      </Callout>
 
       <H2 id="output">Reading the output</H2>
       <Code>{`✗ cairn check failed

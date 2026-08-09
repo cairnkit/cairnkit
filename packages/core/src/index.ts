@@ -28,6 +28,7 @@ export type {
 export { createTourStore, localStoragePersist } from "./engine/store";
 export { decideForRoute, type RouteDecision } from "./engine/lifecycle";
 export { createActionRegistry, type ActionRegistry, type TourAction } from "./engine/actions";
+export { devWarn } from "./internal/dev";
 export {
   DEFAULT_ADVANCE,
   bindAdvanceRule,
