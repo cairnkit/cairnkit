@@ -18,6 +18,10 @@
     "release": "pnpm build && changeset publish",
     "test:init": "pnpm --filter @cairnkit/cli build && bash scripts/init-matrix.sh",
     "test:docs": "bash scripts/docs-matrix.sh",
+    "sandboxes": "node scripts/sandboxes.mjs build",
+    "sandboxes:check": "node scripts/sandboxes.mjs check",
+    "sandboxes:verify": "node scripts/sandboxes.mjs verify",
+    "sandboxes:urls": "node scripts/sandboxes.mjs urls",
     "size": "node scripts/measure-size.mjs",
     "size:check": "node scripts/measure-size.mjs --check",
     "audit:published": "node scripts/audit-published.mjs --audit-level high"

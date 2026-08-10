@@ -1,0 +1,16 @@
+[
+  {
+    "name": "next-app",
+    "title": "Next.js — App Router",
+    "blurb": "Provider in a client component, anchors in server components, route-aware steps.",
+    "url": "https://stackblitz.com/github/cairnkit/cairnkit/tree/main/sandboxes/next-app?file=walkthrough%2Fflows.ts&terminal=dev",
+    "openFile": "walkthrough/flows.ts"
+  },
+  {
+    "name": "react-vite",
+    "title": "React — Vite + react-router",
+    "blurb": "The ten-line router adapter, a multi-route tour, and the launcher.",
+    "url": "https://stackblitz.com/github/cairnkit/cairnkit/tree/main/sandboxes/react-vite?file=src%2Fwalkthrough%2Fflows.ts&terminal=dev",
+    "openFile": "src/walkthrough/flows.ts"
+  }
+]

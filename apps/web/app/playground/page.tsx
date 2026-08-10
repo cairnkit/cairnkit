@@ -3,12 +3,14 @@ import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import {
   Compass,
+  ExternalLink,
   Database,
   EyeOff,
   MousePointerClick,
   PanelTopClose,
   SlidersHorizontal,
 } from "lucide-react";
+import sandboxes from "@/lib/sandboxes.json";
 import { DriftLab } from "@/components/playground/drift-lab";
 import { LauncherLab } from "@/components/playground/launcher-lab";
 import { PlaygroundRoot } from "@/components/playground/playground-root";
@@ -62,6 +64,32 @@ export default function PlaygroundPage() {
           before it cannot — with the output each actually produces.
         </p>
         <DriftLab />
+      </section>
+
+      <section className="wrap pg__section">
+        <h2>Run it in your browser</h2>
+        <p className="pg__lede">
+          The examples from the repository, running for real — install, edit, break something.
+          These are generated from the same projects CI typechecks and builds, so they cannot
+          drift from code that works.
+        </p>
+        <div className="sbx">
+          {sandboxes.map((sandbox) => (
+            <a className="sbx__card" key={sandbox.name} href={sandbox.url}
+               target="_blank" rel="noreferrer">
+              <span className="sbx__title">
+                {sandbox.title}
+                <ExternalLink size={15} strokeWidth={1.8} aria-hidden />
+              </span>
+              <span className="sbx__blurb">{sandbox.blurb}</span>
+              <code className="sbx__file">{sandbox.openFile}</code>
+            </a>
+          ))}
+        </div>
+        <p className="pg__note">
+          Next.js takes about 30 seconds to boot in a browser container; the Vite one starts in a
+          few. Both install from npm exactly as your own project would.
+        </p>
       </section>
 
       <section className="wrap pg__section">

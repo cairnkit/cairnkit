@@ -1,0 +1,58 @@
+{
+  "$comment": [
+    "Configuration for scripts/sandboxes.mjs — the generator that turns the",
+    "workspace examples into standalone StackBlitz projects.",
+    "",
+    "Adding a sandbox means adding an entry here and nothing else. The examples",
+    "stay the single source of truth; everything under outDir is generated and",
+    "must never be hand-edited (`pnpm sandboxes:check` fails the build if it is).",
+    "",
+    "Playwright is stripped from every sandbox: it cannot run in a WebContainer,",
+    "and shipping a `test` script that always fails is worse than shipping none."
+  ],
+
+  "outDir": "sandboxes",
+  "repo": "cairnkit/cairnkit",
+  "branch": "main",
+
+  "$stripDependencies": "Removed from every generated sandbox — CI tooling that a browser container cannot run.",
+  "stripDependencies": ["@playwright/test", "@cairnkit/cli"],
+
+  "$stripScripts": "Scripts removed because their tooling was stripped above.",
+  "stripScripts": ["test"],
+
+  "$stripPaths": "Never copied. Build output, editor state, and CI-only fixtures.",
+  "stripPaths": [
+    "node_modules",
+    "dist",
+    ".next",
+    "test-results",
+    "playwright-report",
+    "tests",
+    "playwright.config.ts",
+    "tsconfig.tsbuildinfo",
+    "next-env.d.ts",
+    ".turbo"
+  ],
+
+  "sandboxes": [
+    {
+      "source": "examples/next-app",
+      "name": "next-app",
+      "title": "Next.js — App Router",
+      "blurb": "Provider in a client component, anchors in server components, route-aware steps.",
+      "startCommand": "npm run dev",
+      "openFile": "walkthrough/flows.ts",
+      "$note": "Next boots slowly in a WebContainer — roughly 30s. Worth it: it is the framework most people arrive with."
+    },
+    {
+      "source": "examples/react-vite",
+      "name": "react-vite",
+      "title": "React — Vite + react-router",
+      "blurb": "The ten-line router adapter, a multi-route tour, and the launcher.",
+      "startCommand": "npm run dev",
+      "openFile": "src/walkthrough/flows.ts",
+      "$note": "Boots in a few seconds. The better default link for anyone just looking."
+    }
+  ]
+}

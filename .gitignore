@@ -28,3 +28,6 @@ test-results/
 
 # os
 .DS_Store
+
+# launch collateral — video project, generated audio, renders, snapshots
+media/

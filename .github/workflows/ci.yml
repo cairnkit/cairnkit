@@ -37,6 +37,12 @@ jobs:
       - name: Verify advertised sizes
         run: node scripts/measure-size.mjs --check
 
+      # sandboxes/ is generated from examples/. Nothing installs it in CI, so
+      # a stale copy would rot silently and the public StackBlitz links would
+      # drift from the code they claim to show.
+      - name: Verify sandboxes match their examples
+        run: pnpm sandboxes:check
+
       # Scoped to the dependency closure we actually publish. A root-level
       # audit also walks the examples and the docs site, so an advisory in the
       # example's router blocks a release it cannot possibly affect — and a

@@ -1,0 +1,5 @@
+{
+  "generatedFrom": "examples/next-app",
+  "generator": "scripts/sandboxes.mjs",
+  "warning": "Generated. Edit the example it came from, then run: pnpm sandboxes"
+}
