@@ -62,16 +62,20 @@ export async function getStats(): Promise<Stats> {
 }
 
 /**
- * Below these, a figure says "nobody uses this" louder than it says anything
- * else, so it is not shown at all. Raise them rather than lower them.
+ * Stars are shown once they mean something; downloads are not shown at all.
  *
- * The download floor is deliberately high. Every publish attracts a few
- * hundred downloads a week from registry mirrors and security scanners before
- * a single human installs anything — this package saw ~200/week within two
- * days of its first release, with one GitHub star and no announcement. A
- * lower floor would light the counter up on that noise and call it adoption.
+ * npm counts every fetch, and a newly published package is fetched constantly
+ * by registry mirrors and security scanners. This one went 0 → ~1,050/day the
+ * day it was published and stayed flat there, with one GitHub star and no
+ * announcement — roughly 31,000 a month before a single human installs
+ * anything. No floor separates that from adoption, because the noise is larger
+ * than any number worth advertising.
+ *
+ * Real adoption is lumpy: it spikes when something is posted and settles
+ * higher than before. If that shape ever appears, show a figure again — as a
+ * sparkline, which makes the shape visible, rather than a total that cannot.
  */
-export const FLOOR = { downloads: 2000, stars: 25 } as const;
+export const FLOOR = { downloads: Infinity, stars: 25 } as const;
 
 export function format(value: number): string {
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
