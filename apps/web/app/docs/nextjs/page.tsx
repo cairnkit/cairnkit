@@ -19,9 +19,9 @@ export default function Page() {
     >
       <Callout kind="note" title="Read these first">
         This page covers only the wiring for your framework. The anchor registry and the flow it
-        points at are the same everywhere and are defined on{" "}
-        <a href="/docs/anchors">Anchors</a> and <a href="/docs/flows">Flows and steps</a>. Or skip
-        both and run <C>npx @cairnkit/cli init</C>, which writes them for you.
+        points at are the same everywhere and are defined on <a href="/docs/anchors">Anchors</a> and{" "}
+        <a href="/docs/flows">Flows and steps</a>. Or skip both and run <C>npx cairnkit init</C>,
+        which writes them for you.
       </Callout>
 
       <H2 id="app-router">App Router</H2>
@@ -57,7 +57,9 @@ export default function RootLayout({ children }) {
 }`}</Code>
 
       <H2 id="pages-router">Pages Router</H2>
-      <P>Same shape, different adapter. Wrap in <C>_app</C>.</P>
+      <P>
+        Same shape, different adapter. Wrap in <C>_app</C>.
+      </P>
       <Code file="pages/_app.tsx">{`import type { AppProps } from "next/app";
 import { CairnProvider } from "@cairnkit/react";
 import { usePagesRouterAdapter } from "@cairnkit/next";
@@ -81,8 +83,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <C>document</C> rather than throwing, so importing Cairn from a server component is safe.
       </P>
       <Callout kind="good" title="Anchors are server-safe">
-        <C>anchor()</C> just returns a props object, so you can spread it in a server component. Only
-        the provider and overlay need <C>&quot;use client&quot;</C>.
+        <C>anchor()</C> just returns a props object, so you can spread it in a server component.
+        Only the provider and overlay need <C>&quot;use client&quot;</C>.
       </Callout>
 
       <H2 id="deeplink">Deep links</H2>
@@ -98,9 +100,9 @@ export function DeepLink() {
   return null;
 }`}</Code>
       <Callout kind="note" title="No Suspense boundary needed">
-        It reads <C>window.location.search</C> rather than <C>useSearchParams</C>. That hook opts its
-        whole subtree out of prerendering and needs its own Suspense boundary; going through the DOM
-        avoids both, and works in any framework.
+        It reads <C>window.location.search</C> rather than <C>useSearchParams</C>. That hook opts
+        its whole subtree out of prerendering and needs its own Suspense boundary; going through the
+        DOM avoids both, and works in any framework.
       </Callout>
 
       <H2 id="gotchas">Known gotchas</H2>
@@ -116,8 +118,7 @@ export function DeepLink() {
         </li>
         <li>
           <strong>Route changes are asynchronous.</strong> Anchors are waited for, so a step whose
-          action navigates just works — see{" "}
-          <Link href="/docs/off-path">going off-script</Link>.
+          action navigates just works — see <Link href="/docs/off-path">going off-script</Link>.
         </li>
       </Ul>
     </DocPage>

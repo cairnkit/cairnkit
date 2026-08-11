@@ -41,7 +41,7 @@ instead of silently pointing a tour at nothing.
 ## Fastest correct integration
 
 \`\`\`bash
-npx @cairnkit/cli init
+npx cairnkit init
 \`\`\`
 
 Detects the framework, whether source lives under src/, the tsconfig path alias

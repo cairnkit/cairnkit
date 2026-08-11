@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { relative } from "node:path";
 import type { Finding } from "../checks/types";
+import { CLI_NAME } from "../cli-name";
 
 const red = (s: string) => `\x1b[31m${s}\x1b[0m`;
 const yellow = (s: string) => `\x1b[33m${s}\x1b[0m`;
@@ -21,11 +22,13 @@ function describe(at: { file: string; offset: number }): string {
 
 export function reportFindings(findings: Finding[], registeredCount: number): void {
   if (findings.length === 0) {
-    console.log(green(`✓ cairn check — ${registeredCount} anchors, all applied, no route conflicts`));
+    console.log(
+      green(`✓ ${CLI_NAME} check · ${registeredCount} anchors, all applied, no route conflicts`),
+    );
     return;
   }
 
-  console.error(red("\n✗ cairn check failed\n"));
+  console.error(red(`\n✗ ${CLI_NAME} check failed\n`));
 
   for (const finding of findings) {
     console.error(`  ${yellow("•")} ${finding.message}  ${dim(`[${finding.rule}]`)}`);

@@ -1,14 +1,15 @@
 import { runCheck } from "./commands/check";
+import { CLI_NAME } from "./cli-name";
 import { runInit } from "./commands/init";
 
-const USAGE = `cairn — product tours that fail your build, not your users.
+const USAGE = `${CLI_NAME} · product tours that fail your build, not your users.
 
-  cairn check [dir...]   Fail when a tour points at UI that no longer exists.
+  ${CLI_NAME} check [dir...]   Fail when a tour points at UI that no longer exists.
                          Defaults to "src". Several roots are scanned as one
                          project, so a flow in one can point at a component
                          in another.
 
-  cairn init [options]   Scaffold anchors, a flow and a provider into this app.
+  ${CLI_NAME} init [options]   Scaffold anchors, a flow and a provider into this app.
     --dir <path>         Where to put them. Defaults to src/walkthrough.
     --dry-run            Print the plan and write nothing.
 `;

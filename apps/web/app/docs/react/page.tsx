@@ -21,9 +21,9 @@ export default function Page() {
     >
       <Callout kind="note" title="Read these first">
         This page covers only the wiring for your framework. The anchor registry and the flow it
-        points at are the same everywhere and are defined on{" "}
-        <a href="/docs/anchors">Anchors</a> and <a href="/docs/flows">Flows and steps</a>. Or skip
-        both and run <C>npx @cairnkit/cli init</C>, which writes them for you.
+        points at are the same everywhere and are defined on <a href="/docs/anchors">Anchors</a> and{" "}
+        <a href="/docs/flows">Flows and steps</a>. Or skip both and run <C>npx cairnkit init</C>,
+        which writes them for you.
       </Callout>
 
       <H2 id="adapter">The router adapter</H2>
@@ -41,8 +41,8 @@ export default function Page() {
       <H2 id="react-router">react-router</H2>
       <Callout kind="warn" title="v6 and v7 are different packages">
         react-router v7 moved everything into <C>react-router</C>; <C>react-router-dom</C> is a
-        compat shim that a v7 project may not have installed at all. Import from whichever one is
-        in your <C>package.json</C> — the wrong one simply does not resolve.
+        compat shim that a v7 project may not have installed at all. Import from whichever one is in
+        your <C>package.json</C> — the wrong one simply does not resolve.
       </Callout>
       <Code file="src/router-adapter.ts">{`// v7: import from "react-router". v6: from "react-router-dom".
 import { useLocation, useNavigate } from "react-router";
@@ -71,9 +71,7 @@ export function useTanStackAdapter(): RouterAdapter {
 }`}</Code>
 
       <H2 id="norouter">No router at all</H2>
-      <P>
-        A single-page app with no routing still works — every route feature simply never fires.
-      </P>
+      <P>A single-page app with no routing still works — every route feature simply never fires.</P>
       <Code>{`const staticAdapter = {
   usePathname: () => "/",
   navigate: () => {},

@@ -6,6 +6,7 @@ import { reportFindings } from "../reporters/console";
 import { existsSync } from "node:fs";
 import { relative, resolve } from "node:path";
 import { MissingRoots, defaultRoots, scanProject } from "../scan";
+import { CLI_NAME } from "../cli-name";
 
 const CHECKS = [anchorsApplied, anchorsRegistered, routeConflicts];
 
@@ -27,7 +28,7 @@ export function runCheck(rootDirs?: string | string[]): number {
       console.error(
         `Not found: ${error.roots.map((root) => relative(process.cwd(), root) || ".").join(", ")}`,
       );
-      console.error("Pass the directories to scan, for example: cairn check src app");
+      console.error(`Pass the directories to scan, for example: ${CLI_NAME} check src app`);
       return 1;
     }
     throw error;
@@ -36,7 +37,7 @@ export function runCheck(rootDirs?: string | string[]): number {
   if (context.registered.size === 0) {
     console.error(
       `No anchors found in ${roots.map((d) => `"${d}"`).join(", ")}. ` +
-        "Is defineAnchors() somewhere else? Pass the directory: cairn check <dir>",
+        `Is defineAnchors() somewhere else? Pass the directory: ${CLI_NAME} check <dir>`,
     );
     return 1;
   }

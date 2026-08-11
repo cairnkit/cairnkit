@@ -13,7 +13,7 @@ npm i -D @cairnkit/cli
 ## Getting set up
 
 ```bash
-npx @cairnkit/cli init
+npx cairnkit init
 ```
 
 Detects your framework and scaffolds anchors, a flow, the typed registry and a

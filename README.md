@@ -38,7 +38,7 @@ verified in CI, and a broken tour fails the build.
 ## Install
 
 ```bash
-npx @cairnkit/cli init
+npx cairnkit init
 ```
 
 Detects your framework and scaffolds the files below. It never overwrites

@@ -4,6 +4,7 @@ import { detect } from "../init/detect";
 import { plan } from "../init/plan";
 import { block, bold, cyan, dim, green, heading, rule, yellow } from "../init/render";
 import type { Reader } from "../init/types";
+import { CLI_NAME } from "../cli-name";
 
 export type InitOptions = {
   cwd?: string;
@@ -27,7 +28,7 @@ export function runInit(options: InitOptions = {}): number {
   };
 
   if (!reader.exists("package.json")) {
-    console.error("No package.json here. Run cairn init from the root of your app.");
+    console.error(`No package.json here. Run ${CLI_NAME} init from the root of your app.`);
     return 1;
   }
 
@@ -36,7 +37,7 @@ export function runInit(options: InitOptions = {}): number {
   const out = (line = "") => console.log(line);
 
   out();
-  out(`  ${bold("cairn init")}   ${dim(describe(context))}`);
+  out(`  ${bold(`${CLI_NAME} init`)}   ${dim(describe(context))}`);
   out();
 
   if (result.write.length === 0) {
