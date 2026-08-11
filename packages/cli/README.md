@@ -26,8 +26,8 @@ Run it directly with `npx`, since the binary is a local dev dependency rather
 than a global one:
 
 ```bash
-npx cairn check                    # defaults to src
-npx cairn check src app            # several roots, scanned as one project
+npx cairnkit check                    # defaults to src
+npx cairnkit check src app            # several roots, scanned as one project
 ```
 
 ```

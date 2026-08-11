@@ -33,7 +33,7 @@ src/cairn/flows.ts(45,44): error TS2345: Argument of type
     catches: "An anchor that still exists in the registry but is no longer applied to any element.",
     how: "A static scan of your source. It knows which anchors are declared, which are applied, and which flow breaks when one goes missing.",
     file: "Terminal",
-    code: `$ npx cairn check src
+    code: `$ npx cairnkit check src
 
 ✗ cairn check failed
 
@@ -46,7 +46,8 @@ src/cairn/flows.ts(45,44): error TS2345: Argument of type
     id: "audit",
     label: "Browser audit",
     when: "In CI, against a running app",
-    catches: "An anchor that exists in source and passes the static check, but never renders — behind a feature flag, an empty state, or a conditional that no longer fires.",
+    catches:
+      "An anchor that exists in source and passes the static check, but never renders — behind a feature flag, an empty state, or a conditional that no longer fires.",
     how: "Drives each flow in a real browser and asserts every step spotlights something. Neither the compiler nor a static scan can see this.",
     file: "tests/walkthrough.spec.ts",
     code: `import { auditFlows } from "@cairnkit/cli";

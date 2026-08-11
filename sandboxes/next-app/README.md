@@ -15,4 +15,4 @@ Open [`walkthrough/flows.ts`](walkthrough/flows.ts) to see the tour itself — i
 plain data, and every anchor it points at is a typed identifier rather than a
 CSS selector.
 
-Then try breaking it: rename an anchor in the registry and run `npx cairn check`.
+Then try breaking it: rename an anchor in the registry and run `npx cairnkit check`.

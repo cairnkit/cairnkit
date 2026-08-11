@@ -24,20 +24,20 @@ export default function Page() {
       </Callout>
 
       <H2 id="run">Running it</H2>
-      <Code>{`npx cairn check`}</Code>
+      <Code>{`npx cairnkit check`}</Code>
       <P>
-        The path defaults to <C>src</C>. Pass one or more directories if your code lives
-        elsewhere or spans several roots — everything is scanned as a single project, so a flow
-        in one directory can point at a component in another:
+        The path defaults to <C>src</C>. Pass one or more directories if your code lives elsewhere
+        or spans several roots — everything is scanned as a single project, so a flow in one
+        directory can point at a component in another:
       </P>
-      <Code>{`npx cairn check src
-npx cairn check src app packages/ui`}</Code>
+      <Code>{`npx cairnkit check src
+npx cairnkit check src app packages/ui`}</Code>
       <P>
         It exits <C>0</C> when clean and <C>1</C> on any finding.
       </P>
       <Callout kind="note" title="npx, or an npm script">
-        <C>@cairnkit/cli</C> installs as a local dev dependency, so bare <C>cairn</C> is not on
-        your shell PATH — use <C>npx</C>. Inside an npm script it is on PATH, so{" "}
+        <C>@cairnkit/cli</C> installs as a local dev dependency, so bare <C>cairn</C> is not on your
+        shell PATH — use <C>npx</C>. Inside an npm script it is on PATH, so{" "}
         <C>"lint": "cairn check"</C> works without <C>npx</C>.
       </Callout>
 
@@ -56,18 +56,33 @@ npx cairn check src app packages/ui`}</Code>
       <H2 id="rules">The rules</H2>
       <PropsTable
         rows={[
-          { name: "anchors-applied", type: "error", description: "An anchor is registered and referenced by a flow, but never applied to an element." },
-          { name: "anchors-registered", type: "error", description: "A data-cairn attribute whose value is not in the registry — usually a typo or a leftover." },
-          { name: "route-conflicts", type: "error", description: "A route in both pauseRoutes and handoffRoutes, or a flow handing off to itself." },
+          {
+            name: "anchors-applied",
+            type: "error",
+            description:
+              "An anchor is registered and referenced by a flow, but never applied to an element.",
+          },
+          {
+            name: "anchors-registered",
+            type: "error",
+            description:
+              "A data-cairn attribute whose value is not in the registry — usually a typo or a leftover.",
+          },
+          {
+            name: "route-conflicts",
+            type: "error",
+            description:
+              "A route in both pauseRoutes and handoffRoutes, or a flow handing off to itself.",
+          },
         ]}
       />
 
       <H2 id="ci">In CI</H2>
       <Code file="package.json">{`"scripts": { "lint": "eslint . && cairn check src" }`}</Code>
-      <Code file=".github/workflows/ci.yml">{`- run: npx cairn check src`}</Code>
+      <Code file=".github/workflows/ci.yml">{`- run: npx cairnkit check src`}</Code>
       <P>
-        Around 0.1s across 700 source files, so it belongs in the fast lane next to your linter rather
-        than in a nightly job.
+        Around 0.1s across 700 source files, so it belongs in the fast lane next to your linter
+        rather than in a nightly job.
       </P>
 
       <H2 id="safe">What it does not do</H2>
@@ -78,8 +93,7 @@ npx cairn check src app packages/ui`}</Code>
         </li>
         <li>
           <strong>It cannot see rendering.</strong> An element that exists in source but never
-          renders passes — that is the{" "}
-          <Link href="/docs/audit">browser audit&rsquo;s</Link> job.
+          renders passes — that is the <Link href="/docs/audit">browser audit&rsquo;s</Link> job.
         </li>
         <li>
           <strong>It ignores quoted code.</strong> Comments and string literals are stripped first,

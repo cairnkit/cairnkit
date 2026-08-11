@@ -146,11 +146,11 @@ import { anchor } from "@cairnkit/core";
 
 \`\`\`bash
 npx tsc --noEmit      # a mistyped anchor or flow id fails here
-npx cairn check       # an anchor never applied to an element fails here
+npx cairnkit check       # an anchor never applied to an element fails here
 \`\`\`
 
 \`cairn check\` defaults to "src" and accepts several roots, scanned as one
-project: \`npx cairn check src app\`. It exits non-zero with the file and line
+project: \`npx cairnkit check src app\`. It exits non-zero with the file and line
 of the flow that breaks, which makes it a self-correction step rather than only
 a CI gate.
 

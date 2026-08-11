@@ -40,7 +40,14 @@ jobs:
       # sandboxes/ is generated from examples/. Nothing installs it in CI, so
       # a stale copy would rot silently and the public StackBlitz links would
       # drift from the code they claim to show.
+      #
+      # Skipped on the release PR, where it cannot pass by construction: that
+      # branch has already bumped the workspace to a version npm has never
+      # seen, and the generator refuses to pin one — but merging the PR is
+      # exactly what publishes it. Nothing to catch there anyway, since only
+      # version numbers changed and no human touched an example.
       - name: Verify sandboxes match their examples
+        if: github.head_ref != 'changeset-release/main'
         run: pnpm sandboxes:check
 
       # Scoped to the dependency closure we actually publish. A root-level
