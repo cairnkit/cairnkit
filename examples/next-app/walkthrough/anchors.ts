@@ -18,4 +18,14 @@ export const anchors = defineAnchors({
   settings: { difficulty: "settings.difficulty", save: "settings.save" },
   form: { title: "form.title", body: "form.body", submit: "form.submit" },
   ai: { prompt: "ai.prompt", generate: "ai.generate" },
+  /**
+   * A tabbed page: two guides, one URL. `tabs` belongs to neither panel and
+   * never unmounts, so nothing in the DOM says which guide is being looked at.
+   * The app declares that with `useTourScope`.
+   */
+  prefs: {
+    tabs: "prefs.tabs",
+    general: "prefs.general",
+    sharing: "prefs.sharing",
+  },
 });

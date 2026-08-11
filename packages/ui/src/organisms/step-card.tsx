@@ -21,6 +21,12 @@ export type StepCardProps = {
   stepNumber: number;
   totalSteps: number;
   showNext: boolean;
+  /**
+   * Defaults to "anything but the first step". Pass `false` when going back
+   * would land nowhere — the previous step lives on a page the user has left,
+   * so the button would do nothing.
+   */
+  showBack?: boolean;
   isLastStep: boolean;
   isSheet?: boolean;
   labels: StepCardLabels;
@@ -35,6 +41,7 @@ export function StepCard({
   stepNumber,
   totalSteps,
   showNext,
+  showBack = stepNumber > 1,
   isLastStep,
   isSheet,
   labels,
@@ -83,7 +90,7 @@ export function StepCard({
         </button>
 
         <div className="cairn-card__actions">
-          {stepNumber > 1 && (
+          {showBack && (
             <Button variant="ghost" onClick={onBack}>
               <ArrowLeftIcon />
               {labels.back}

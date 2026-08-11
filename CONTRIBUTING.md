@@ -99,6 +99,25 @@ major — `1.0.0` is reserved for the point where the API stops moving.
 Write the summary for a stranger reading a changelog. Say what was broken, not
 which function you edited.
 
+### Sandboxes are regenerated after a release, not before
+
+`sandboxes/` is generated from `examples/` with the workspace version pinned,
+and the generator checks that version is on npm — but it cannot check that the
+version actually _has_ the API the examples use. So any change that adds an
+export and then uses it in an example must be regenerated **after** publishing:
+
+1. Merge the change.
+2. Merge the Version Packages PR, which publishes.
+3. `pnpm sandboxes && pnpm sandboxes:verify`, then commit the result.
+
+Regenerating before step 2 pins the sandbox to the _previous_ version while its
+source imports something that version does not export.
+
+`sandboxes:check` cannot see that: it compares the generated copy against the
+committed one, and both are equally wrong. **`sandboxes:verify` is the only
+thing that catches it**, because it installs from npm and builds for real. Run
+it before announcing a release, not only before merging one.
+
 ---
 
 ## Testing philosophy

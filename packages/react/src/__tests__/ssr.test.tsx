@@ -14,12 +14,19 @@ import { defineFlow } from "@cairnkit/core";
 import type { RouterAdapter } from "../adapters/router";
 import { CairnProvider } from "../provider/cairn-provider";
 import { useTour } from "../hooks/use-tour";
+import { useTourScope } from "../hooks/use-tour-scope";
 
 const router: RouterAdapter = { usePathname: () => "/", navigate: () => {} };
 
 function Probe() {
   const tour = useTour();
   return <div data-testid="probe">{`${tour.stepIndex}:${String(tour.isPaused)}`}</div>;
+}
+
+function ScopedProbe() {
+  useTourScope("sharing");
+  const tour = useTour();
+  return <div>{`${String(tour.isPaused)}`}</div>;
 }
 
 function render(flows: Parameters<typeof CairnProvider>[0]["flows"]) {
@@ -58,8 +65,12 @@ describe("server rendering", () => {
           anchor: "a.one",
           title: "One",
           body: "1",
-          onEnter: () => { fired.push("enter"); },
-          onExit: () => { fired.push("exit"); },
+          onEnter: () => {
+            fired.push("enter");
+          },
+          onExit: () => {
+            fired.push("exit");
+          },
         },
       ],
     });
@@ -69,5 +80,26 @@ describe("server rendering", () => {
     // `onEnter` lives in an effect, and effects do not run during
     // renderToString. A hook that closes a modal must never fire server-side.
     expect(fired).toEqual([]);
+  });
+
+  it("declares a scope without reading the DOM or pausing the server render", () => {
+    const flow = defineFlow({
+      id: "main",
+      version: 1,
+      entryRoute: "/",
+      scope: "members",
+      steps: [{ anchor: "a.one", title: "One", body: "1" }],
+    });
+
+    // `useTourScope` sets state in an effect, so on the server no scope is
+    // ever declared. That has to read as "no constraint" rather than "wrong
+    // place", or a scoped flow would render paused and hydrate unpaused.
+    const html = renderToString(
+      <CairnProvider flows={[flow]} router={router}>
+        <ScopedProbe />
+      </CairnProvider>,
+    );
+
+    expect(html).toContain("false");
   });
 });

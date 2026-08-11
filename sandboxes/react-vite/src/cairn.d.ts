@@ -7,7 +7,7 @@ import type { anchors } from "./walkthrough/anchors";
 declare module "@cairnkit/core" {
   interface CairnRegister {
     anchors: typeof anchors;
-    flowIds: "invite-candidate" | "write-question";
+    flowIds: "invite-candidate" | "write-question" | "settings-members" | "settings-sharing";
     events: "invite:sent" | "question:saved";
   }
 }

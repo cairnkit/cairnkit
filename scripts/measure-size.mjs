@@ -91,4 +91,45 @@ if (stale) {
   console.error("\n  Update PACKAGES / TOTALS in apps/web/app/page.tsx.\n");
   process.exit(1);
 }
-console.log("  ✓ Landing page matches measured sizes.\n");
+
+/**
+ * The same figures are quoted in prose across the repo, and only the landing
+ * page array was ever checked — so the README, the docs and the site could
+ * drift apart from each other and from the build, which they did.
+ *
+ * Every `N.N kb` written in these files must therefore be one of the sizes
+ * measured above. It cannot tell whether a number is in the *right* place,
+ * but it does catch the stale one nobody remembered to update.
+ */
+const PROSE = [
+  "README.md",
+  "docs/WEB.md",
+  "docs/STRUCTURE.md",
+  "apps/web/app/page.tsx",
+  "apps/web/walkthrough/flows.ts",
+];
+
+const measured = new Set(claims.map(([, value]) => value));
+
+let drifted = false;
+for (const file of PROSE) {
+  const path = resolve(root, file);
+  if (!existsSync(path)) continue;
+
+  readFileSync(path, "utf8")
+    .split("\n")
+    .forEach((line, index) => {
+      for (const [found] of line.matchAll(/\d+\.\d+ kb/g)) {
+        if (measured.has(found)) continue;
+        console.error(`  ✗ ${file}:${index + 1} claims ${found}, which nothing measures.`);
+        drifted = true;
+      }
+    });
+}
+
+if (drifted) {
+  console.error(`\n  Measured: ${[...measured].sort().join(", ")}.\n`);
+  process.exit(1);
+}
+
+console.log("  ✓ Every published size matches the built output.\n");

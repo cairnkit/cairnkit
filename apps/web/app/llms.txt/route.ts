@@ -173,6 +173,18 @@ a CI gate.
   owns the state. Steps are module-level data and cannot close over that setter.
 - Driving the UI for the user. Closing a dialog they opened is cleanup; clicking
   the button a step is teaching means they learn nothing.
+- Giving two guides on one TABBED page nothing to tell them apart. Switching tabs
+  changes no pathname, so route handling cannot see it, and anchors are often
+  shared between tabs — a tab strip belongs to neither panel — so the running
+  guide keeps describing the panel you are no longer looking at. Give each flow a
+  \`scope\` and call \`useTourScope(activeTab)\` in the component that owns the tab
+  state. A query param such as \`?tab=sharing\` does NOT help: every adapter
+  reports the pathname alone, deliberately, so filters and sorting cannot disturb
+  a tour.
+- Calling useTour() more than once on a page. It is the driver — it binds advance
+  listeners, fires onEnter, and ends flows whose anchor never arrived — so a
+  second copy does all of that twice. To read the tour without driving it use
+  \`useActiveTour()\`; to start one, \`useStartTour()\`.
 
 ## Documentation
 

@@ -152,8 +152,8 @@ cost the user nothing.
 
 | Package                             | What it is                                                    |
 | ----------------------------------- | ------------------------------------------------------------- |
-| [`@cairnkit/core`](packages/core)   | Engine. **Zero runtime dependencies**, 2.7 kb gzipped         |
-| [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 3.2 kb                 |
+| [`@cairnkit/core`](packages/core)   | Engine. **Zero runtime dependencies**, 2.8 kb gzipped         |
+| [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 4.0 kb                 |
 | [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 6.9 kb (JS + CSS) |
 | [`@cairnkit/next`](packages/next)   | App Router and Pages Router adapters                          |
 | [`@cairnkit/cli`](packages/cli)     | `cairn check`                                                 |

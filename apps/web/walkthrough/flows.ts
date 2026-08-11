@@ -39,7 +39,7 @@ export const tourOfThisPage = defineFlow({
     {
       anchor: anchors.site.packages,
       title: "Small, and mostly optional",
-      body: "The engine is 2.7 kb with zero dependencies. Take only what you need.",
+      body: "The engine is 2.8 kb with zero dependencies. Take only what you need.",
       placement: "top",
     },
   ],
