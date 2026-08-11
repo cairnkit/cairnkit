@@ -1,0 +1,34 @@
+{
+  "name": "cairnkit",
+  "version": "0.6.0",
+  "description": "Run the cairnkit CLI without installing anything: npx cairnkit init",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "cairnkit": "./bin.js"
+  },
+  "files": [
+    "bin.js",
+    "README.md"
+  ],
+  "dependencies": {
+    "@cairnkit/cli": "workspace:*"
+  },
+  "keywords": [
+    "cairnkit",
+    "product tour",
+    "onboarding",
+    "react",
+    "nextjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairnkit/cairnkit.git",
+    "directory": "packages/cairnkit"
+  },
+  "homepage": "https://cairnkit.dev",
+  "scripts": {
+    "build": "node -e \"process.exit(0)\"",
+    "typecheck": "node -e \"process.exit(0)\""
+  }
+}

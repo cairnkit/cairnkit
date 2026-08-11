@@ -51,14 +51,14 @@ CairnEvent · CairnEventHandler · TargetRect · TourStore · PersistAdapter`}</
       <PropsTable
         rows={[
           { name: "<CairnProvider>", type: "component", description: "Mounts the runtime. Props: flows, router, translate, onEvent, onNotice, store, mobileBreakpoint." },
-          { name: "useTour()", type: "hook", description: "The controller — flow, step, rect, element, status, advance, back, skip, start, stop. Mount it once: it binds listeners and fires lifecycle hooks." },
-          { name: "useActiveTour()", type: "hook", description: "Read-only view — flow, stepIndex, pathname, decision, isPaused. No side effects, so it is safe beside useTour." },
+          { name: "useTour()", type: "hook", description: "The controller: flow, step, rect, element, status, advance, back, skip, start, stop. Mount it once: it binds listeners and fires lifecycle hooks." },
+          { name: "useActiveTour()", type: "hook", description: "Read-only view: flow, stepIndex, pathname, decision, isPaused. No side effects, so it is safe beside useTour." },
           { name: "useStartTour()", type: "hook", description: "Just the starter, without the driver. What a custom launcher wants." },
           { name: "useTourScope(scope)", type: "hook", description: "Declares which tab or stage is in front, for flows that carry a scope." },
           { name: "useTourState(selector)", type: "hook", description: "Subscribe to a slice of store state." },
           { name: "useStepCopy(flow, step)", type: "hook", description: "Resolves title and body, inline or via translate." },
           { name: "useTourDeepLink(param?)", type: "hook", description: "Starts a flow from ?tour=. Each value honoured once." },
-          { name: "useCairn()", type: "hook", description: "Raw context — flows, router, store." },
+          { name: "useCairn()", type: "hook", description: "Raw context: flows, router, store." },
           { name: "useTourAction(name, fn)", type: "hook", description: "Publishes an action a step can call via ctx.run, for as long as the component is mounted." },
           { name: "<TourAnchor id>", type: "component", description: "Escape hatch for components that swallow props." },
         ]}

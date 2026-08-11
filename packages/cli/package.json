@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
+    "cairnkit": "./dist/bin.js",
     "cairn": "./dist/bin.js"
   },
   "main": "./dist/index.js",

@@ -1,5 +1,5 @@
 export const site = {
-  name: "Cairn",
+  name: "cairnkit",
   url: "https://cairnkit.dev",
   tagline: "In-app product tours that fail your build, not your users.",
   description:

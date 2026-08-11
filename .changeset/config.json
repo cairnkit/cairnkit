@@ -16,7 +16,8 @@
       "@cairnkit/react",
       "@cairnkit/ui",
       "@cairnkit/next",
-      "@cairnkit/cli"
+      "@cairnkit/cli",
+      "cairnkit"
     ]
   ]
 }
