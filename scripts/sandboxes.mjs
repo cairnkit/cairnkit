@@ -21,8 +21,17 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
-  cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
 } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,6 +39,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CONFIG = JSON.parse(readFileSync(join(ROOT, "scripts/sandboxes.config.json"), "utf8"));
 const OUT = join(ROOT, CONFIG.outDir);
 const MANIFEST = ".generated.json";
+const SITE_MANIFEST = join(ROOT, "apps/web/lib/sandboxes.json");
 
 const green = (s) => `[32m${s}[0m`;
 const red = (s) => `[31m${s}[0m`;
@@ -55,7 +65,9 @@ function workspaceVersions() {
 function assertPublished(name, version) {
   try {
     const out = execFileSync("npm", ["view", `${name}@${version}`, "version"], {
-      encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 20_000,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+      timeout: 20_000,
     }).trim();
     return out === version;
   } catch {
@@ -112,7 +124,7 @@ function hashTree(dir) {
   return hash.digest("hex").slice(0, 16);
 }
 
-function build({ quiet = false } = {}) {
+function build({ quiet = false, into = OUT, siteFile = SITE_MANIFEST } = {}) {
   const versions = workspaceVersions();
   const log = (...args) => !quiet && console.log(...args);
   const results = [];
@@ -139,55 +151,81 @@ function build({ quiet = false } = {}) {
   }
   log(dim(`  verified ${needed.size} package(s) published`));
 
-  rmSync(OUT, { recursive: true, force: true });
+  rmSync(into, { recursive: true, force: true });
 
   for (const sandbox of CONFIG.sandboxes) {
     const from = join(ROOT, sandbox.source);
-    const to = join(OUT, sandbox.name);
+    const to = join(into, sandbox.name);
     if (!existsSync(from)) throw new Error(`missing source: ${sandbox.source}`);
 
     for (const rel of walk(from)) {
       const target = join(to, rel);
       mkdirSync(dirname(target), { recursive: true });
       if (rel === "package.json") {
-        writeFileSync(target, rewritePackageJson(readFileSync(join(from, rel), "utf8"), versions, sandbox));
+        writeFileSync(
+          target,
+          rewritePackageJson(readFileSync(join(from, rel), "utf8"), versions, sandbox),
+        );
       } else {
         cpSync(join(from, rel), target);
       }
     }
 
-    writeFileSync(join(to, ".stackblitzrc"),
-      `${JSON.stringify({ installDependencies: true, startCommand: sandbox.startCommand }, null, 2)}\n`);
+    writeFileSync(
+      join(to, ".stackblitzrc"),
+      `${JSON.stringify({ installDependencies: true, startCommand: sandbox.startCommand }, null, 2)}\n`,
+    );
 
     writeFileSync(join(to, "README.md"), readme(sandbox));
 
     // Belt and braces: a `workspace:` that survives would fail at install with
     // an error that points nowhere near this script.
     const leaked = walk(to).filter((rel) =>
-      readFileSync(join(to, rel), "utf8").includes("workspace:*"));
+      readFileSync(join(to, rel), "utf8").includes("workspace:*"),
+    );
     if (leaked.length) {
       console.error(red(`✗ ${sandbox.name}: workspace:* survived in ${leaked.join(", ")}`));
       process.exit(1);
     }
 
     const files = walk(to).length;
-    writeFileSync(join(to, MANIFEST), `${JSON.stringify({
-      generatedFrom: sandbox.source,
-      generator: "scripts/sandboxes.mjs",
-      warning: "Generated. Edit the example it came from, then run: pnpm sandboxes",
-    }, null, 2)}\n`);
+    writeFileSync(
+      join(to, MANIFEST),
+      `${JSON.stringify(
+        {
+          generatedFrom: sandbox.source,
+          generator: "scripts/sandboxes.mjs",
+          warning: "Generated. Edit the example it came from, then run: pnpm sandboxes",
+        },
+        null,
+        2,
+      )}\n`,
+    );
 
     results.push({ ...sandbox, files });
-    log(`  ${green("+")} ${sandbox.name.padEnd(12)} ${dim(`${files} files from ${sandbox.source}`)}`);
+    log(
+      `  ${green("+")} ${sandbox.name.padEnd(12)} ${dim(`${files} files from ${sandbox.source}`)}`,
+    );
   }
 
   // The docs site reads this rather than hardcoding links, so a renamed or
   // added sandbox cannot leave a dead button on the page.
-  const site = join(ROOT, "apps/web/lib/sandboxes.json");
-  mkdirSync(dirname(site), { recursive: true });
-  writeFileSync(site, `${JSON.stringify(urls().map(({ name, title, blurb, url, openFile }) =>
-    ({ name, title, blurb, url, openFile })), null, 2)}\n`);
-  log(dim(`  wrote apps/web/lib/sandboxes.json`));
+  mkdirSync(dirname(siteFile), { recursive: true });
+  writeFileSync(
+    siteFile,
+    `${JSON.stringify(
+      urls().map(({ name, title, blurb, url, openFile }) => ({
+        name,
+        title,
+        blurb,
+        url,
+        openFile,
+      })),
+      null,
+      2,
+    )}\n`,
+  );
+  log(dim(`  wrote ${relative(ROOT, siteFile)}`));
 
   return results;
 }
@@ -217,8 +255,9 @@ Then try breaking it: rename an anchor in the registry and run \`npx cairn check
 function urls() {
   return CONFIG.sandboxes.map((s) => ({
     ...s,
-    url: `https://stackblitz.com/github/${CONFIG.repo}/tree/${CONFIG.branch}/${CONFIG.outDir}/${s.name}`
-      + `?file=${encodeURIComponent(s.openFile)}&terminal=${encodeURIComponent(s.startCommand.replace(/^npm run /, ""))}`,
+    url:
+      `https://stackblitz.com/github/${CONFIG.repo}/tree/${CONFIG.branch}/${CONFIG.outDir}/${s.name}` +
+      `?file=${encodeURIComponent(s.openFile)}&terminal=${encodeURIComponent(s.startCommand.replace(/^npm run /, ""))}`,
   }));
 }
 
@@ -230,33 +269,43 @@ if (command === "build") {
   build();
   console.log(`\n${green("✓")} ${CONFIG.outDir}/ regenerated\n`);
 } else if (command === "check") {
-  // Compares a fresh generation against what is committed. Catches both a
-  // stale sandbox and someone editing the generated copy by hand.
-  const before = existsSync(OUT)
-    ? Object.fromEntries(CONFIG.sandboxes
-        .filter((s) => existsSync(join(OUT, s.name)))
-        .map((s) => [s.name, hashTree(join(OUT, s.name))]))
-    : {};
+  /**
+   * Compares a fresh generation against what is committed. Catches both a
+   * stale sandbox and someone editing the generated copy by hand.
+   *
+   * Generated into a scratch directory, never over the committed one. Writing
+   * in place made this a check that repaired what it was checking: the first
+   * run reported "stale" and quietly fixed the tree, a second run passed, and
+   * the next `git add -A` swept the regenerated files into a commit nobody
+   * had reviewed.
+   */
+  const scratch = mkdtempSync(join(tmpdir(), "cairn-sandboxes-"));
 
-  const siteBefore = existsSync(join(ROOT, "apps/web/lib/sandboxes.json"))
-    ? readFileSync(join(ROOT, "apps/web/lib/sandboxes.json"), "utf8") : "";
+  try {
+    build({ quiet: true, into: scratch, siteFile: join(scratch, "sandboxes.json") });
 
-  build({ quiet: true });
-  const after = Object.fromEntries(CONFIG.sandboxes.map((s) => [s.name, hashTree(join(OUT, s.name))]));
-  const siteAfter = readFileSync(join(ROOT, "apps/web/lib/sandboxes.json"), "utf8");
+    const drifted = CONFIG.sandboxes
+      .map((s) => s.name)
+      .filter(
+        (name) =>
+          !existsSync(join(OUT, name)) ||
+          hashTree(join(OUT, name)) !== hashTree(join(scratch, name)),
+      );
 
-  const drifted = CONFIG.sandboxes
-    .map((s) => s.name)
-    .filter((name) => before[name] !== after[name]);
+    const committed = existsSync(SITE_MANIFEST) ? readFileSync(SITE_MANIFEST, "utf8") : "";
+    if (committed !== readFileSync(join(scratch, "sandboxes.json"), "utf8")) {
+      drifted.push(relative(ROOT, SITE_MANIFEST));
+    }
 
-  if (siteBefore !== siteAfter) drifted.push("apps/web/lib/sandboxes.json");
-
-  if (drifted.length) {
-    console.error(red(`\n✗ sandboxes are stale: ${drifted.join(", ")}`));
-    console.error(dim("  Run `pnpm sandboxes` and commit the result.\n"));
-    process.exit(1);
+    if (drifted.length) {
+      console.error(red(`\n✗ sandboxes are stale: ${drifted.join(", ")}`));
+      console.error(dim("  Run `pnpm sandboxes` and commit the result.\n"));
+      process.exit(1);
+    }
+    console.log(green("✓ sandboxes match their examples"));
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
   }
-  console.log(green("✓ sandboxes match their examples"));
 } else if (command === "verify") {
   // The only test that proves a sandbox works: install it from the registry
   // exactly as StackBlitz will, then build it.
@@ -269,7 +318,9 @@ if (command === "build") {
     process.stdout.write(`  ${sandbox.name.padEnd(12)} `);
     try {
       execFileSync("npm", ["install", "--no-audit", "--no-fund", "--silent"], {
-        cwd: dir, stdio: "ignore", timeout: 300_000,
+        cwd: dir,
+        stdio: "ignore",
+        timeout: 300_000,
       });
       execFileSync("npm", ["run", "build"], { cwd: dir, stdio: "ignore", timeout: 300_000 });
       console.log(green("installs and builds"));

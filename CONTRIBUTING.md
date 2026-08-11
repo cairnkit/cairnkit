@@ -106,14 +106,17 @@ and the generator checks that version is on npm — but it cannot check that the
 version actually _has_ the API the examples use. So any change that adds an
 export and then uses it in an example must be regenerated **after** publishing:
 
-1. Merge the change. `pnpm sandboxes:check` fails on `main` until step 3, and
-   that failure is correct: the sandboxes really are out of date.
+1. Merge the change.
 2. Merge the Version Packages PR, which publishes.
 3. `pnpm sandboxes && pnpm sandboxes:verify`, then commit the result.
 
-Regenerating at step 1 pins the sandbox to the _previous_ version while its
-source imports something that version does not export. It installs cleanly and
-then fails in the browser, where it looks like the library is broken.
+Regenerating before step 2 pins the sandbox to the _previous_ version while its
+source imports something that version does not export.
+
+`sandboxes:check` cannot see that: it compares the generated copy against the
+committed one, and both are equally wrong. **`sandboxes:verify` is the only
+thing that catches it**, because it installs from npm and builds for real. Run
+it before announcing a release, not only before merging one.
 
 ---
 

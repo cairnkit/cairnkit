@@ -102,15 +102,15 @@ const COMPARISON = [
 
 /** kb gzipped, measured from dist. `bar` is the share of the widest row. */
 const PACKAGES = [
-  { name: "@cairnkit/core", kb: "2.7 kb", bar: 40, note: "Engine. Zero dependencies.", optional: false },
-  { name: "@cairnkit/react", kb: "3.2 kb", bar: 48, note: "Headless hooks and provider.", optional: false },
+  { name: "@cairnkit/core", kb: "2.8 kb", bar: 41, note: "Engine. Zero dependencies.", optional: false },
+  { name: "@cairnkit/react", kb: "4.0 kb", bar: 58, note: "Headless hooks and provider.", optional: false },
   { name: "@cairnkit/next", kb: "0.3 kb", bar: 4, note: "Router adapters.", optional: true },
   { name: "@cairnkit/ui", kb: "6.9 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
 ] as const;
 
 const TOTALS = [
-  { label: "Headless", kb: "6.2 kb", bar: 37, note: "core + react + next. Bring your own overlay." },
-  { label: "Everything", kb: "16.9 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
+  { label: "Headless", kb: "7.0 kb", bar: 40, note: "core + react + next. Bring your own overlay." },
+  { label: "Everything", kb: "17.7 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
 ] as const;
 
 export default async function Home() {
@@ -122,7 +122,7 @@ export default async function Home() {
    * more effectively than it argues for you.
    */
   const metrics: { value: string; label: string; live?: boolean }[] = [
-    { value: "6.2 kb", label: "headless, gzipped" },
+    { value: "7.0 kb", label: "headless, gzipped" },
     { value: "0", label: "runtime dependencies" },
     { value: "~0.1s", label: "CI check, 700 files" },
     { value: "3", label: "layers of drift defence" },
@@ -380,7 +380,7 @@ export default async function Home() {
           <h2 className="h">Small, and mostly optional</h2>
           <p className="lede">
             Take the engine alone and drive it with your own components, or take the overlay too.
-            Headless lands at 6.2 kb — about what driver.js costs, for rather more.
+            Headless lands at 7.0 kb — about what driver.js costs, for rather more.
           </p>
 
           <div {...anchor(anchors.site.packages)} className="pkgs demo-target">
@@ -422,7 +422,7 @@ export default async function Home() {
         <div className="wrap">
           <h2>Stop shipping broken tours</h2>
           <p>
-            MIT licensed, 2.7 kb of engine, and a CI check that tells you before your users do.
+            MIT licensed, 2.8 kb of engine, and a CI check that tells you before your users do.
           </p>
           <div className="cta__row">
             <a className="btn btn--primary" href={site.repo}>Get started on GitHub</a>
