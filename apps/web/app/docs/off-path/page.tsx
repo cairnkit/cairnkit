@@ -149,6 +149,29 @@ function InvitePage() {
         A flow with no <C>scope</C> goes anywhere, and an app that never calls <C>useTourScope</C>{" "}
         is unconstrained. Nothing written before this existed behaves differently.
       </Callout>
+      <Callout kind="warn" title="Do not switch tabs from onEnter">
+        The obvious way to make a guide open its own tab is a first step whose <C>onEnter</C> does
+        it. That deadlocks: a flow in the wrong scope is dormant, and a dormant step never runs{" "}
+        <C>onEnter</C>, so the hook that would fix the scope can never fire. A deep link straight
+        into the second tab&rsquo;s guide would sit paused behind the first tab forever.
+        <br />
+        <br />
+        The tab is the app&rsquo;s state, so the app moves it. Watch the active flow and bring its
+        scope forward once, when the flow changes:
+      </Callout>
+      <Code>{`const { flow } = useActiveTour();
+const launched = useRef<string | null>(null);
+
+useEffect(() => {
+  if (flow?.id === launched.current) return;
+  launched.current = flow?.id ?? null;
+  if (flow?.scope) setTab(flow.scope);
+}, [flow]);`}</Code>
+      <P>
+        Keyed on the flow changing rather than re-asserted every render, or it would drag the user
+        back each time they switched tabs mid-tour. Switching away is allowed — it is what sends the
+        guide to sleep.
+      </P>
       <P>
         While a guide is dormant, a <C>TourLauncher</C> for a <em>different</em> flow becomes
         visible — that is how the user reaches the guide covering the tab they just opened. The

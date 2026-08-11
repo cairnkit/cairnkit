@@ -185,6 +185,12 @@ a CI gate.
   listeners, fires onEnter, and ends flows whose anchor never arrived — so a
   second copy does all of that twice. To read the tour without driving it use
   \`useActiveTour()\`; to start one, \`useStartTour()\`.
+- Switching tabs from a step's onEnter so the guide can open its own tab. It
+  deadlocks: a flow in the wrong scope is dormant, and a dormant step never runs
+  onEnter, so the hook that would fix the scope never fires. Have the app watch
+  \`useActiveTour().flow\` and bring \`flow.scope\` forward once when the flow
+  changes — keyed on the change, or it drags the user back every time they
+  switch tabs mid-tour.
 
 ## Documentation
 
