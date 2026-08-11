@@ -1,4 +1,7 @@
-import { act, renderHook } from "@testing-library/react";
+// `cleanup` is explicit: this suite runs without `globals`, so nothing unmounts
+// the previous test's tree. Its anchor watchers keep their timers, and a 4s one
+// firing after teardown reaches for a `window` that no longer exists.
+import { act, cleanup, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { defineFlow } from "@cairnkit/core";
 import type { ReactNode } from "react";
@@ -59,7 +62,10 @@ function useTourInTab(tab: string) {
   return useTour();
 }
 
-afterEach(() => localStorage.clear());
+afterEach(() => {
+  cleanup();
+  localStorage.clear();
+});
 
 describe("scope", () => {
   it("goes dormant when the app moves to another part of the screen", () => {

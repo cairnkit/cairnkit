@@ -1,4 +1,7 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
+// `cleanup` is explicit: this suite runs without `globals`, so nothing unmounts
+// the previous test's tree. Its anchor watchers keep their timers, and a 4s one
+// firing after teardown reaches for a `window` that no longer exists.
+import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { useAnchorTarget } from "../hooks/use-anchor-target";
 
@@ -28,6 +31,7 @@ const GRACE = 400;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 afterEach(() => {
+  cleanup();
   document.body.innerHTML = "";
 });
 
