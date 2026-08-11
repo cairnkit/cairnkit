@@ -4,33 +4,40 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_ADVANCE,
   bindAdvanceRule,
-  decideForRoute,
-  devWarn,
   defaultsToBeacon,
-  getFlow,
+  resolveAnchor,
   showsNextButton,
-  type RegisteredFlowId,
   type StepContext,
 } from "@cairnkit/core";
 import { useCairn } from "../provider/cairn-context";
+import { useActiveTour } from "./use-active-tour";
 import { useAnchorTarget } from "./use-anchor-target";
-import { useTourState } from "./use-cairn-store";
+import { useStartTour } from "./use-start-tour";
 
 /**
  * Drives the active tour: resolves the current step's anchor, decides when the
  * step is satisfied, and handles routes the flow does not cover.
+ *
+ * Mount this once. Everything here is a side effect — listeners, lifecycle
+ * hooks, ending a flow whose anchor never came — so a second copy runs them
+ * all twice. Read-only consumers want `useActiveTour` or `useTourState`.
  */
 export function useTour() {
-  const { store, flows, router, onEvent, onNotice, mobileBreakpoint, actions } = useCairn();
-  const pathname = router.usePathname();
-
-  const activeFlowId = useTourState((state) => state.activeFlowId);
-  const stepIndex = useTourState((state) => state.stepIndex);
-
-  const flow = getFlow(flows, activeFlowId);
+  const { store, onEvent, onNotice, mobileBreakpoint, actions } = useCairn();
+  const { flow, stepIndex, pathname, decision, isPaused: isOutOfPlace } = useActiveTour();
   const step = flow?.steps[stepIndex] ?? null;
   const isLastStep = Boolean(flow && stepIndex >= flow.steps.length - 1);
   const rule = step?.advanceOn ?? DEFAULT_ADVANCE;
+
+  /**
+   * Set when the user navigates away from the page the current step lives on.
+   *
+   * Distinct from `isOutOfPlace`, which comes from the flow's own declarations
+   * and switches off anchor hunting. This one has to keep hunting: returning
+   * to the page is exactly what un-sets it.
+   */
+  const [hasLeftStepRoute, setHasLeftStepRoute] = useState(false);
+  const isPaused = isOutOfPlace || hasLeftStepRoute;
 
   /** What `onEnter` and `onExit` receive. Stable, so it never re-fires them. */
   const stepContext = useMemo<StepContext>(() => ({ run: (name) => actions.run(name) }), [actions]);
@@ -48,18 +55,14 @@ export function useTour() {
     return () => query.removeEventListener("change", update);
   }, [mobileBreakpoint]);
 
-  const decision = useMemo(
-    () => (flow ? decideForRoute(flow, pathname, stepIndex) : { kind: "none" as const }),
-    [flow, pathname, stepIndex],
-  );
-
-  const isPaused = decision.kind === "pause" || decision.kind === "handoff";
   const anchorId = step ? (isMobile && step.mobileAnchor ? step.mobileAnchor : step.anchor) : null;
 
-  const { element, rect, status, statusFor } = useAnchorTarget(anchorId, {
+  const { element, rect, status, statusFor, statusAt } = useAnchorTarget(anchorId, {
     waitForMs: step?.waitForMs,
-    // Never hunt for anchors that cannot exist here.
-    enabled: Boolean(step) && !isPaused,
+    // Never hunt for anchors that cannot exist here. Keyed on the flow's own
+    // declarations only — a step whose page the user merely wandered off keeps
+    // hunting, because finding the anchor again is how it wakes up.
+    enabled: Boolean(step) && !isOutOfPlace,
     resetKey: pathname,
   });
 
@@ -111,35 +114,7 @@ export function useTour() {
     store.dismiss(flow.id, flow.version, stepIndex);
   }, [flow, stepIndex, store]);
 
-  /**
-   * Starts a flow, navigating to its entry route first when needed.
-   *
-   * Steps wait for their anchor, so starting before the route settles is safe —
-   * and doing the navigation here means every launcher gets it for free.
-   */
-  const start = useCallback(
-    (flowId: RegisteredFlowId) => {
-      const target = getFlow(flows, flowId);
-
-      if (!target) {
-        // Silent here means a launcher that does nothing and gives no clue
-        // why — usually a flow that was never passed to the provider, or a
-        // second provider that does not know about it.
-        const known = Object.keys(flows);
-        devWarn(
-          `No flow "${flowId}" is registered with this provider. ` +
-            `Known flows: ${known.length ? known.join(", ") : "none"}.`,
-        );
-        return;
-      }
-
-      if (pathname !== target.entryRoute) router.navigate(target.entryRoute);
-      store.start(flowId);
-      onEvent?.({ name: "flow_started", props: { flowId, version: target.version } });
-    },
-    [flows, pathname, router, store, onEvent],
-  );
-
+  const start = useStartTour();
   const stop = useCallback(() => store.stop(), [store]);
 
   // Route decisions: hand off to another guide, or catch up to a user who
@@ -159,10 +134,42 @@ export function useTour() {
     if (decision.kind === "resume") store.goToStep(decision.stepIndex);
   }, [decision, flow, pathname, store, onEvent, onNotice]);
 
+  /**
+   * The pathname each step was on when it became active — the page it lives on.
+   *
+   * The engine knows which anchor a step points at, never which page that
+   * anchor is on, so this is the closest thing to a step's address. It is what
+   * separates "the user walked off" from "this app is broken".
+   */
+  const stepRoute = useRef<{ key: string; pathname: string } | null>(null);
+
+  useEffect(() => {
+    if (!flow || !step) {
+      stepRoute.current = null;
+      return;
+    }
+
+    const key = `${flow.id}:${stepIndex}`;
+    if (stepRoute.current?.key === key) return;
+
+    stepRoute.current = { key, pathname };
+    // A fresh step starts awake, whatever the previous one ended as.
+    setHasLeftStepRoute(false);
+  }, [flow, step, stepIndex, pathname]);
+
+  // Back on the page, with the anchor found: wake up.
+  useEffect(() => {
+    if (status === "ready") setHasLeftStepRoute(false);
+  }, [status]);
+
   // A step whose anchor never appeared.
   useEffect(() => {
-    if (!flow || !step || isPaused || status !== "missing") return;
-    if (statusFor !== anchorId) return;
+    if (!flow || !step || isOutOfPlace || status !== "missing") return;
+    // Only act on a verdict that describes *this* anchor on *this* route. For
+    // one render after a navigation, `status` still holds the previous route's
+    // answer — and by then the step's own route may match again, which read as
+    // "the element is genuinely gone" and ended a tour that was about to wake.
+    if (statusFor !== anchorId || statusAt !== pathname) return;
 
     onEvent?.({
       name: "anchor_missing",
@@ -174,10 +181,44 @@ export function useTour() {
       return;
     }
 
-    // Non-optional and absent: end, but say why. Dying silently reads as a bug.
+    /**
+     * Missing because they navigated off this step's page — the browser Back
+     * button, a link, a redirect. Going dormant keeps their place: the anchor
+     * watcher restarts on the next pathname change, so returning picks the
+     * tour up exactly where it was. Ending here treated an ordinary move
+     * around the app as a fault.
+     */
+    if (stepRoute.current && stepRoute.current.pathname !== pathname) {
+      setHasLeftStepRoute(true);
+      return;
+    }
+
+    /**
+     * Missing on the page it lives on: the element is genuinely gone. End, but
+     * say why — dying silently reads as a bug.
+     *
+     * `stop`, not `dismiss`. Dismissal is a decision the user makes by pressing
+     * Skip; this is the app moving out from under a guide that was mid-flight.
+     * Recording it as a dismissal put a verdict in persisted state that the
+     * user never gave. The `anchor_missing` event above is the honest record.
+     */
     onNotice?.({ reason: "anchor-missing", flowId: flow.id, stepIndex });
-    store.dismiss(flow.id, flow.version, stepIndex);
-  }, [status, statusFor, anchorId, step, flow, stepIndex, isPaused, pathname, advance, store, onEvent, onNotice]);
+    store.stop();
+  }, [
+    status,
+    statusFor,
+    statusAt,
+    anchorId,
+    step,
+    flow,
+    stepIndex,
+    isOutOfPlace,
+    pathname,
+    advance,
+    store,
+    onEvent,
+    onNotice,
+  ]);
 
   // `route` is the one rule the caller owns, because it holds the pathname.
   useEffect(() => {
@@ -218,13 +259,53 @@ export function useTour() {
       .catch((error) => console.error("[cairn] onEnter threw; continuing anyway.", error));
   }, [flow, step, stepIndex, isPaused, stepContext]);
 
+  /**
+   * One `step_viewed` per step, however many times the step re-renders.
+   *
+   * Keyed like `onEnter` above, and for a sharper reason: a step that goes
+   * dormant and wakes, or whose flow object changes identity, was emitting the
+   * event again each time. Analytics counted that as the user seeing the step
+   * twice, which quietly inflates every funnel built on it.
+   */
+  const viewedKey = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!step || isPaused) return;
+    if (!flow || !step || isPaused) return;
+
+    const key = `${flow.id}:${stepIndex}`;
+    if (viewedKey.current === key) return;
+    viewedKey.current = key;
+
     onEvent?.({
       name: "step_viewed",
-      props: { flowId: flow!.id, stepIndex, anchor: String(step.anchor) },
+      props: { flowId: flow.id, stepIndex, anchor: String(step.anchor) },
     });
   }, [step, stepIndex, flow, isPaused, onEvent]);
+
+  /**
+   * Whether going back would land anywhere.
+   *
+   * Across a route boundary it would not: the previous step is anchored to a
+   * page the user has left, so Back either stalls on an anchor that is not
+   * here or — if the flow has a `resumeAt` for this route — is undone the
+   * instant it happens. Both read as a dead button, so it is hidden instead.
+   *
+   * A previous step with an `onEnter` is exempt. That hook exists to put the
+   * app back into the state the step describes, reopening the modal or panel
+   * its anchor lives in, so absence right now proves nothing.
+   */
+  const [canGoBack, setCanGoBack] = useState(false);
+
+  useEffect(() => {
+    const previous = stepIndex > 0 ? flow?.steps[stepIndex - 1] : undefined;
+    if (!previous) {
+      setCanGoBack(false);
+      return;
+    }
+
+    const target = isMobile && previous.mobileAnchor ? previous.mobileAnchor : previous.anchor;
+    setCanGoBack(Boolean(previous.onEnter) || resolveAnchor(target) !== null);
+  }, [flow, stepIndex, pathname, isMobile]);
 
   return {
     flow,
@@ -236,6 +317,8 @@ export function useTour() {
     status,
     isPaused,
     isLastStep,
+    /** False when the previous step is on a page the user has left. */
+    showBack: canGoBack,
     showNext: showsNextButton(rule),
     showBeacon: step?.beacon ?? defaultsToBeacon(rule),
     advance,

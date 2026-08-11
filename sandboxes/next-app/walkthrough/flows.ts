@@ -4,6 +4,7 @@ import { anchors } from "./anchors";
 export const LIBRARY = "/";
 export const FORM = "/new";
 export const AI = "/ai";
+export const PREFS = "/prefs";
 
 /** The manual path, including a step that points inside a modal. */
 export const manualFlow = defineFlow({
@@ -39,4 +40,50 @@ export const aiFlow = defineFlow({
   ],
 });
 
-export const flows = [manualFlow, aiFlow];
+/**
+ * Two guides on one route, told apart by `scope` rather than by pathname.
+ *
+ * App Router changes nothing here. `@cairnkit/next` supplies only a pathname
+ * and a navigate, and a tab switch involves neither — which is the point: this
+ * is not router work, so it behaves identically under Vite, App Router and
+ * Pages Router.
+ */
+export const generalPrefsFlow = defineFlow({
+  id: "prefs-general",
+  version: 1,
+  entryRoute: PREFS,
+  scope: "general",
+  steps: [
+    {
+      anchor: anchors.prefs.tabs,
+      title: "Two tabs, one URL",
+      body: "Switch tabs while this is running and the guide steps aside for the other one.",
+    },
+    {
+      anchor: anchors.prefs.general,
+      title: "Defaults for new questions",
+      body: "Applied to everything you write from here on.",
+    },
+  ],
+});
+
+export const sharingPrefsFlow = defineFlow({
+  id: "prefs-sharing",
+  version: 1,
+  entryRoute: PREFS,
+  scope: "sharing",
+  steps: [
+    {
+      anchor: anchors.prefs.tabs,
+      title: "Sharing is its own guide",
+      body: "Same page, same URL, different subject.",
+    },
+    {
+      anchor: anchors.prefs.sharing,
+      title: "Who can see your library",
+      body: "Private until you widen it.",
+    },
+  ],
+});
+
+export const flows = [manualFlow, aiFlow, generalPrefsFlow, sharingPrefsFlow];

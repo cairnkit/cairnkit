@@ -9,6 +9,7 @@ import { flows } from "./walkthrough/flows";
 import { PipelinePage } from "./pages/pipeline";
 import { QuestionsPage } from "./pages/questions";
 import { ComposePage } from "./pages/compose";
+import { SettingsPage } from "./pages/settings";
 
 const CairnMark = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -35,6 +36,9 @@ function Shell({ notice, onClear }: { notice: CairnNotice | null; onClear: () =>
           <NavLink to="/questions" className={({ isActive }) => (isActive ? "on" : "")} {...anchor(anchors.nav.questions)}>
             Questions
           </NavLink>
+          <NavLink to="/settings" className={({ isActive }) => (isActive ? "on" : "")} {...anchor(anchors.nav.settings)}>
+            Settings
+          </NavLink>
         </nav>
       </aside>
 
@@ -43,6 +47,7 @@ function Shell({ notice, onClear }: { notice: CairnNotice | null; onClear: () =>
           <Route path="/" element={<PipelinePage />} />
           <Route path="/questions" element={<QuestionsPage />} />
           <Route path="/questions/new" element={<ComposePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>
 

@@ -120,8 +120,14 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
       getBoundingClientRect: () => {
         const r = tour.rect!;
         return {
-          x: r.left, y: r.top, width: r.width, height: r.height,
-          top: r.top, left: r.left, right: r.left + r.width, bottom: r.top + r.height,
+          x: r.left,
+          y: r.top,
+          width: r.width,
+          height: r.height,
+          top: r.top,
+          left: r.left,
+          right: r.left + r.width,
+          bottom: r.top + r.height,
         };
       },
     };
@@ -132,11 +138,11 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
         strategy: "fixed",
         middleware: [
           // Clear the spotlight rather than poke into it. The cutout extends
-        // `padding` beyond the target plus a 2px ring, and the arrow's rotated
-        // corner reaches half its diagonal past the card edge — so a fixed
-        // offset put the tip 4.5px inside the ring at default padding, and
-        // further in whenever a step raised it.
-        offset((tour.step?.padding ?? SPOTLIGHT_PADDING) + RING + ARROW_REACH + GAP),
+          // `padding` beyond the target plus a 2px ring, and the arrow's rotated
+          // corner reaches half its diagonal past the card edge — so a fixed
+          // offset put the tip 4.5px inside the ring at default padding, and
+          // further in whenever a step raised it.
+          offset((tour.step?.padding ?? SPOTLIGHT_PADDING) + RING + ARROW_REACH + GAP),
           flip({ padding: 12 }),
           shift({ padding: 12 }),
           arrowRef.current ? arrow({ element: arrowRef.current }) : undefined,
@@ -182,9 +188,12 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
   }, [tour.rect, tour.step, isSheet, container]);
 
   // Dropping the flag on teardown means the next tour opens without a slide.
-  useEffect(() => () => {
-    if (cardRef.current) delete cardRef.current.dataset.placed;
-  }, []);
+  useEffect(
+    () => () => {
+      if (cardRef.current) delete cardRef.current.dataset.placed;
+    },
+    [],
+  );
 
   if (!container || !tour.flow || !tour.step || tour.isPaused) return null;
 
@@ -209,6 +218,7 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
           stepNumber={tour.stepIndex + 1}
           totalSteps={tour.flow.steps.length}
           showNext={tour.showNext}
+          showBack={tour.showBack}
           isLastStep={tour.isLastStep}
           isSheet={isSheet}
           labels={{ ...DEFAULT_LABELS, ...labels }}

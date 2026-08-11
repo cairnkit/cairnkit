@@ -1,12 +1,7 @@
 "use client";
 
-import { createContext, useContext } from "react";
-import type {
-  ActionRegistry,
-  CairnEventHandler,
-  FlowRegistry,
-  TourStore,
-} from "@cairnkit/core";
+import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
+import type { ActionRegistry, CairnEventHandler, FlowRegistry, TourStore } from "@cairnkit/core";
 import type { RouterAdapter } from "../adapters/router";
 
 export type CairnNotice =
@@ -19,6 +14,13 @@ export type CairnContextValue = {
   flows: FlowRegistry;
   /** Actions published by mounted components, callable from step hooks. */
   actions: ActionRegistry;
+  /**
+   * The part of the screen in front — the tab showing, the wizard stage open.
+   * `null` when the app has not declared one, which constrains nothing.
+   * Declare it with `useTourScope`; do not set it from here.
+   */
+  scope: string | null;
+  setScope: Dispatch<SetStateAction<string | null>>;
   router: RouterAdapter;
   onEvent?: CairnEventHandler;
   /** Resolves `titleKey` / `bodyKey` when copy lives in an i18n catalogue. */

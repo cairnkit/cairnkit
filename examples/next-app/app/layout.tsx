@@ -18,6 +18,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link href="/" {...anchor(anchors.nav.library)}>Library</Link>
               <Link href="/new">Create manually</Link>
               <Link href="/ai">Generate with AI</Link>
+              <Link href="/prefs">Preferences</Link>
             </nav>
             <main className="main">{children}</main>
           </div>

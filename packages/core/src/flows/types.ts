@@ -13,9 +13,18 @@ export type StepContext = {
 };
 
 export type Placement =
-  | "top" | "bottom" | "left" | "right"
-  | "top-start" | "top-end" | "bottom-start" | "bottom-end"
-  | "left-start" | "left-end" | "right-start" | "right-end";
+  | "top"
+  | "bottom"
+  | "left"
+  | "right"
+  | "top-start"
+  | "top-end"
+  | "bottom-start"
+  | "bottom-end"
+  | "left-start"
+  | "left-end"
+  | "right-start"
+  | "right-end";
 
 /**
  * How a step hands control to the next.
@@ -101,6 +110,21 @@ export type TourFlow = {
    * Checked before `pauseRoutes`.
    */
   handoffRoutes?: { pathname: string; flowId: RegisteredFlowId }[];
+  /**
+   * The part of a screen this flow belongs to, when a pathname is too coarse
+   * to say — tabs, wizard stages, a split pane. Two guides, one URL.
+   *
+   * The app declares which part is in front with `useTourScope`. A flow whose
+   * scope is not in front goes dormant, exactly as `pauseRoutes` does for a
+   * route it does not cover. Leave it unset and nothing changes.
+   *
+   * Cairn cannot work this out for itself. Anchors are routinely shared across
+   * parts — one panel component reused by two tabs — so "my anchor is still
+   * on the page" is no evidence of being in the right place. Acting on it
+   * yields a guide that confidently describes the wrong feature, which is
+   * worse than one that stops.
+   */
+  scope?: string;
   steps: TourStep[];
 };
 

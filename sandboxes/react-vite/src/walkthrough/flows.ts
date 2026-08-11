@@ -4,6 +4,7 @@ import { anchors } from "./anchors";
 export const PIPELINE = "/";
 export const QUESTIONS = "/questions";
 export const COMPOSE = "/questions/new";
+export const SETTINGS = "/settings";
 
 /** Ends inside a modal — the case most tour tools get wrong. */
 export const inviteFlow = defineFlow({
@@ -36,4 +37,66 @@ export const questionsFlow = defineFlow({
   ],
 });
 
-export const flows = [inviteFlow, questionsFlow];
+/**
+ * Two guides on one URL, separated by `scope` rather than by route.
+ *
+ * Switching tabs on the Settings page never changes the pathname, so nothing
+ * the router can see tells these apart. Both even open on the same anchor —
+ * the tab strip, which belongs to neither panel and never unmounts. Without a
+ * scope the members guide would keep running while you read the sharing tab,
+ * confidently describing a screen you are not looking at.
+ */
+export const membersFlow = defineFlow({
+  id: "settings-members",
+  version: 1,
+  entryRoute: SETTINGS,
+  scope: "members",
+  steps: [
+    {
+      anchor: anchors.settings.tabs,
+      title: "Two Sides To Settings",
+      body: "Who is on the team, and how outsiders get in. Switch tabs while this is running and the guide steps aside for the other one.",
+    },
+    {
+      anchor: anchors.settings.membersList,
+      title: "Everyone With Access",
+      body: "Roles decide what each person is allowed to change.",
+    },
+    {
+      anchor: anchors.settings.fragile,
+      title: "A Card That Can Vanish",
+      body: "Use the two buttons under it. Re-mount and the guide holds on; remove it for good and the guide gives up promptly instead of hanging.",
+    },
+    {
+      anchor: anchors.settings.membersInvite,
+      title: "Add A Teammate",
+      body: "They get an email invitation. Nothing is sent until you confirm.",
+    },
+  ],
+});
+
+export const sharingFlow = defineFlow({
+  id: "settings-sharing",
+  version: 1,
+  entryRoute: SETTINGS,
+  scope: "sharing",
+  steps: [
+    {
+      anchor: anchors.settings.tabs,
+      title: "Sharing Lives Here",
+      body: "One link, anyone who has it — no named recipient.",
+    },
+    {
+      anchor: anchors.settings.sharingLink,
+      title: "The Link Itself",
+      body: "Paste it into a job post or an email. The same URL works for everyone.",
+    },
+    {
+      anchor: anchors.settings.sharingExpiry,
+      title: "Give It An End Date",
+      body: "After this the link stops letting new people in.",
+    },
+  ],
+});
+
+export const flows = [inviteFlow, questionsFlow, membersFlow, sharingFlow];
