@@ -1,5 +1,16 @@
 # @cairnkit/cli
 
+## 0.6.0
+
+### Minor Changes
+
+- 3a5bc33: scope, so two guides can share one screen"
+
+### Patch Changes
+
+- Updated dependencies [3a5bc33]
+  - @cairnkit/core@0.6.0
+
 ## 0.5.3
 
 ### Patch Changes
