@@ -17,6 +17,7 @@
       "@cairnkit/ui",
       "@cairnkit/next",
       "@cairnkit/cli",
+      "@cairnkit/cloud",
       "cairnkit"
     ]
   ]

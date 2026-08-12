@@ -1,0 +1,57 @@
+{
+  "name": "@cairnkit/cloud",
+  "version": "0.7.0",
+  "description": "Send cairnkit tour events to cairnkit cloud. Batched, retry-safe, survives the tab closing.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cairnkit/core": "workspace:*"
+  },
+  "keywords": [
+    "product-tour",
+    "onboarding",
+    "walkthrough",
+    "analytics",
+    "product-analytics",
+    "funnel",
+    "user-onboarding",
+    "guided-tour",
+    "product-adoption",
+    "typescript",
+    "developer-tools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairnkit/cairnkit.git",
+    "directory": "packages/cloud"
+  },
+  "homepage": "https://cairnkit.dev",
+  "bugs": {
+    "url": "https://github.com/cairnkit/cairnkit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

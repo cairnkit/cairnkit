@@ -179,6 +179,12 @@ importers:
         specifier: ^22.10.0
         version: 22.10.0
 
+  packages/cloud:
+    dependencies:
+      '@cairnkit/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/core: {}
 
   packages/next:
