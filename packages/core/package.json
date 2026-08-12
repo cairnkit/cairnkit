@@ -1,6 +1,6 @@
 {
   "name": "@cairnkit/core",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Framework-free engine for in-app guided tours that fail the build instead of the user.",
   "license": "MIT",
   "type": "module",
