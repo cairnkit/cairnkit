@@ -1,5 +1,11 @@
 # @cairnkit/cli
 
+## 0.9.0
+
+### Patch Changes
+
+- @cairnkit/core@0.9.0
+
 ## 0.8.0
 
 ### Patch Changes
