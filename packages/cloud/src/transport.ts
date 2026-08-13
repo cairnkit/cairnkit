@@ -45,6 +45,24 @@ export type CloudOptions = {
    * to one project and can read nothing at all.
    */
   key: string;
+
+  /**
+   * Who this is, in your application's own terms. Optional.
+   *
+   * Supplying it is what makes "the same person came back tomorrow" answerable
+   * — the session id alone expires after 30 minutes of inactivity, so without
+   * this one person over two days is indistinguishable from two people.
+   *
+   * Pass a **function** if the person can sign in while the page is open. The
+   * handler is usually built once, when the provider mounts, so a plain string
+   * read at that moment stays whatever it was — `undefined` for anybody who
+   * logged in afterwards.
+   *
+   * This is personal data in a way nothing else cairnkit sends is. Send an id
+   * you already hold, never an email address, and only if you mean to.
+   */
+  userId?: string | (() => string | null | undefined);
+
   /** Defaults to cairnkit cloud. Point it anywhere that speaks the same shape. */
   endpoint?: string;
   /**
@@ -60,8 +78,16 @@ type WireEvent = {
   name: string;
   at: string;
   viewport: { w: number; h: number };
+  runId?: string;
   props: Record<string, unknown>;
 };
+
+/** The flow an event belongs to. A handoff names two and belongs to the one being left. */
+function flowOf(props: Record<string, unknown>): string | undefined {
+  const flowId = props.flowId ?? props.fromFlowId;
+  return typeof flowId === "string" ? flowId : undefined;
+}
+
 
 /**
  * A `CairnEventHandler` that sends every tour event to cairnkit cloud.
@@ -100,9 +126,31 @@ export function sendToCloud(options: CloudOptions): CairnEventHandler {
     }
   };
 
+  /**
+   * The run each flow is currently in.
+   *
+   * Minted on `flow_started` and dropped when the tour ends, so every event
+   * between the two carries the same id. That is what separates a second
+   * attempt from the first: within one session the two runs are otherwise
+   * identical rows, and "started, gave up at step 5, started again, finished"
+   * reads as a single confused tour without it.
+   *
+   * Keyed by flow because two tours can be open at once — a handoff hands one
+   * to another, and both are live for the moment in between.
+   */
+  const runs = new Map<string, string>();
+
   const payload = (events: WireEvent[]) => ({
     key: options.key,
     sessionId: currentSession(),
+    /*
+     * Resolved at flush, not at construction.
+     *
+     * The handler is typically built once when a provider mounts, and somebody
+     * signing in a minute later must not be recorded as anonymous for the rest
+     * of the visit — which is exactly what a captured string would do.
+     */
+    userId: typeof options.userId === "function" ? options.userId() : options.userId,
     events,
   });
 
@@ -197,10 +245,31 @@ export function sendToCloud(options: CloudOptions): CairnEventHandler {
   });
 
   return (event: CairnEvent) => {
+    const props = (event.props ?? {}) as Record<string, unknown>;
+    const flowId = flowOf(props);
+
+    /*
+     * A start opens a run; anything else joins the one already open.
+     *
+     * `flow_started` always mints a fresh id rather than reusing an open one,
+     * because starting a tour that is already running *is* a restart — that is
+     * the case this whole mechanism exists to make visible.
+     */
+    let runId: string | undefined;
+    if (flowId) {
+      if (event.name === "flow_started") runs.set(flowId, uuid());
+      runId = runs.get(flowId);
+      // Read before deleting: the ending event belongs to the run it ends.
+      // Same set as the immediate-flush one, and not a coincidence — "the tour
+      // ended" is why a run closes and why the batch must not wait.
+      if (TERMINAL.has(event.name)) runs.delete(flowId);
+    }
+
     queue.push({
       id: uuid(),
       name: event.name,
       at: new Date().toISOString(),
+      runId,
       /*
        * Read now, not at flush time.
        *
@@ -209,7 +278,7 @@ export function sendToCloud(options: CloudOptions): CairnEventHandler {
        * orientation happened to be current when the batch left.
        */
       viewport: { w: window.innerWidth, h: window.innerHeight },
-      props: (event.props ?? {}) as Record<string, unknown>,
+      props,
     });
 
     if (queue.length > MAX_QUEUE) queue = queue.slice(-MAX_QUEUE);
@@ -234,7 +303,17 @@ function report(options: CloudOptions, error: { status: number; body: string }) 
     return;
   }
 
-  if (process.env.NODE_ENV !== "production") {
+  /*
+   * Reached through `globalThis` rather than as a bare `process.env`.
+   *
+   * Every bundler replaces the bare form at build time, which is exactly why
+   * it is easy to ship: it works everywhere it is compiled and throws
+   * `process is not defined` the first time somebody loads this package
+   * straight from a CDN as an ES module. This form is inert there instead.
+   */
+  const runtime = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process;
+
+  if (runtime?.env?.NODE_ENV !== "production") {
     console.warn(
       `[cairnkit/cloud] events rejected (${error.status}). ` +
         `Check the project key. ${error.body}`,

@@ -42,12 +42,32 @@ One event per tour signal — `flow_started`, `step_viewed`, `flow_completed`,
 | `viewport`  | Read at the moment of the event, so a rotation is not averaged out |
 | `props`     | Whatever the SDK emitted: flow id, step index, anchor, path   |
 
-The session id is opaque, random, and kept in `localStorage` for 30 minutes of
-inactivity. It is not a cookie, not a user id, and never joined to one — cairnkit
-measures whether a tour worked, which needs no idea who took it.
+Plus a `runId` per pass through a tour, so starting the same tour twice is two
+runs rather than one confused sequence.
 
-Nothing else is collected. No user agent, no IP-derived location, no page
-content, no cross-site anything.
+The session id is opaque, random, and kept in `localStorage` for 30 minutes of
+inactivity. It is not a cookie and not a user id.
+
+Nothing else is collected by default. No user agent, no IP-derived location, no
+page content, no cross-site anything.
+
+## Knowing it is the same person
+
+Sessions expire after 30 minutes idle, so one person across two days looks like
+two people. If you need to tell them apart, hand us the id you already have:
+
+```ts
+sendToCloud({ key, userId: () => auth.user?.id });
+```
+
+Pass a **function** if someone can sign in while the page is open — the handler
+is usually built once when your provider mounts, so a plain string read at that
+moment stays whatever it was then.
+
+This is the one field that is personal data, which is why it is off unless you
+pass it and why cairnkit does not invent its own durable device id instead.
+Send an id you already store, never an email address. Deleting a project
+deletes them with it.
 
 ## Reliability
 
