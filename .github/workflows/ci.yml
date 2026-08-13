@@ -41,13 +41,26 @@ jobs:
       # a stale copy would rot silently and the public StackBlitz links would
       # drift from the code they claim to show.
       #
-      # Skipped on the release PR, where it cannot pass by construction: that
-      # branch has already bumped the workspace to a version npm has never
-      # seen, and the generator refuses to pin one — but merging the PR is
-      # exactly what publishes it. Nothing to catch there anyway, since only
-      # version numbers changed and no human touched an example.
+      # Skipped twice over, because a release moves through two events and the
+      # check cannot pass in either:
+      #
+      #   the PR     `head_ref` is the release branch. It has already bumped
+      #              the workspace to a version npm has never seen, and the
+      #              generator refuses to pin one.
+      #
+      #   the merge  a push, where `head_ref` is empty — so the first condition
+      #              alone never fired here. That is exactly how this failed on
+      #              main after 0.8.0 and again after 0.9.0, both fixed by hand.
+      #              release.yml regenerates the sandboxes after publishing,
+      #              but it runs *concurrently* with this job, so no ordering
+      #              saves it and the second condition is what does.
+      #
+      # Nothing is lost by skipping: only version numbers changed, no human
+      # touched an example, and the repin lands moments later.
       - name: Verify sandboxes match their examples
-        if: github.head_ref != 'changeset-release/main'
+        if: >-
+          github.head_ref != 'changeset-release/main' &&
+          !contains(github.event.head_commit.message, 'changeset-release/main')
         run: pnpm sandboxes:check
 
       # Scoped to the dependency closure we actually publish. A root-level

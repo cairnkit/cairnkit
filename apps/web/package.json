@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@cairnkit/cloud": "workspace:*",
     "@cairnkit/core": "workspace:*",
     "@cairnkit/next": "workspace:*",
     "@cairnkit/react": "workspace:*",

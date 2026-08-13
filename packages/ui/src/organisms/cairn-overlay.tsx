@@ -19,6 +19,9 @@ const DEFAULT_LABELS: StepCardLabels = {
   next: "Next",
   back: "Back",
   skip: "Skip",
+  // Distinct from `skip`, which the X used to borrow — leaving two controls
+  // announcing the same name to a screen reader.
+  close: "Close",
   done: "Done",
   counter: (current, total) => `Step ${current} of ${total}`,
 };
@@ -94,11 +97,13 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
     return () => query.removeEventListener("change", update);
   }, [mobileBreakpoint]);
 
-  // Esc leaves the tour.
+  // Esc leaves the tour, recorded under its own reason: it is the one exit
+  // that is frequently accidental, so counting it as a deliberate skip would
+  // overstate how many people actually rejected the tour.
   useEffect(() => {
     if (!tour.step || tour.isPaused) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") tour.skip();
+      if (event.key === "Escape") tour.skip("escape");
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -224,7 +229,10 @@ export function CairnOverlay({ labels, mobileBreakpoint = 768, onNotice }: Cairn
           labels={{ ...DEFAULT_LABELS, ...labels }}
           onNext={tour.advance}
           onBack={tour.back}
-          onSkip={tour.skip}
+          /* Three controls, three reasons. Skip rejects the tour; the X
+             usually means the card is covering what they wanted to see. */
+          onSkip={() => tour.skip("skipped")}
+          onClose={() => tour.skip("closed")}
         />
       </div>
     </div>,

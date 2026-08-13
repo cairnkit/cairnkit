@@ -82,6 +82,7 @@ export default function Page() {
     next: "Continue",
     back: "Back",
     skip: "Not now",
+    close: "Close",
     done: "Finish",
     counter: (current, total) => \`\${current} / \${total}\`,
   }}

@@ -105,12 +105,12 @@ const PACKAGES = [
   { name: "@cairnkit/core", kb: "2.8 kb", bar: 41, note: "Engine. Zero dependencies.", optional: false },
   { name: "@cairnkit/react", kb: "4.0 kb", bar: 58, note: "Headless hooks and provider.", optional: false },
   { name: "@cairnkit/next", kb: "0.3 kb", bar: 4, note: "Router adapters.", optional: true },
-  { name: "@cairnkit/ui", kb: "6.9 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
+  { name: "@cairnkit/ui", kb: "7.0 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
 ] as const;
 
 const TOTALS = [
   { label: "Headless", kb: "7.0 kb", bar: 40, note: "core + react + next. Bring your own overlay." },
-  { label: "Everything", kb: "17.7 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
+  { label: "Everything", kb: "17.9 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
 ] as const;
 
 export default async function Home() {

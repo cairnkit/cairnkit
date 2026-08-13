@@ -27,6 +27,7 @@ jobs:
 
       # Opens a "Version Packages" PR; merging it publishes.
       - uses: changesets/action@v1
+        id: changesets
         with:
           version: pnpm changeset version
           # pnpm, not npm — npm leaves `workspace:*` in the tarball and the
@@ -36,3 +37,39 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # sandboxes/ pins the *published* versions, so merging a release PR leaves
+      # it stale by construction — packages say 0.9.0, the sandboxes still say
+      # 0.8.0 — and `sandboxes:check` fails on main every single release. It was
+      # fixed by hand twice before this step existed.
+      #
+      # It has to run here, after publishing, and cannot be folded into the
+      # release PR: the generator refuses to pin a version npm has never seen,
+      # and merging the PR is the thing that publishes it. That ordering is the
+      # whole reason this is a separate step rather than a check somewhere else.
+      #
+      # Guarded on `published` so an ordinary push — which only opens or updates
+      # the PR — does nothing here.
+      - name: Repin sandboxes to the versions just published
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          set -euo pipefail
+          pnpm sandboxes
+
+          # Nothing to do when the release changed no version a sandbox pins.
+          if [ -z "$(git status --porcelain sandboxes apps/web/lib/sandboxes.json)" ]; then
+            echo "sandboxes already match the published versions"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sandboxes apps/web/lib/sandboxes.json
+          git commit -m "chore(sandboxes): repin to the published versions"
+
+          # Rebase before pushing: `concurrency: release` serialises this job,
+          # but nothing stops a human merging something else while it runs.
+          git pull --rebase origin main
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

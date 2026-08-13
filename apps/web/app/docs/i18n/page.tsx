@@ -42,10 +42,17 @@ export default function Page() {
     next: t("common.next"),
     back: t("common.back"),
     skip: t("common.skip"),
+    close: t("common.close"),
     done: t("common.done"),
     counter: (current, total) => t("tour.counter", { current, total }),
   }}
 />`}</Code>
+      <P>
+        <strong>close</strong> labels the X in the corner and is deliberately separate from{" "}
+        <strong>skip</strong>. They shared one label until 0.10, which told a screen-reader user
+        they were pressing Skip when the control beside it was also Skip. They are different acts
+        as well as different buttons — cairnkit reports which one ended the tour.
+      </P>
 
       <H2 id="writing">Writing good step copy</H2>
       <P>

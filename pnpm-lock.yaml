@@ -51,6 +51,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@cairnkit/cloud':
+        specifier: workspace:*
+        version: link:../../packages/cloud
       '@cairnkit/core':
         specifier: workspace:*
         version: link:../../packages/core

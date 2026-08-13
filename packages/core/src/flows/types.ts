@@ -129,3 +129,27 @@ export type TourFlow = {
 };
 
 export type TourExitReason = "completed" | "skipped" | "anchor-missing";
+
+/**
+ * How a tour was ended by the person taking it.
+ *
+ * Three controls end a tour and they do not mean the same thing, so recording
+ * one value for all of them throws away the most actionable signal a guide
+ * produces:
+ *
+ *   skipped   the Skip button. A rejection — "I do not want this tour".
+ *
+ *   closed    the X on the card. Often not rejection at all, but "move this
+ *             box, it is covering the thing I am trying to look at" — which is
+ *             a placement bug in the step, not a reason to cut it.
+ *
+ *   escape    the Escape key. Reflex, and frequently accidental.
+ *
+ * The distinction matters because the fixes are opposite. A step people skip
+ * should probably be removed; a step people close is probably sitting on top of
+ * its own anchor, and removing it would be the wrong response to a real bug.
+ *
+ * Separate from `TourExitReason`, which describes how a *flow* ended including
+ * outcomes nobody chose. This one is only ever a deliberate act.
+ */
+export type TourDismissReason = "skipped" | "closed" | "escape";

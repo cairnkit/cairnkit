@@ -12,6 +12,16 @@ export type StepCardLabels = {
   back: string;
   skip: string;
   done: string;
+  /**
+   * The X in the corner. Defaults to "Close" rather than reusing `skip`.
+   *
+   * It used to be labelled with `skip`, which told a screen-reader user they
+   * were pressing Skip when the control beside it is *also* Skip — two buttons
+   * announcing the same name and no way to tell them apart. They are also
+   * different acts: skipping rejects the tour, closing usually means the card
+   * is in the way.
+   */
+  close?: string;
   counter: (current: number, total: number) => string;
 };
 
@@ -33,6 +43,12 @@ export type StepCardProps = {
   onNext: () => void;
   onBack: () => void;
   onSkip: () => void;
+  /**
+   * The X, kept separate from `onSkip` so the two can be told apart in
+   * analytics. Falls back to `onSkip` when a host has not supplied it, which
+   * keeps existing embeds working exactly as before.
+   */
+  onClose?: () => void;
 };
 
 export function StepCard({
@@ -48,6 +64,7 @@ export function StepCard({
   onNext,
   onBack,
   onSkip,
+  onClose,
 }: StepCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +87,11 @@ export function StepCard({
     >
       <div className="cairn-card__head">
         <span className="cairn-card__count">{labels.counter(stepNumber, totalSteps)}</span>
-        <IconButton aria-label={labels.skip} onClick={onSkip} style={{ marginLeft: "auto" }}>
+        <IconButton
+          aria-label={labels.close ?? "Close"}
+          onClick={onClose ?? onSkip}
+          style={{ marginLeft: "auto" }}
+        >
           <CloseIcon />
         </IconButton>
       </div>

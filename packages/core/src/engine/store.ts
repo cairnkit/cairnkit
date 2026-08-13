@@ -55,8 +55,12 @@ export function createTourStore(options: {
       });
     },
 
-    dismiss(flowId, version, stepIndex) {
-      onEvent?.({ name: "flow_dismissed", props: { flowId, version, stepIndex } });
+    dismiss(flowId, version, stepIndex, reason) {
+      // Passed through rather than defaulted. An overlay that does not say
+      // which control was used should leave the field absent, so the data can
+      // tell "we do not know" apart from "they pressed Skip" — defaulting to
+      // `skipped` here would silently invent the most common answer.
+      onEvent?.({ name: "flow_dismissed", props: { flowId, version, stepIndex, reason } });
       set({
         activeFlowId: null,
         stepIndex: 0,

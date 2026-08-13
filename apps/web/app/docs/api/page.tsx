@@ -44,7 +44,55 @@ export default function Page() {
       <Code>{`TourFlow · TourStep · AdvanceRule · Placement · AnchorId
 CairnRegister · RegisteredAnchor · RegisteredFlowId · RegisteredEvent · RegisteredAction
 StepContext · ActionRegistry · TourAction
-CairnEvent · CairnEventHandler · TargetRect · TourStore · PersistAdapter`}</Code>
+CairnEvent · CairnEventHandler · TargetRect · TourStore · PersistAdapter
+TourDismissReason · TourExitReason`}</Code>
+
+      <H3 id="core-events">Events</H3>
+      <P>
+        One <C>onEvent</C> callback receives every signal a tour emits. Point it at your analytics,
+        or at <C>@cairnkit/cloud</C>.
+      </P>
+      <PropsTable
+        rows={[
+          {
+            name: "flow_started",
+            type: "flowId, version",
+            description: "A tour began.",
+          },
+          {
+            name: "step_viewed",
+            type: "flowId, stepIndex, anchor",
+            description: "One per step, however many times it re-renders.",
+          },
+          {
+            name: "flow_completed",
+            type: "flowId, version",
+            description: "Reached the end.",
+          },
+          {
+            name: "flow_dismissed",
+            type: "flowId, version, stepIndex, reason",
+            description:
+              "Left early. reason is 'skipped' (the Skip button), 'closed' (the X) or 'escape'. Three different intents kept apart because they argue for opposite fixes: a step people skip is unwanted, a step people close is usually one whose card covers what they were trying to see.",
+          },
+          {
+            name: "flow_handoff",
+            type: "fromFlowId, toFlowId, pathname",
+            description: "One tour handed off to another.",
+          },
+          {
+            name: "anchor_missing",
+            type: "flowId, stepIndex, anchor, pathname",
+            description:
+              "A step pointed at UI that was not on the page — what cairn check catches before release, seen from production.",
+          },
+          {
+            name: "step_feedback",
+            type: "flowId, stepIndex, clear, note",
+            description: "A reader said whether the step made sense.",
+          },
+        ]}
+      />
 
       <H2 id="react">@cairnkit/react</H2>
       <P>Headless bindings. No styling.</P>

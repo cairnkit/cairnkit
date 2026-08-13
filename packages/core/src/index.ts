@@ -19,6 +19,7 @@ export type {
   AdvanceRule,
   Placement,
   StepContext,
+  TourDismissReason,
   TourExitReason,
   TourFlow,
   TourStep,

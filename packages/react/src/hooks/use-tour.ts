@@ -8,6 +8,7 @@ import {
   resolveAnchor,
   showsNextButton,
   type StepContext,
+  type TourDismissReason,
 } from "@cairnkit/core";
 import { useCairn } from "../provider/cairn-context";
 import { useActiveTour } from "./use-active-tour";
@@ -109,10 +110,23 @@ export function useTour() {
     leaveStep("back", () => store.goToStep(stepIndex - 1));
   }, [stepIndex, store, leaveStep]);
 
-  const skip = useCallback(() => {
-    if (!flow) return;
-    store.dismiss(flow.id, flow.version, stepIndex);
-  }, [flow, stepIndex, store]);
+  /**
+   * End the tour, recording which control did it.
+   *
+   * Defaults to `"skipped"` so every existing `tour.skip()` call keeps exactly
+   * its current meaning — that call site *is* the Skip button. The X and the
+   * Escape key pass their own reason, because they are different acts: closing
+   * a card that is covering the thing you are trying to look at is a placement
+   * bug in the step, not a rejection of the tour, and the two want opposite
+   * fixes.
+   */
+  const skip = useCallback(
+    (reason: TourDismissReason = "skipped") => {
+      if (!flow) return;
+      store.dismiss(flow.id, flow.version, stepIndex, reason);
+    },
+    [flow, stepIndex, store],
+  );
 
   const start = useStartTour();
   const stop = useCallback(() => store.stop(), [store]);
