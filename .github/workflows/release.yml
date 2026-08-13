@@ -50,8 +50,16 @@ jobs:
       #
       # Guarded on `published` so an ordinary push — which only opens or updates
       # the PR — does nothing here.
+      #
+      # `continue-on-error` because by the time this runs the packages are
+      # already on npm: the release *succeeded*, and a repin that cannot be
+      # pushed is a tidy-up left undone, not a failed release. Without it a
+      # protected branch turns every successful publish into a red build, which
+      # is both alarming and wrong — and the step is skipped by ci.yml anyway,
+      # so nothing downstream breaks.
       - name: Repin sandboxes to the versions just published
         if: steps.changesets.outputs.published == 'true'
+        continue-on-error: true
         run: |
           set -euo pipefail
           pnpm sandboxes
@@ -70,6 +78,24 @@ jobs:
           # Rebase before pushing: `concurrency: release` serialises this job,
           # but nothing stops a human merging something else while it runs.
           git pull --rebase origin main
-          git push origin HEAD:main
+
+          # REQUIRES A RULESET BYPASS for github-actions[bot] on main.
+          #
+          # main requires pull requests, so without that entry this push is
+          # rejected with GH013 and — because the step is continue-on-error —
+          # the release goes green with the repin quietly undone. Hence the
+          # explicit message: this is the one failure here that looks like
+          # nothing happened.
+          #
+          # Settings → Rules → the main ruleset → Bypass list → add the
+          # GitHub Actions bot. Safe to grant: the only thing this step commits
+          # is generated output regenerated from sources that already passed
+          # `verify` on the commit being released.
+          if ! git push origin HEAD:main; then
+            echo "::error::Could not push the sandbox repin to main."
+            echo "::error::Add github-actions[bot] to the main ruleset's bypass list,"
+            echo "::error::then run 'pnpm sandboxes' locally and open a PR to catch up."
+            exit 1
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
