@@ -479,7 +479,7 @@ export default async function Home() {
         reason — the fastest way to lose this audience is to look like the free
         thing was a funnel.
       */}
-      <section className="section" id="cloud">
+      <section className="section cloudband" id="cloud">
         <div className="wrap">
           <p className="eyebrow">cairnkit cloud</p>
           <h2 className="h">The check tells you it broke. It cannot tell you what it cost.</h2>
@@ -490,7 +490,7 @@ export default async function Home() {
             find it.
           </p>
 
-          <div className="editor" style={{ maxWidth: "44rem", margin: "28px auto 0" }}>
+          <div className="editor">
             <div className="editor__bar">
               <span className="editor__dot" />
               <span className="editor__dot" />
@@ -504,14 +504,14 @@ export default async function Home() {
             </pre>
           </div>
 
-          <p className="lede" style={{ marginTop: "22px" }}>
+          <p className="lede">
             You already pass <code>onEvent</code>. Pointing it at cloud is one import and 2.8 kb,
             and what comes back is completion rate per flow, the step people quit on, and a Slack
             message the moment an anchor goes missing in production. Point it at PostHog instead and
             the library does not care — this is an option, not the plan.
           </p>
 
-          <div className="cta__row" style={{ marginTop: "30px" }}>
+          <div className="cta__row">
             <a className="btn btn--primary" href={site.cloud}>
               Join the cloud waitlist
             </a>
