@@ -612,6 +612,31 @@ pre {
   flex-wrap: wrap;
 }
 
+/* ── cloud band ───────────────────────────────────────────────────────────
+   Left aligned throughout, including the code block.
+
+   This section reuses `.editor` and `.cta__row`, and both are built for
+   centred contexts — `.cta__row` sets `justify-content: center`, and the
+   editor was being centred by a `margin: auto`. Everything else on the band
+   (`.eyebrow`, `h2.h`, `p.lede`) is already left aligned, so the two centred
+   children read as a mistake rather than a choice.
+
+   Scoped under `.cloudband` rather than overriding the shared classes, and
+   written as two class selectors so it beats the single-class `.cta__row`
+   without needing `!important` — that rule is defined twice in this file, and
+   a same-specificity override would depend on which copy came last. */
+.cloudband .editor {
+  max-width: 44rem;
+  margin: 28px 0 0;
+}
+.cloudband .lede + .editor + .lede {
+  margin-top: 22px;
+}
+.cloudband .cta__row {
+  justify-content: flex-start;
+  margin-top: 30px;
+}
+
 /* ── feature grid ─────────────────────────────────────────────────────── */
 .features {
   display: grid;
