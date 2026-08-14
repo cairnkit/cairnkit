@@ -91,8 +91,8 @@ npm i -D @cairnkit/cli`}</Code>
         ]}
       />
       <Callout kind="good" title="No React 19-only APIs">
-        Nothing in Cairn uses <C>use()</C>, actions, or any other React 19 addition, which is why 18
-        works rather than merely being declared.
+        Nothing in cairnkit uses <C>use()</C>, actions, or any other React 19 addition, which is why
+        18 works rather than merely being declared.
       </Callout>
 
       <H2 id="register">Register your types</H2>

@@ -1,6 +1,6 @@
 # @cairnkit/ui
 
-The prebuilt [Cairn](https://cairnkit.dev) overlay: spotlight, tooltip step
+The prebuilt [cairnkit](https://cairnkit.dev) overlay: spotlight, tooltip step
 card, and a positionable launcher. Plain CSS, light and dark from the start.
 
 ```bash

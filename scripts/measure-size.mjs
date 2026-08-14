@@ -50,6 +50,16 @@ const packages = [
     files: ["packages/ui/dist/index.js", "packages/ui/dist/index.css"],
     optional: true,
   },
+  /*
+   * Measured but deliberately outside both totals below.
+   *
+   * It was missing entirely, which left the one package that opens network
+   * connections as the only one whose cost was never checked. It is not part of
+   * "everything" because it is not part of running a tour — a reader who never
+   * signs up for cloud never ships it, and folding it into the headline number
+   * would overstate what the library costs them.
+   */
+  { name: "@cairnkit/cloud", files: ["packages/cloud/dist/index.js"], optional: true },
 ];
 
 const sizes = packages.map((pkg) => ({ ...pkg, bytes: gzipped(...pkg.files) }));

@@ -23,7 +23,7 @@ type Tab = "members" | "sharing";
 export function SettingsPage() {
   const [tab, setTab] = useState<Tab>("members");
 
-  // The one line that makes any of this work. Cairn now knows which panel is
+  // The one line that makes any of this work. cairnkit now knows which panel is
   // in front, and a guide belonging to the other one goes dormant.
   useTourScope(tab);
 

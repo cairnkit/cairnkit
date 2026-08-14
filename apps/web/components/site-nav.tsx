@@ -29,8 +29,7 @@ export function SiteNav({
   const pathname = usePathname();
 
   // `startsWith` so /docs/anchors keeps Docs marked as current.
-  const current = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const current = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
     <nav className={`nav ${className}`.trim()}>
@@ -48,6 +47,9 @@ export function SiteNav({
           <Link href="/docs" aria-current={current("/docs") ? "page" : undefined}>
             Docs
           </Link>
+          {/* Last of the links and not marked out, because it is the optional
+              paid thing on a page whose argument is the free one. */}
+          <a href={site.cloud}>Cloud</a>
           <a href={site.repo}>GitHub</a>
           <ThemeToggle />
         </div>

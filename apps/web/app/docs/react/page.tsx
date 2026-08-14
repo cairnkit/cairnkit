@@ -28,7 +28,7 @@ export default function Page() {
 
       <H2 id="adapter">The router adapter</H2>
       <P>
-        Cairn is not a Next library. Everything route-related — <C>resumeAt</C>,{" "}
+        cairnkit is not a Next library. Everything route-related — <C>resumeAt</C>,{" "}
         <C>handoffRoutes</C>, <C>pauseRoutes</C>, the <C>route</C> advance rule — goes through one
         two-method interface.
       </P>
@@ -116,7 +116,7 @@ export const App = () => (
           Import the stylesheet once, anywhere: <C>import &quot;@cairnkit/ui/styles.css&quot;</C>.
         </li>
         <li>
-          If you develop Cairn alongside your app via a workspace link, add{" "}
+          If you develop cairnkit alongside your app via a workspace link, add{" "}
           <C>resolve.dedupe: [&quot;react&quot;, &quot;react-dom&quot;]</C> — symlinked packages can
           otherwise resolve a second copy of React and hooks break.
         </li>

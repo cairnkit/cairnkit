@@ -162,7 +162,7 @@ export function scanProject(rootDirs: string | string[]): CheckContext {
   const isFlowFile = (source: string) => source.includes("defineFlow(");
 
   /**
-   * A file can only matter to this pass if it mentions Cairn by name, spreads
+   * A file can only matter to this pass if it mentions cairnkit by name, spreads
    * an anchor, or contains one of the registered ids as a bare string.
    *
    * That last clause is load-bearing: config-driven UI passes ids as data —

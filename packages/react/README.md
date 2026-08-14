@@ -1,6 +1,6 @@
 # @cairnkit/react
 
-Headless React bindings for [Cairn](https://cairnkit.dev). No styling, no
+Headless React bindings for [cairnkit](https://cairnkit.dev). No styling, no
 router assumptions — bring your own components, or add
 [`@cairnkit/ui`](https://www.npmjs.com/package/@cairnkit/ui) for the prebuilt
 overlay.
@@ -15,7 +15,7 @@ import { CairnProvider } from "@cairnkit/react";
 
 <CairnProvider flows={flows} router={adapter} onEvent={(e) => analytics.capture(e.name, e.props)}>
   {children}
-</CairnProvider>
+</CairnProvider>;
 ```
 
 Then drive your own UI from the controller:
@@ -26,7 +26,7 @@ const { step, rect, stepIndex, showNext, advance, back, skip } = useTour();
 
 ## Router adapters
 
-Everything route-aware goes through a ten-line adapter, so Cairn is not tied to
+Everything route-aware goes through a ten-line adapter, so cairnkit is not tied to
 any framework:
 
 ```ts

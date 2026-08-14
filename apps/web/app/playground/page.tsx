@@ -22,7 +22,7 @@ import { site } from "../site";
 export const metadata: Metadata = {
   title: "Playground",
   description:
-    "Run a real Cairn tour against a real UI, change the step options, and copy the flow that produced it. Includes end-to-end React and Next.js setups.",
+    "Run a real cairnkit tour against a real UI, change the step options, and copy the flow that produced it. Includes end-to-end React and Next.js setups.",
   alternates: { canonical: "/playground" },
 };
 
@@ -69,14 +69,19 @@ export default function PlaygroundPage() {
       <section className="wrap pg__section">
         <h2>Run it in your browser</h2>
         <p className="pg__lede">
-          The examples from the repository, running for real — install, edit, break something.
-          These are generated from the same projects CI typechecks and builds, so they cannot
-          drift from code that works.
+          The examples from the repository, running for real — install, edit, break something. These
+          are generated from the same projects CI typechecks and builds, so they cannot drift from
+          code that works.
         </p>
         <div className="sbx">
           {sandboxes.map((sandbox) => (
-            <a className="sbx__card" key={sandbox.name} href={sandbox.url}
-               target="_blank" rel="noreferrer">
+            <a
+              className="sbx__card"
+              key={sandbox.name}
+              href={sandbox.url}
+              target="_blank"
+              rel="noreferrer"
+            >
               <span className="sbx__title">
                 {sandbox.title}
                 <ExternalLink size={15} strokeWidth={1.8} aria-hidden />

@@ -4,10 +4,10 @@ Two properties, two audiences, two repos. Keeping them separate matters more
 than it looks: one is a public developer artifact, the other is a paid product
 with customer data behind it.
 
-| Property                | Repo             | Audience              | Public? |
-| ----------------------- | ---------------- | --------------------- | ------- |
-| `cairnkit.dev`          | `cairnkit`       | developers evaluating | yes     |
-| `app.cairnkit.dev`      | `cairnkit-cloud` | paying customers      | no      |
+| Property           | Repo             | Audience              | Public? |
+| ------------------ | ---------------- | --------------------- | ------- |
+| `cairnkit.dev`     | `cairnkit`       | developers evaluating | yes     |
+| `app.cairnkit.dev` | `cairnkit-cloud` | paying customers      | no      |
 
 Everything developer-facing belongs to **`cairnkit.dev`**. None of it belongs
 to the cloud — a dashboard behind auth has no install snippet and no bundle
@@ -21,7 +21,7 @@ badge.
 
 The reason is specific and it is the strongest idea in this plan: if the docs
 site consumes the workspace packages, **the documentation can run real tours on
-itself.** A visitor lands on the docs and takes a Cairn tour *of the docs*.
+itself.** A visitor lands on the docs and takes a cairnkit tour _of the docs_.
 That is a demo no screenshot or video competes with, and it stays correct
 automatically because it imports the same code it documents.
 
@@ -47,8 +47,8 @@ MDX page mount `<CairnProvider>` and run an actual tour inline.
 
 Ordered by what a developer actually scans:
 
-**1. Hero.** The one-liner — *"In-app product tours that fail your build, not
-your users."* — plus a copy-button install snippet:
+**1. Hero.** The one-liner — _"In-app product tours that fail your build, not
+your users."_ — plus a copy-button install snippet:
 
 ```
 npm i @cairnkit/core @cairnkit/react @cairnkit/ui
@@ -69,26 +69,26 @@ installing anything. For a tour library this is worth more than any prose.
 
 **4. Size badges.** We can make this claim honestly, which most cannot:
 
-| Package           | gzipped | runtime deps      |
-| ----------------- | ------- | ----------------- |
-| `@cairnkit/core`  | 2.8 kb  | **zero**          |
-| `@cairnkit/react` | 4.0 kb  | core only         |
+| Package           | gzipped | runtime deps       |
+| ----------------- | ------- | ------------------ |
+| `@cairnkit/core`  | 2.8 kb  | **zero**           |
+| `@cairnkit/react` | 4.0 kb  | core only          |
 | `@cairnkit/ui`    | 7.0 kb  | `@floating-ui/dom` |
-| `@cairnkit/next`  | 0.3 kb  | react only        |
+| `@cairnkit/next`  | 0.3 kb  | react only         |
 
 **5. Comparison — on the right axis.**
 
 The obvious move is a performance benchmark against the older packages. That is
-a mistake. Cairn is not faster than driver.js, and claiming a speed advantage
+a mistake. cairnkit is not faster than driver.js, and claiming a speed advantage
 invites a rebuttal on the one axis it does not win.
 
 Compare on the axis it actually owns — **what happens when the UI changes**:
 
-| | driver.js | Shepherd | Pendo | Cairn |
-| --- | --- | --- | --- | --- |
-| Targeting | CSS selector | CSS selector | visual picker | typed anchor |
-| Rename a class | silently breaks | silently breaks | silently breaks | won't compile |
-| Delete the element | silently breaks | silently breaks | silently breaks | **fails CI** |
+|                         | driver.js       | Shepherd        | Pendo           | cairnkit        |
+| ----------------------- | --------------- | --------------- | --------------- | --------------- |
+| Targeting               | CSS selector    | CSS selector    | visual picker   | typed anchor    |
+| Rename a class          | silently breaks | silently breaks | silently breaks | won't compile   |
+| Delete the element      | silently breaks | silently breaks | silently breaks | **fails CI**    |
 | Element stops rendering | silently breaks | silently breaks | silently breaks | fails the audit |
 
 That table is honest, verifiable, and unanswerable — because the alternatives

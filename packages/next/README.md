@@ -1,6 +1,6 @@
 # @cairnkit/next
 
-Next.js router adapters for [Cairn](https://cairnkit.dev). App Router and Pages
+Next.js router adapters for [cairnkit](https://cairnkit.dev). App Router and Pages
 Router.
 
 ```bash
@@ -12,7 +12,9 @@ npm i @cairnkit/core @cairnkit/react @cairnkit/next
 import { CairnProvider } from "@cairnkit/react";
 import { useAppRouterAdapter } from "@cairnkit/next";
 
-<CairnProvider flows={flows} router={useAppRouterAdapter()}>{children}</CairnProvider>
+<CairnProvider flows={flows} router={useAppRouterAdapter()}>
+  {children}
+</CairnProvider>;
 ```
 
 Pages Router: `usePagesRouterAdapter()`.
