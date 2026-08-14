@@ -94,6 +94,34 @@ TourDismissReason · TourExitReason`}</Code>
         ]}
       />
 
+      <P>
+        Every event is <C>{"{ name, props }"}</C>, so the callback maps onto an analytics client
+        directly. Nothing below needs an account with us.
+      </P>
+      <Code file="app/providers.tsx">{`<CairnProvider
+  flows={flows}
+  onEvent={(event) => posthog.capture(event.name, event.props)}
+>
+  {children}
+</CairnProvider>`}</Code>
+      <P>
+        Segment, Amplitude, Mixpanel and a plain <C>fetch</C> to your own collector take the same
+        shape. To send to a tool and to cloud, call both:
+      </P>
+      <Code file="app/providers.tsx">{`import { sendToCloud } from "@cairnkit/cloud";
+
+// Calls sharing a key share one transport, so an inline call during render is
+// also correct. Named here only because it is used alongside another handler.
+const toCloud = sendToCloud({ key: process.env.NEXT_PUBLIC_CAIRNKIT_KEY! });
+
+<CairnProvider
+  flows={flows}
+  onEvent={(event) => {
+    posthog.capture(event.name, event.props);
+    toCloud(event);
+  }}
+>`}</Code>
+
       <H2 id="react">@cairnkit/react</H2>
       <P>Headless bindings. No styling.</P>
       <PropsTable
