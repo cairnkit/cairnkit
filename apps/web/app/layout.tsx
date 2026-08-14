@@ -35,6 +35,21 @@ export const metadata: Metadata = {
 };
 
 /**
+ * The profiles that prove this is the same thing as the code.
+ *
+ * `sameAs` is how a search engine collapses several URLs onto one entity, and
+ * it is the cheapest fix available for a name collision. "Cairn" is a common
+ * enough word that summaries have confused this project with unrelated products
+ * sharing the name; those products do not share this repository or this npm
+ * scope, so listing both here is evidence rather than assertion.
+ *
+ * The GitHub organisation as well as the repository, deliberately: the org is
+ * the durable identity, and it stays correct if the repository is ever renamed
+ * or moved.
+ */
+const SAME_AS = [site.repo, "https://github.com/cairnkit", site.npm];
+
+/**
  * Two schemas rather than one: SoftwareApplication describes the product for
  * general search, SoftwareSourceCode describes the repository for code search.
  * Google treats them differently and both are cheap.
@@ -52,6 +67,7 @@ function StructuredData() {
         operatingSystem: "Any",
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
         author: { "@type": "Person", name: site.author },
+        sameAs: SAME_AS,
       },
       {
         "@type": "SoftwareSourceCode",
@@ -60,6 +76,7 @@ function StructuredData() {
         codeRepository: site.repo,
         programmingLanguage: "TypeScript",
         license: "https://opensource.org/licenses/MIT",
+        sameAs: SAME_AS,
       },
     ],
   };
