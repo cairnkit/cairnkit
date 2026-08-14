@@ -127,7 +127,7 @@ export const anchors = defineAnchors({ nav: { invite: "nav.invite" } });`,
     // The scan skips files that cannot contribute, which is what makes it fast.
     // This fixture is the case that filter can get wrong: the id is present as
     // plain data under a name of the app's own choosing, so the only thing
-    // linking the file to Cairn is the id string itself. Miss it and a live
+    // linking the file to cairnkit is the id string itself. Miss it and a live
     // anchor reads as unapplied — the check fails a build for no reason.
     const dir = project({
       "anchors.ts": `import { defineAnchors } from "@cairnkit/core";

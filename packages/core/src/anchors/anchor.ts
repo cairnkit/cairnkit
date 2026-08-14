@@ -5,7 +5,7 @@ import { ANCHOR_ATTRIBUTE, type AnchorId } from "./types";
  *
  *   <button {...anchor(anchors.questions.tabCreate)} />
  *
- * Deliberately the only coupling a product component has to Cairn.
+ * Deliberately the only coupling a product component has to cairnkit.
  */
 export function anchor(id: AnchorId): Record<string, string> {
   return { [ANCHOR_ATTRIBUTE]: id };

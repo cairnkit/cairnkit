@@ -12,7 +12,7 @@ export const anchors = defineAnchors({
    *
    * `tabs` is deliberately shared by both guides: it sits outside the panels
    * and never unmounts, which is precisely why anchor presence cannot tell
-   * Cairn which of the two is being looked at. Scope is what does.
+   * cairnkit which of the two is being looked at. Scope is what does.
    */
   settings: {
     tabs: "settings.tabs",

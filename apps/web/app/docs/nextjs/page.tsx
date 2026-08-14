@@ -80,7 +80,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <P>
         The overlay renders nothing on the server and mounts through a portal after hydration, so
         there is no markup mismatch. <C>resolveAnchor</C> returns <C>null</C> when there is no{" "}
-        <C>document</C> rather than throwing, so importing Cairn from a server component is safe.
+        <C>document</C> rather than throwing, so importing cairnkit from a server component is safe.
       </P>
       <Callout kind="good" title="Anchors are server-safe">
         <C>anchor()</C> just returns a props object, so you can spread it in a server component.
@@ -112,7 +112,7 @@ export function DeepLink() {
           <C>typescript@^5.7</C> until Next 16.
         </li>
         <li>
-          <strong>Turbopack and workspace packages.</strong> Developing Cairn alongside your app
+          <strong>Turbopack and workspace packages.</strong> Developing cairnkit alongside your app
           needs <C>transpilePackages</C> in <C>next.config.ts</C>. Not needed when installing from
           npm.
         </li>

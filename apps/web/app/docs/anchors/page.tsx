@@ -32,8 +32,8 @@ export const anchors = defineAnchors({
 
       <H2 id="apply">Applying them</H2>
       <P>
-        One spread. Your components import nothing else from Cairn, and stay unaware they are part
-        of a tour.
+        One spread. Your components import nothing else from cairnkit, and stay unaware they are
+        part of a tour.
       </P>
       <Code>{`import { anchor } from "@cairnkit/core";
 
@@ -54,14 +54,18 @@ export const anchors = defineAnchors({
   <ThirdPartyButton />
 </TourAnchor>`}</Code>
       <Callout kind="note" title="How it measures">
-        The wrapper uses <C>display: contents</C>, so it has no box of its own. Cairn detects that
-        and measures the child instead — otherwise the spotlight would have nothing to draw.
+        The wrapper uses <C>display: contents</C>, so it has no box of its own. cairnkit detects
+        that and measures the child instead — otherwise the spotlight would have nothing to draw.
       </Callout>
 
       <H2 id="resolution">How resolution works</H2>
       <Ul>
-        <li>Matches are filtered to <strong>visible</strong> elements first.</li>
-        <li>A missing anchor is waited for, via <C>MutationObserver</C>, up to <C>waitForMs</C>.</li>
+        <li>
+          Matches are filtered to <strong>visible</strong> elements first.
+        </li>
+        <li>
+          A missing anchor is waited for, via <C>MutationObserver</C>, up to <C>waitForMs</C>.
+        </li>
         <li>If a resolved element later disappears, resolution restarts.</li>
       </Ul>
       <Callout kind="note" title="Why visibility matters">

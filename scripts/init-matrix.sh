@@ -57,6 +57,13 @@ check_ts "$d" "next pages router"
 d=$(setup next-src '{"next":"15.5.23","react":"19.0.0","react-dom":"19.0.0"}' "src/app" "$TSCONFIG")
 check_ts "$d" "next app router (src/)"
 
+# Both routers, both layouts. `detect` has always handled `src/pages`, but the
+# matrix only ever covered three corners of that square — and the missing corner
+# is the one where a wrong guess writes the provider somewhere the app cannot
+# import it.
+d=$(setup next-pages-src '{"next":"15.5.23","react":"19.0.0","react-dom":"19.0.0"}' "src/pages" "$TSCONFIG")
+check_ts "$d" "next pages router (src/)"
+
 d=$(setup rr7 '{"react":"19.0.0","react-dom":"19.0.0","react-router":"7.1.0"}' "src" "$TSCONFIG")
 check_ts "$d" "react-router v7"
 
@@ -65,6 +72,12 @@ check_ts "$d" "react-router v6"
 
 d=$(setup plain-react '{"react":"19.0.0","react-dom":"19.0.0"}' "src" "$TSCONFIG")
 check_ts "$d" "react, no router"
+
+# A React app laid out flat. Every react case above has a `src`, so nothing
+# proved the no-src branch for anything other than Next — and that branch
+# decides whether the scaffold lands in `walkthrough/` or `src/walkthrough/`.
+d=$(setup react-flat '{"react":"19.0.0","react-dom":"19.0.0","react-router":"7.1.0"}' "components" "$TSCONFIG")
+check_ts "$d" "react-router, no src/"
 
 d=$(setup react18 '{"next":"14.2.15","react":"18.3.1","react-dom":"18.3.1"}' "pages" "$TSCONFIG")
 check_ts "$d" "react 18 + next 14"
@@ -113,6 +126,53 @@ node "$CLI" init --dry-run >/dev/null 2>&1
 d=$(setup customdir '{"next":"15","react":"19"}' "app" "$TSCONFIG"); cd "$d"
 node "$CLI" init --dir tours >/dev/null 2>&1
 [ -f tours/anchors.ts ]; result "--dir is honoured" $? "tours/anchors.ts"
+
+echo ""
+echo "── check, against what init just wrote ──────────────────────────"
+
+# The two commands are one workflow and were tested as if they were two. What a
+# new user actually does is run init and then wire `cairn check` into CI, and
+# nothing here proved that the second understands the layout the first chose.
+#
+# Uses the no-src project on purpose: `check` given no argument has to find the
+# scaffold without being told, and "src" alone was once the only default — which
+# threw ENOENT on exactly this shape of project.
+cd "$ROOT/next-app"
+
+node "$CLI" check >/dev/null 2>&1
+[ $? -eq 1 ]; result "check fails on fresh scaffold" $? "anchors declared, none applied"
+
+cat > app/placeholder.tsx <<'TSX'
+import { anchor } from "@cairnkit/core";
+import { anchors } from "@/walkthrough/anchors";
+
+export default function Placeholder() {
+  return (
+    <main>
+      <a {...anchor(anchors.nav.home)} href="/">Home</a>
+      <button {...anchor(anchors.home.primaryAction)}>Upgrade</button>
+    </main>
+  );
+}
+TSX
+
+node "$CLI" check >/dev/null 2>&1
+[ $? -eq 0 ]; result "check passes once applied" $? "no argument, finds walkthrough/"
+
+# The whole product promise: someone deletes the element in an unrelated PR and
+# CI stops the deploy rather than a customer finding out.
+cat > app/placeholder.tsx <<'TSX'
+import { anchor } from "@cairnkit/core";
+import { anchors } from "@/walkthrough/anchors";
+
+export default function Placeholder() {
+  return <main><a {...anchor(anchors.nav.home)} href="/">Home</a></main>;
+}
+TSX
+
+out=$(node "$CLI" check 2>&1); code=$?
+[ "$code" -eq 1 ] && echo "$out" | grep -q "home.primary-action"
+result "check catches a deleted element" $? "exit 1, names the anchor"
 
 echo ""
 printf "  %d passed, %d failed\n\n" "$PASS" "$FAIL"

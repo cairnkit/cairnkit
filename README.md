@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="brand/android-chrome-192x192.png" width="72" height="72" alt="Cairn" />
-  <h1>Cairn</h1>
+  <img src="brand/android-chrome-192x192.png" width="72" height="72" alt="cairnkit" />
+  <h1>cairnkit</h1>
   <p><strong>In-app product tours that fail the build instead of the user.</strong></p>
 </div>
 
@@ -12,7 +12,7 @@ customer sees a spotlight over empty space. The industry calls it onboarding
 rot, and the usual answers — AI element fingerprinting, self-healing selectors
 — all try to repair the damage _after_ it ships.
 
-Cairn moves the problem left. Tours are typed data in your repo, anchors are
+cairnkit moves the problem left. Tours are typed data in your repo, anchors are
 verified in CI, and a broken tour fails the build.
 
 ```
@@ -156,6 +156,7 @@ cost the user nothing.
 | [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 4.0 kb                 |
 | [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 7.0 kb (JS + CSS) |
 | [`@cairnkit/next`](packages/next)   | App Router and Pages Router adapters                          |
+| [`@cairnkit/cloud`](packages/cloud) | Optional. Reports tour events to cairnkit cloud, 2.8 kb       |
 | [`@cairnkit/cli`](packages/cli)     | `cairn check`                                                 |
 
 `core` is framework-free; React is one binding, not the architecture. Router
@@ -204,4 +205,4 @@ Amplitude or your own endpoint.
 - [Contributing](CONTRIBUTING.md) — setup, the checks, and how to open a PR
 - [Security](SECURITY.md) — threat model, selector escaping, supply chain
 
-MIT © Cairn
+MIT © cairnkit

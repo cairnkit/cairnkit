@@ -85,8 +85,7 @@ export function providerFile(context: Context, flowsImport: string): string {
   const props = ts ? "{ children }: { children: ReactNode }" : "{ children }";
 
   if (framework.kind === "next-app" || framework.kind === "next-pages") {
-    const hook =
-      framework.kind === "next-app" ? "useAppRouterAdapter" : "usePagesRouterAdapter";
+    const hook = framework.kind === "next-app" ? "useAppRouterAdapter" : "usePagesRouterAdapter";
 
     return `"use client";
 
@@ -146,7 +145,7 @@ export function routerAdapterFile(context: Context): string {
     // compat shim there. Importing the wrong one simply does not resolve.
     return `import { useLocation, useNavigate } from "${context.framework.pkg}";
 ${adapterImport}
-/** The entire surface Cairn needs from a router. */
+/** The entire surface cairnkit needs from a router. */
 export function useReactRouterAdapter()${returns} {
   const navigate = useNavigate();
 
@@ -160,7 +159,7 @@ export function useReactRouterAdapter()${returns} {
 
   const why =
     context.framework.kind === "unknown" && context.framework.hint
-      ? `${context.framework.hint} is installed, but Cairn does not ship an adapter for it yet.`
+      ? `${context.framework.hint} is installed, but cairnkit does not ship an adapter for it yet.`
       : "We could not tell which router this project uses, so this is a stub rather than a guess.";
 
   return `${adapterImport}

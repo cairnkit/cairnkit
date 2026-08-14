@@ -5,7 +5,9 @@ import { runInit } from "./commands/init";
 const USAGE = `${CLI_NAME} · product tours that fail your build, not your users.
 
   ${CLI_NAME} check [dir...]   Fail when a tour points at UI that no longer exists.
-                         Defaults to "src". Several roots are scanned as one
+                         Given nothing, scans whichever of src, app, pages,
+                         walkthrough, lib and components exist — or the working
+                         directory if none do. Several roots are scanned as one
                          project, so a flow in one can point at a component
                          in another.
 

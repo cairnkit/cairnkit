@@ -1,7 +1,7 @@
 import type { anchors } from "./walkthrough/anchors";
 
 /**
- * Registering the app's anchors and flow ids narrows Cairn's whole API to
+ * Registering the app's anchors and flow ids narrows cairnkit's whole API to
  * these literals — a typo in a flow file or a launcher now fails to compile.
  */
 declare module "@cairnkit/core" {

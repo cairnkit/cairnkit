@@ -1,5 +1,5 @@
 /*
- * Cairn design tokens.
+ * cairnkit design tokens.
  *
  * Every value is a custom property so a host can rebrand the overlay in one
  * line. Light and dark are both defined from the start: the media query is the
@@ -30,9 +30,7 @@
   --cairn-radius-sm: 9px;
   --cairn-radius-pill: 999px;
 
-  --cairn-shadow:
-    0 1px 2px rgb(9 9 11 / 0.06),
-    0 8px 24px -6px rgb(9 9 11 / 0.16),
+  --cairn-shadow: 0 1px 2px rgb(9 9 11 / 0.06), 0 8px 24px -6px rgb(9 9 11 / 0.16),
     0 24px 48px -12px rgb(9 9 11 / 0.12);
 
   /* Distance from the viewport edge. Raise it to clear a chat bubble. */
@@ -52,9 +50,7 @@
     --cairn-rail: rgb(255 255 255 / 0.14);
     --cairn-hover: rgb(255 255 255 / 0.07);
     --cairn-scrim: rgb(0 0 0 / 0.68);
-    --cairn-shadow:
-      0 1px 2px rgb(0 0 0 / 0.4),
-      0 8px 24px -6px rgb(0 0 0 / 0.5),
+    --cairn-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -6px rgb(0 0 0 / 0.5),
       0 24px 48px -12px rgb(0 0 0 / 0.45);
   }
 }
@@ -67,8 +63,6 @@
   --cairn-rail: rgb(255 255 255 / 0.14);
   --cairn-hover: rgb(255 255 255 / 0.07);
   --cairn-scrim: rgb(0 0 0 / 0.68);
-  --cairn-shadow:
-    0 1px 2px rgb(0 0 0 / 0.4),
-    0 8px 24px -6px rgb(0 0 0 / 0.5),
+  --cairn-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -6px rgb(0 0 0 / 0.5),
     0 24px 48px -12px rgb(0 0 0 / 0.45);
 }

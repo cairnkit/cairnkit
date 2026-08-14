@@ -32,7 +32,7 @@ Product tours defined as typed data in your repository. Anchors are referenced
 by name, never by CSS selector, so a renamed or deleted element fails the build
 instead of silently pointing a tour at nothing.
 
-- Packages: @cairnkit/core, @cairnkit/react, @cairnkit/ui, @cairnkit/next, @cairnkit/cli
+- Packages: @cairnkit/core, @cairnkit/react, @cairnkit/ui, @cairnkit/next, @cairnkit/cli, @cairnkit/cloud
 - License: MIT. Runtime dependencies: zero (the overlay adds @floating-ui/dom)
 - Supports: React 18 and 19; Next.js App Router and Pages Router; Vite; react-router v6 and v7
 - Server-rendered safe. No client JavaScript is required to render a page containing a provider.
@@ -149,10 +149,54 @@ npx tsc --noEmit      # a mistyped anchor or flow id fails here
 npx cairnkit check       # an anchor never applied to an element fails here
 \`\`\`
 
-\`cairn check\` defaults to "src" and accepts several roots, scanned as one
-project: \`npx cairnkit check src app\`. It exits non-zero with the file and line
-of the flow that breaks, which makes it a self-correction step rather than only
-a CI gate.
+Given no argument, \`cairnkit check\` scans whichever of \`src\`, \`app\`, \`pages\`,
+\`walkthrough\`, \`lib\` and \`components\` exist, falling back to the working
+directory when none do — so it works in a project created with --no-src-dir
+without being told. Explicit roots are scanned as one project:
+\`npx cairnkit check src app\`, which is what lets a flow in one directory point
+at a component in another.
+
+It exits non-zero with the file and line of the flow that breaks, which makes it
+a self-correction step rather than only a CI gate.
+
+## Optional: reporting to cairnkit cloud
+
+@cairnkit/cloud (2.8 kb gzipped) turns the onEvent callback into completion
+rates and alerts. Entirely optional — the library is MIT and complete without
+it, and onEvent points just as happily at PostHog, Segment or your own endpoint.
+
+\`\`\`tsx
+import { sendToCloud } from "@cairnkit/cloud";
+
+<CairnProvider flows={flows} onEvent={sendToCloud({ key: process.env.NEXT_PUBLIC_CAIRNKIT_KEY! })}>
+\`\`\`
+
+The key is publishable and belongs in the browser bundle: it can write events to
+one project and read nothing at all. Calling sendToCloud repeatedly with the same
+key returns the same transport, so calling it inline during render is correct and
+does not accumulate queues or listeners.
+
+Wire contract, for anyone self-hosting the receiving end:
+
+\`\`\`
+POST <endpoint>            content-type: text/plain (skips the CORS preflight)
+{ key, sessionId, userId?, events: [{ id, name, at, viewport: {w,h}, runId?, props }] }
+
+202 { accepted, duplicates }   stored; duplicates were already held
+400 { error: "invalid_payload", issues }
+401 { error: "invalid_key" }    revoked or unknown — NOT retried by the client
+413 { error: "payload_too_large" }
+429 { error: "rate_limited", scope: "minute" | "month" }  + Retry-After seconds
+\`\`\`
+
+429 IS retried, with the server's Retry-After honoured up to 60s. Every other 4xx
+is treated as permanent and reported once through onError. Event ids are chosen
+before the first send attempt, so redelivering a batch is safe and is counted as
+duplicates rather than stored twice.
+
+Limits per project: 50 events per request, 64 KB per body, 600 requests per
+minute, and a monthly event ceiling. The monthly figure counts stored events, so
+deduplicated retries do not consume it.
 
 ## Mistakes observed in real integrations
 

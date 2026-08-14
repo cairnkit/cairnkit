@@ -10,7 +10,7 @@ import { anchors } from "@/walkthrough/anchors";
  * Two guides behind one URL, under App Router.
  *
  * Switching tabs changes no pathname, so the router adapter sees nothing and
- * `pauseRoutes` has nothing to match. `useTourScope` is what tells Cairn which
+ * `pauseRoutes` has nothing to match. `useTourScope` is what tells cairnkit which
  * panel is in front; a guide belonging to the other one goes dormant and
  * resumes on the step it left.
  */

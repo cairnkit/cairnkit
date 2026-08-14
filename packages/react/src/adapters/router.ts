@@ -1,5 +1,5 @@
 /**
- * The one seam that keeps Cairn from being a Next.js library.
+ * The one seam that keeps cairnkit from being a Next.js library.
  *
  * Everything route-aware — `route` advance rules, resumeAt, pauseRoutes,
  * handoffRoutes — goes through this. An adapter for App Router, Pages Router,

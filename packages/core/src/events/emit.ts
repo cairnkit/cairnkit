@@ -7,7 +7,7 @@ const CHANNEL = "cairn:event";
  *
  *   emitTourEvent("question:created");
  *
- * One line at the call site, and the only Cairn import a service needs.
+ * One line at the call site, and the only cairnkit import a service needs.
  */
 export function emitTourEvent(name: RegisteredEvent): void {
   if (typeof window === "undefined") return;

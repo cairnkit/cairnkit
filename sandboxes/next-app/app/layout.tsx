@@ -6,7 +6,7 @@ import { Providers } from "./providers";
 import "@cairnkit/ui/styles.css";
 import "./globals.css";
 
-export const metadata = { title: "Cairn example" };
+export const metadata = { title: "cairnkit example" };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -15,7 +15,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers>
           <div className="shell">
             <nav className="side">
-              <Link href="/" {...anchor(anchors.nav.library)}>Library</Link>
+              <Link href="/" {...anchor(anchors.nav.library)}>
+                Library
+              </Link>
               <Link href="/new">Create manually</Link>
               <Link href="/ai">Generate with AI</Link>
               <Link href="/prefs">Preferences</Link>
