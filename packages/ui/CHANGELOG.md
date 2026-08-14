@@ -1,5 +1,12 @@
 # @cairnkit/ui
 
+## 0.11.1
+
+### Patch Changes
+
+- @cairnkit/core@0.11.1
+- @cairnkit/react@0.11.1
+
 ## 0.11.0
 
 ### Patch Changes

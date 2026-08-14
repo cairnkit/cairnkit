@@ -1,6 +1,6 @@
 {
   "name": "@cairnkit/react",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Headless React bindings for cairnkit. No styling, no router assumptions.",
   "license": "MIT",
   "type": "module",
