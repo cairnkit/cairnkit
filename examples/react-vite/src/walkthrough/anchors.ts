@@ -11,12 +11,12 @@ export const anchors = defineAnchors({
      * spread, on purpose and as a regression fixture.
      *
      * That path has its own scanner branch, and it shipped broken in 0.11.1:
-     * `cairn check` read the stripped copy of the file, where string contents
+     * `cairnkit check` read the stripped copy of the file, where string contents
      * are blanked to same-length padding, so the id came back as spaces. Every
      * raw attribute was reported as "not in the registry" even when it was
      * registered, and the finding could not name the value.
      *
-     * CI runs `cairn check` over this directory, so leaving one real use here
+     * CI runs `cairnkit check` over this directory, so leaving one real use here
      * means that regression fails the build instead of reaching npm again.
      */
     exportCsv: "pipeline.export-csv",

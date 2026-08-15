@@ -16,7 +16,7 @@ const SKIP = new Set(["node_modules", "dist", "build", ".next", ".git", "coverag
 /**
  * Walks source files without following symlinks out of the project.
  *
- * `cairn check` runs in CI on untrusted branches, so it only ever reads text
+ * `cairnkit check` runs in CI on untrusted branches, so it only ever reads text
  * inside the given root — it never imports or executes project code.
  */
 function walk(dir: string, root: string, out: string[] = []): string[] {
@@ -235,34 +235,62 @@ export function scanProject(rootDirs: string | string[]): CheckContext {
       continue;
     }
 
-    const flowId = /id:\s*["'`]([^"'`]+)["'`]/.exec(raw)?.[1];
-    if (!flowId) continue;
+    /*
+     * One flow at a time, not one file at a time.
+     *
+     * This block used to take the first `id:` in the file and attribute every
+     * anchor, pause route and handoff in it to that one flow. A file holding
+     * four `defineFlow` calls therefore reported one flow owning all of them,
+     * and `cairnkit check` named the wrong flow in its findings: an anchor used
+     * only by the fourth flow was reported as breaking the first.
+     *
+     * The segments are cut on `defineFlow(` in the *stripped* copy, so a call
+     * quoted inside a docs snippet does not start a phantom flow, and the same
+     * offsets are used to slice the raw copy because route strings live inside
+     * string literals and are blanked in the stripped one.
+     */
+    const starts = [...source.matchAll(/defineFlow\s*\(/g)].map((m) => m.index ?? 0);
 
-    const anchors: string[] = [];
-    for (const match of source.matchAll(/anchor:\s*[A-Za-z_$][\w$]*\.(\w+\.\w+)/g)) {
-      const id = match[1] ? registryPaths.get(match[1]) : undefined;
-      if (!id) continue;
-      anchors.push(id);
-      stepAt.set(`${flowId}::${id}`, { file, offset: match.index ?? 0 });
+    for (let i = 0; i < starts.length; i += 1) {
+      const from = starts[i] ?? 0;
+      const to = starts[i + 1] ?? raw.length;
+
+      // stripLiterals pads rather than removes, so both copies share offsets
+      // and a slice of one lines up with the same slice of the other.
+      const rawSegment = raw.slice(from, to);
+      const segment = source.slice(from, to);
+
+      const flowId = /id:\s*["'`]([^"'`]+)["'`]/.exec(rawSegment)?.[1];
+      if (!flowId) continue;
+
+      const anchors: string[] = [];
+      for (const match of segment.matchAll(/anchor:\s*[A-Za-z_$][\w$]*\.(\w+\.\w+)/g)) {
+        const id = match[1] ? registryPaths.get(match[1]) : undefined;
+        if (!id) continue;
+        anchors.push(id);
+        // Back to file coordinates, or every finding points at the top of the
+        // file rather than at the step.
+        stepAt.set(`${flowId}::${id}`, { file, offset: from + (match.index ?? 0) });
+      }
+      flowAnchors.set(flowId, anchors);
+
+      const pauseBlock = /pauseRoutes:\s*\[([^\]]*)\]/.exec(rawSegment)?.[1] ?? "";
+      const pause = [...pauseBlock.matchAll(/["'`]([^"'`]+)["'`]/g)]
+        .map((m) => m[1])
+        .filter((value): value is string => Boolean(value));
+
+      const handoff = [
+        ...rawSegment.matchAll(
+          /\{\s*pathname:\s*["'`]([^"'`]+)["'`],\s*flowId:\s*["'`]([^"'`]+)["'`]\s*\}/g,
+        ),
+      ]
+        .map((m) => ({ pathname: m[1], flowId: m[2] }))
+        .filter((entry): entry is { pathname: string; flowId: string } =>
+          Boolean(entry.pathname && entry.flowId),
+        );
+
+      flowRoutes.set(flowId, { pause, handoff });
     }
-    flowAnchors.set(flowId, anchors);
-
-    const pauseBlock = /pauseRoutes:\s*\[([^\]]*)\]/.exec(raw)?.[1] ?? "";
-    const pause = [...pauseBlock.matchAll(/["'`]([^"'`]+)["'`]/g)]
-      .map((m) => m[1])
-      .filter((value): value is string => Boolean(value));
-
-    const handoff = [
-      ...raw.matchAll(
-        /\{\s*pathname:\s*["'`]([^"'`]+)["'`],\s*flowId:\s*["'`]([^"'`]+)["'`]\s*\}/g,
-      ),
-    ]
-      .map((m) => ({ pathname: m[1], flowId: m[2] }))
-      .filter((entry): entry is { pathname: string; flowId: string } =>
-        Boolean(entry.pathname && entry.flowId),
-      );
-
-    flowRoutes.set(flowId, { pause, handoff });
   }
 
   return {

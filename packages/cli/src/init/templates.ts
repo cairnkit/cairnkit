@@ -15,7 +15,7 @@ export function anchorsFile(): string {
  * Every element a tour can point at, declared once.
  *
  * Ids are referenced by name from here — never as CSS selectors — which is
- * what lets \`cairn check\` fail the build when one stops being applied.
+ * what lets \`cairnkit check\` fail the build when one stops being applied.
  */
 export const anchors = defineAnchors({
   nav: {

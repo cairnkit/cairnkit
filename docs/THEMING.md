@@ -228,5 +228,5 @@ Which means the three ways a tour can rot are each caught at a different stage:
 | -------------------------------------------- | ---------------- | ----------- |
 | Typo in an anchor, flow id, or event name    | TypeScript       | as you type |
 | Wrong placement, advance rule, or prop shape | TypeScript       | as you type |
-| Anchor deleted from the UI                   | `cairn check`    | in CI       |
+| Anchor deleted from the UI                   | `cairnkit check`    | in CI       |
 | Anchor exists but never renders              | Playwright audit | in CI       |

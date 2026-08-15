@@ -54,11 +54,11 @@ your users."_ — plus a copy-button install snippet:
 npm i @cairnkit/core @cairnkit/react @cairnkit/ui
 ```
 
-**2. The failure, shown not claimed.** A terminal block of real `cairn check`
+**2. The failure, shown not claimed.** A terminal block of real `cairnkit check`
 output. This is the differentiator and it should be above the fold:
 
 ```
-✗ cairn check failed
+✗ cairnkit check failed
   • questions.save is registered but never applied to an element
       breaks "create-questions"  src/walkthrough/flows.ts:35
 ```
@@ -106,7 +106,7 @@ genuinely cannot do it without a repo.
 /docs/off-path        resumeAt · pauseRoutes · handoffRoutes
 /docs/modals          anchoring inside dialogs
 /docs/theming         → docs/THEMING.md
-/docs/ci              cairn check + the Playwright audit
+/docs/ci              cairnkit check + the Playwright audit
 /docs/api             generated from the .d.ts
 /playground           the live example
 /changelog            generated, see below

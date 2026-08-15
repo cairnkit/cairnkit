@@ -84,7 +84,7 @@ TourDismissReason · TourExitReason`}</Code>
             name: "anchor_missing",
             type: "flowId, stepIndex, anchor, pathname",
             description:
-              "A step pointed at UI that was not on the page — what cairn check catches before release, seen from production.",
+              "A step pointed at UI that was not on the page — what cairnkit check catches before release, seen from production.",
           },
           {
             name: "step_feedback",
@@ -172,7 +172,9 @@ const toCloud = sendToCloud({ key: process.env.NEXT_PUBLIC_CAIRNKIT_KEY! });
       <H2 id="cli">@cairnkit/cli</H2>
       <PropsTable
         rows={[
-          { name: "cairn check <dir>", type: "command", description: "Static drift check. Exits 1 on any finding." },
+          { name: "cairnkit check <dir>", type: "command", description: "Static drift check. Exits 1 on any finding." },
+          { name: "cairnkit status <dir>", type: "command", description: "Describe every anchor: whether an element carries it, how it was applied, where it was declared, and which flows point at it. Always exits 0 — describing is not judging." },
+          { name: "--json", type: "flag", description: "On check or status. Writes exactly one JSON object to stdout and every human-facing message to stderr, so the output pipes straight into a parser. The payload carries a version field." },
           { name: "auditFlow(page, opts)", type: "function", description: "Drives one flow in a browser and reports per-step." },
           { name: "auditFlows(page, list)", type: "function", description: "Several flows; throws one readable error if any fail." },
         ]}

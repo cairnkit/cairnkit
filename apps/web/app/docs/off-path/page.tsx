@@ -197,7 +197,7 @@ useEffect(() => {
       </Ul>
       <Callout kind="warn" title="Two constraints the CLI enforces">
         A route must not appear in both <C>pauseRoutes</C> and <C>handoffRoutes</C>, and no flow may
-        hand off to itself. Both would be ambiguous, so <C>cairn check</C> rejects them rather than
+        hand off to itself. Both would be ambiguous, so <C>cairnkit check</C> rejects them rather than
         letting the engine guess.
       </Callout>
       <P>

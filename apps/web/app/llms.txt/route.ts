@@ -159,6 +159,31 @@ at a component in another.
 It exits non-zero with the file and line of the flow that breaks, which makes it
 a self-correction step rather than only a CI gate.
 
+## Reading the project as data
+
+\`cairnkit status\` describes what is there rather than judging it: every anchor,
+whether an element carries it, whether it got there through the typed spread or
+a bare data-cairn attribute, where it was declared, and which flows point at it.
+It always exits 0.
+
+\`--json\` works on both commands. stdout carries exactly one JSON object and
+every human-facing message goes to stderr, so it can be piped straight into a
+parser.
+
+\`\`\`bash
+npx cairnkit status --json    # the anchor graph
+npx cairnkit check --json     # findings, each with file and line
+\`\`\`
+
+This is the shape to read before writing a tour into an unfamiliar project. The
+anchor graph is not derivable by grepping: it needs the registry path resolution
+and the rule that flow files reference anchors rather than apply them. Write the
+files with your own tools, then run \`cairnkit check --json\` to confirm the
+result, which turns a guess into something verified.
+
+The payload carries a \`version\` field so a consumer can tell one shape from
+another.
+
 ## Optional: reporting to cairnkit cloud
 
 @cairnkit/cloud (2.8 kb gzipped) turns the onEvent callback into completion

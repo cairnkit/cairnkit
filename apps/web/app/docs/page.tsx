@@ -33,7 +33,7 @@ export default function Page() {
         Tours are typed data in your repository, anchors are verified in CI, and a broken tour fails
         the build before it reaches anyone.
       </P>
-      <Code>{`✗ cairn check failed
+      <Code>{`✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
@@ -50,7 +50,7 @@ export default function Page() {
         </li>
         <li>
           <strong>
-            <C>cairn check</C>
+            <C>cairnkit check</C>
           </strong>{" "}
           — an element deleted from source fails CI in about a second, naming the tour it breaks and
           the line to open.

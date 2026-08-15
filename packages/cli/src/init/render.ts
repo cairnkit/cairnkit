@@ -1,5 +1,5 @@
 /**
- * How `cairn init` looks.
+ * How `cairnkit init` looks.
  *
  * Kept apart from the command so the decision-making and the presentation can
  * change independently, and so colour can be switched off wholesale.

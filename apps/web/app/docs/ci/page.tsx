@@ -4,7 +4,7 @@ import { C, Callout, H2, P, Ul } from "@/components/docs/prose";
 import { Code } from "@/components/docs/code";
 import { PropsTable } from "@/components/docs/props-table";
 
-export const metadata = { title: "cairn check" };
+export const metadata = { title: "cairnkit check" };
 
 export default function Page() {
   return (
@@ -14,12 +14,13 @@ export default function Page() {
         { id: "run", label: "Running it" },
         { id: "output", label: "Reading the output" },
         { id: "rules", label: "The rules" },
+        { id: "status", label: "Seeing what is there" },
         { id: "ci", label: "In CI" },
         { id: "safe", label: "What it does not do" },
       ]}
     >
       <Callout kind="note" title="The other command">
-        <C>@cairnkit/cli</C> also ships <C>cairn init</C>, which scaffolds anchors, a flow and a
+        <C>@cairnkit/cli</C> also ships <C>cairnkit init</C>, which scaffolds anchors, a flow and a
         provider into an existing app. See <a href="/docs/install">Installation</a>.
       </Callout>
 
@@ -38,11 +39,11 @@ npx cairnkit check src app packages/ui`}</Code>
       <Callout kind="note" title="npx, or an npm script">
         <C>@cairnkit/cli</C> installs as a local dev dependency, so bare <C>cairn</C> is not on your
         shell PATH — use <C>npx</C>. Inside an npm script it is on PATH, so{" "}
-        <C>"lint": "cairn check"</C> works without <C>npx</C>.
+        <C>"lint": "cairnkit check"</C> works without <C>npx</C>.
       </Callout>
 
       <H2 id="output">Reading the output</H2>
-      <Code>{`✗ cairn check failed
+      <Code>{`✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
@@ -77,8 +78,50 @@ npx cairnkit check src app packages/ui`}</Code>
         ]}
       />
 
+      <H2 id="status">Seeing what is there</H2>
+      <P>
+        <C>check</C> answers &ldquo;is anything wrong&rdquo;. <C>status</C> answers &ldquo;what is
+        there&rdquo;, which is the question you have first in a project you did not write: every
+        anchor, whether an element carries it, where it was declared, and which flows point at it.
+      </P>
+      <Code>{`npx cairnkit status`}</Code>
+      <Code>{`cairnkit status · 21 anchors, 4 flow(s)
+
+  ✓ compose.prompt          write-question    src/walkthrough/anchors.ts:8
+  ✓ invite.send             invite-candidate  src/walkthrough/anchors.ts:6
+  ✓ nav.pipeline                              src/walkthrough/anchors.ts:4
+  ! questions.export                               src/walkthrough/anchors.ts:9
+
+  1 registered but not applied, 0 applied but not registered.
+  Run cairnkit check for the detail.`}</Code>
+      <P>
+        A tick means an element carries it. An exclamation means the registry declares it and
+        nothing applies it, which is the state <C>check</C> fails on. An anchor with no flow beside
+        it is simply not used by a tour yet, which is fine.
+      </P>
+      <P>
+        It always exits <C>0</C>. Describing a project is not a verdict on it, and a command that
+        fails for telling you something is a command nobody runs.
+      </P>
+
+      <Callout kind="note" title="For tooling and agents">
+        <P>
+          Both commands take <C>--json</C>. In that mode stdout carries exactly one JSON object and
+          every human-facing message goes to stderr, so it pipes straight into a parser:
+        </P>
+        <Code>{`npx cairnkit status --json
+npx cairnkit check --json`}</Code>
+        <P>
+          The status payload is the anchor graph, which is the thing a coding agent cannot work out
+          by searching your files: it needs the registry path resolution and the rule that flow
+          files reference anchors rather than apply them. Read it, write the tour with your own
+          tools, then run <C>check --json</C> to confirm the result rather than assume it. The
+          payload carries a <C>version</C> field so a consumer can tell one shape from another.
+        </P>
+      </Callout>
+
       <H2 id="ci">In CI</H2>
-      <Code file="package.json">{`"scripts": { "lint": "eslint . && cairn check src" }`}</Code>
+      <Code file="package.json">{`"scripts": { "lint": "eslint . && cairnkit check src" }`}</Code>
       <Code file=".github/workflows/ci.yml">{`- run: npx cairnkit check src`}</Code>
       <P>
         Around 0.1s across 700 source files, so it belongs in the fast lane next to your linter

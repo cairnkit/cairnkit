@@ -16,7 +16,7 @@ cairnkit moves the problem left. Tours are typed data in your repo, anchors are
 verified in CI, and a broken tour fails the build.
 
 ```
-✗ cairn check failed
+✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
@@ -118,7 +118,7 @@ export function Providers({ children }) {
 ## 5 · Wire the check into CI
 
 ```jsonc
-"scripts": { "lint": "eslint . && cairn check" }
+"scripts": { "lint": "eslint . && cairnkit check" }
 ```
 
 ---
@@ -157,7 +157,7 @@ cost the user nothing.
 | [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 7.0 kb (JS + CSS) |
 | [`@cairnkit/next`](packages/next)   | App Router and Pages Router adapters                          |
 | [`@cairnkit/cloud`](packages/cloud) | Optional. Reports tour events to cairnkit cloud, 2.8 kb       |
-| [`@cairnkit/cli`](packages/cli)     | `cairn check`                                                 |
+| [`@cairnkit/cli`](packages/cli)     | `cairnkit check`                                                 |
 
 `core` is framework-free; React is one binding, not the architecture. Router
 access goes through a ten-line adapter, so react-router or TanStack Router is
