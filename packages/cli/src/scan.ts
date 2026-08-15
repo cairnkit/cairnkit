@@ -205,12 +205,32 @@ export function scanProject(rootDirs: string | string[]): CheckContext {
         const id = match[1] ? registryPaths.get(match[1]) : undefined;
         if (id) applied.add(id);
       }
-      for (const match of source.matchAll(/data-cairn=["']([^"']+)["']/g)) {
+      /*
+       * Read from `raw`, not from the stripped source.
+       *
+       * A JSX attribute value *is* a string literal, and `stripLiterals`
+       * replaces string contents with same-length padding. Matching this
+       * pattern against the stripped text therefore captured a run of spaces
+       * rather than the id: every `data-cairn="..."` in the codebase was
+       * reported as "not in the registry" even when it was registered, and the
+       * finding could not name the value it was complaining about.
+       *
+       * Offsets survive stripping intact, so the guard below is what keeps the
+       * original protection. A `data-cairn=` inside a comment or a template
+       * literal is blanked wholesale, attribute name included, so the stripped
+       * text no longer starts with the attribute at that offset and the match
+       * is skipped. A real attribute keeps its name, because only the quoted
+       * value is padded.
+       */
+      for (const match of raw.matchAll(/data-cairn=["']([^"']+)["']/g)) {
+        const at = match.index ?? 0;
+        if (!source.startsWith("data-cairn=", at)) continue;
+
         const value = match[1];
         if (!value) continue;
         literals.add(value);
         applied.add(value);
-        if (!literalAt.has(value)) literalAt.set(value, { file, offset: match.index ?? 0 });
+        if (!literalAt.has(value)) literalAt.set(value, { file, offset: at });
       }
       continue;
     }
