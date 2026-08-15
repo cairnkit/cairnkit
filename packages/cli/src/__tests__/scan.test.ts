@@ -23,6 +23,42 @@ export const anchors = defineAnchors({ q: { save: "q.save" } });`,
     expect(ctx.applied.has("q.save")).toBe(true);
   });
 
+  it("reads the id from a data-cairn attribute rather than blanking it", () => {
+    /*
+     * `stripLiterals` pads out string contents, and a JSX attribute value is a
+     * string. Scanning the stripped text captured spaces instead of the id, so
+     * a registered anchor applied this way was reported as "not in the
+     * registry" and the finding could not say which value it meant.
+     */
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ help: { link: "help.link" } });`,
+      "Help.tsx": `export const H = () => <a data-cairn="help.link" href="/help" />;`,
+    });
+
+    const ctx = scanProject(dir);
+
+    expect([...ctx.literals]).toEqual(["help.link"]);
+    expect(ctx.applied.has("help.link")).toBe(true);
+    // The whole point of the finding is naming the offender, so it has to be
+    // locatable by its real id.
+    expect(ctx.literalAt.get("help.link")?.file).toContain("Help.tsx");
+  });
+
+  it("still ignores a data-cairn attribute quoted inside a template literal", () => {
+    // The guard that makes the fix above safe: a documentation snippet showing
+    // the attribute must not register as a real use of it.
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ real: { one: "real.one" } });`,
+      "Docs.tsx": `const sample = \`<button data-cairn="phantom.nope" />\`;
+export const D = () => <pre>{sample}</pre>;`,
+    });
+
+    const ctx = scanProject(dir);
+    expect([...ctx.literals]).toEqual([]);
+  });
+
   it("ignores code quoted inside a template literal", () => {
     // A docs page showing a defineAnchors sample must not register phantom
     // anchors — that false-failed the check on our own landing page.
