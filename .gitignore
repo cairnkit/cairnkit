@@ -31,3 +31,8 @@ test-results/
 
 # launch collateral — video project, generated audio, renders, snapshots
 media/
+
+# `sandboxes.mjs verify` builds each sandbox in place, and Next writes this
+# during a build. It is not generated output, so `sandboxes check` ignores it,
+# but without this every verify run leaves an untracked file behind.
+sandboxes/*/next-env.d.ts
