@@ -1,6 +1,6 @@
 {
   "name": "@cairnkit/cloud",
-  "version": "0.11.2",
+  "version": "0.12.0",
   "description": "Send cairnkit tour events to cairnkit cloud. Batched, retry-safe, survives the tab closing.",
   "license": "MIT",
   "type": "module",
