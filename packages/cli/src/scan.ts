@@ -16,7 +16,7 @@ const SKIP = new Set(["node_modules", "dist", "build", ".next", ".git", "coverag
 /**
  * Walks source files without following symlinks out of the project.
  *
- * `cairn check` runs in CI on untrusted branches, so it only ever reads text
+ * `cairnkit check` runs in CI on untrusted branches, so it only ever reads text
  * inside the given root — it never imports or executes project code.
  */
 function walk(dir: string, root: string, out: string[] = []): string[] {
@@ -241,7 +241,7 @@ export function scanProject(rootDirs: string | string[]): CheckContext {
      * This block used to take the first `id:` in the file and attribute every
      * anchor, pause route and handoff in it to that one flow. A file holding
      * four `defineFlow` calls therefore reported one flow owning all of them,
-     * and `cairn check` named the wrong flow in its findings: an anchor used
+     * and `cairnkit check` named the wrong flow in its findings: an anchor used
      * only by the fourth flow was reported as breaking the first.
      *
      * The segments are cut on `defineFlow(` in the *stripped* copy, so a call

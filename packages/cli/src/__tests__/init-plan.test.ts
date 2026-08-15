@@ -343,4 +343,29 @@ describe("plan", () => {
     );
     expect(provider?.contents).toContain("usePagesRouterAdapter");
   });
+
+  it("names the vite entry where it actually is", () => {
+    // It used to say src/main.tsx regardless of layout, which is right for a
+    // standard create-vite app and quietly wrong for one without a src
+    // directory: the step pointed at a file the reader did not have.
+    const vite = (files: Record<string, string>) => {
+      const reader = project(files);
+      const steps = plan(detect(reader), reader).nextSteps;
+      return JSON.stringify(steps);
+    };
+
+    const base = {
+      "package.json": JSON.stringify({
+        dependencies: { react: "19.0.0" },
+        devDependencies: { vite: "6.0.0" },
+      }),
+      "package-lock.json": "",
+    };
+
+    expect(vite({ ...base, "src/main.tsx": "", "src/App.tsx": "" })).toContain("src/main.tsx");
+
+    const flat = vite({ ...base, "main.tsx": "", "App.tsx": "" });
+    expect(flat).toContain("main.tsx");
+    expect(flat).not.toContain("src/main.tsx");
+  });
 });

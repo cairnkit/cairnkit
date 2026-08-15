@@ -71,3 +71,14 @@ That distinction is not cosmetic. `cairn` is a real bin alias and works once the
 package is installed, but `npx cairn` fetches an unrelated package of that name
 from the registry and runs it. One canonical spelling everywhere removes the
 chance of a reader copying the form that only works by accident.
+
+## `init` names the Vite entry where it actually is
+
+The Next branches resolve the file to edit from the detected framework
+directory, so they already said `app/layout.tsx` or `src/pages/_app.tsx`
+correctly. The Vite branch named `src/main.tsx` unconditionally.
+
+`create-vite` does put the entry under `src/`, so the assumption held nearly
+always and failed silently the rest of the time: the instruction pointed at a
+file the reader did not have. It now follows `usesSrcDir`, which is already how
+the generated files choose their own home.

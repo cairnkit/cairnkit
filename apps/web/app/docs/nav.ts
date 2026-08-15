@@ -56,7 +56,14 @@ export const DOC_NAV: DocSection[] = [
   {
     title: "Keeping tours correct",
     pages: [
-      { slug: "ci", title: "cairnkit check", blurb: "Failing the build when a tour breaks." },
+      {
+        slug: "ci",
+        title: "cairnkit check",
+        // `status` is named in the blurb on purpose: it lives on this page, and
+        // a reader looking for it will not find it under a heading that only
+        // says "check".
+        blurb: "Failing the build when a tour breaks, and cairnkit status for reading what is there.",
+      },
       { slug: "audit", title: "Browser audit", blurb: "Catching anchors that never render." },
     ],
   },
