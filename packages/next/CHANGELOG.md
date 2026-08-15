@@ -1,5 +1,11 @@
 # @cairnkit/next
 
+## 0.12.0
+
+### Patch Changes
+
+- @cairnkit/react@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # cairnkit
 
+## 0.12.0
+
+### Patch Changes
+
+- Updated dependencies [34e5937]
+  - @cairnkit/cli@0.12.0
+
 ## 0.11.2
 
 ### Patch Changes
