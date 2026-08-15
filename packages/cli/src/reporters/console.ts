@@ -1,6 +1,5 @@
-import { readFileSync } from "node:fs";
-import { relative } from "node:path";
 import type { Finding } from "../checks/types";
+import { resolveLocation } from "../location";
 import { CLI_NAME } from "../cli-name";
 
 const red = (s: string) => `\x1b[31m${s}\x1b[0m`;
@@ -8,16 +7,16 @@ const yellow = (s: string) => `\x1b[33m${s}\x1b[0m`;
 const green = (s: string) => `\x1b[32m${s}\x1b[0m`;
 const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
 
-/** Offset -> line, done once per finding rather than once per match. */
+/**
+ * Offset -> `path:line`.
+ *
+ * The resolution itself is shared with the JSON reporter. It used to live here,
+ * which meant the machine-readable output would have had to reimplement it and
+ * the two could report different lines for the same finding.
+ */
 function describe(at: { file: string; offset: number }): string {
-  try {
-    const source = readFileSync(at.file, "utf8");
-    let line = 1;
-    for (let i = 0; i < at.offset; i += 1) if (source.charCodeAt(i) === 10) line += 1;
-    return `${relative(process.cwd(), at.file)}:${line}`;
-  } catch {
-    return relative(process.cwd(), at.file);
-  }
+  const { file, line } = resolveLocation(at);
+  return `${file}:${line}`;
 }
 
 export function reportFindings(findings: Finding[], registeredCount: number): void {

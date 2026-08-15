@@ -23,6 +23,64 @@ export const anchors = defineAnchors({ q: { save: "q.save" } });`,
     expect(ctx.applied.has("q.save")).toBe(true);
   });
 
+  it("keeps flows in one file apart", () => {
+    /*
+     * The parser used to work per file: it took the first `id:` it found and
+     * attributed every anchor in the file to it. A four-flow file reported one
+     * flow owning all of them, and `check` then named the wrong flow as broken.
+     */
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ a: { one: "a.one" }, b: { two: "b.two" } });`,
+      "flows.ts": `import { defineFlow } from "@cairnkit/core";
+import { anchors } from "./anchors";
+export const first = defineFlow({
+  id: "first-flow", version: 1, entryRoute: "/",
+  steps: [{ anchor: anchors.a.one, title: "A", body: "a" }],
+});
+export const second = defineFlow({
+  id: "second-flow", version: 1, entryRoute: "/two",
+  steps: [{ anchor: anchors.b.two, title: "B", body: "b" }],
+});`,
+    });
+
+    const ctx = scanProject(dir);
+
+    expect([...ctx.flowAnchors.keys()].sort()).toEqual(["first-flow", "second-flow"]);
+    expect(ctx.flowAnchors.get("first-flow")).toEqual(["a.one"]);
+    expect(ctx.flowAnchors.get("second-flow")).toEqual(["b.two"]);
+
+    // The step location has to be the step, not the top of the file, or a
+    // finding points somewhere useless.
+    expect(ctx.stepAt.get("second-flow::b.two")?.offset).toBeGreaterThan(
+      ctx.stepAt.get("first-flow::a.one")?.offset ?? 0,
+    );
+  });
+
+  it("keeps route config with the flow it belongs to", () => {
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ a: { one: "a.one" }, b: { two: "b.two" } });`,
+      "flows.ts": `import { defineFlow } from "@cairnkit/core";
+import { anchors } from "./anchors";
+export const first = defineFlow({
+  id: "first-flow", version: 1, entryRoute: "/",
+  pauseRoutes: ["/paused-for-first"],
+  steps: [{ anchor: anchors.a.one, title: "A", body: "a" }],
+});
+export const second = defineFlow({
+  id: "second-flow", version: 1, entryRoute: "/two",
+  steps: [{ anchor: anchors.b.two, title: "B", body: "b" }],
+});`,
+    });
+
+    const ctx = scanProject(dir);
+
+    expect(ctx.flowRoutes.get("first-flow")?.pause).toEqual(["/paused-for-first"]);
+    // The second flow declares none, and must not inherit its neighbour's.
+    expect(ctx.flowRoutes.get("second-flow")?.pause).toEqual([]);
+  });
+
   it("reads the id from a data-cairn attribute rather than blanking it", () => {
     /*
      * `stripLiterals` pads out string contents, and a JSX attribute value is a
