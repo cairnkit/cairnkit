@@ -1,5 +1,11 @@
 # @cairnkit/cloud
 
+## 0.11.2
+
+### Patch Changes
+
+- @cairnkit/core@0.11.2
+
 ## 0.11.1
 
 ### Patch Changes
