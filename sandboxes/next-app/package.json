@@ -7,10 +7,10 @@
     "start": "next start -p 4100"
   },
   "dependencies": {
-    "@cairnkit/core": "^0.11.1",
-    "@cairnkit/next": "^0.11.1",
-    "@cairnkit/react": "^0.11.1",
-    "@cairnkit/ui": "^0.11.1",
+    "@cairnkit/core": "^0.11.2",
+    "@cairnkit/next": "^0.11.2",
+    "@cairnkit/react": "^0.11.2",
+    "@cairnkit/ui": "^0.11.2",
     "next": "^15.5.23",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
