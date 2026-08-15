@@ -3,7 +3,7 @@ import { defineAnchors } from "@cairnkit/core";
 /**
  * Every element a guide in this app can point at.
  * Renaming a key breaks the flow file at compile time; deleting the element
- * breaks `cairn check` in CI.
+ * breaks `cairnkit check` in CI.
  */
 export const anchors = defineAnchors({
   nav: { library: "nav.library" },

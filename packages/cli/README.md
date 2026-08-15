@@ -1,13 +1,13 @@
 # @cairnkit/cli
 
-`cairn check` — fails the build when a tour points at UI that no longer exists.
+`cairnkit check` — fails the build when a tour points at UI that no longer exists.
 
 ```bash
 npm i -D @cairnkit/cli
 ```
 
 ```jsonc
-"scripts": { "lint": "eslint . && cairn check" }
+"scripts": { "lint": "eslint . && cairnkit check" }
 ```
 
 ## Getting set up
@@ -31,12 +31,36 @@ npx cairnkit check src app            # several roots, scanned as one project
 ```
 
 ```
-✗ cairn check failed
+✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
       Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it.
 ```
+
+## Describing what is there
+
+`check` answers "is anything wrong". `status` answers "what is there": every
+anchor, whether an element carries it, where it was declared, and which flows
+point at it. It always exits 0, because describing a project is not a verdict
+on it.
+
+```bash
+npx cairnkit status                   # readable
+npx cairnkit status --json            # the anchor graph, for tooling
+```
+
+`--json` works on both commands. In that mode stdout carries exactly one JSON
+object and every human-facing message goes to stderr, so it pipes straight into
+a parser:
+
+```bash
+npx cairnkit check --json | jq '.findings[].detail[].at'
+```
+
+The payload carries a `version` field. It is a contract the moment anything
+consumes it, and a consumer needs to tell an old shape from a new one without
+guessing from which keys happen to be present.
 
 ## What it checks
 

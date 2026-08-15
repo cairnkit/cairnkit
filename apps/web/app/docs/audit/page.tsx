@@ -18,7 +18,7 @@ export default function Page() {
     >
       <H2 id="why">What it catches</H2>
       <P>
-        The third layer. TypeScript catches a typo. <Link href="/docs/ci">cairn check</Link> catches
+        The third layer. TypeScript catches a typo. <Link href="/docs/ci">cairnkit check</Link> catches
         an element deleted from source. Neither can see whether an element actually{" "}
         <em>renders</em> — behind a feature flag, in an empty state, or inside a conditional that no
         longer fires. That needs a browser.

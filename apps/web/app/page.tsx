@@ -62,7 +62,7 @@ const STEPS = [
     title: "Wire the check into CI",
     body: "Now a deleted button fails the build instead of a customer's onboarding.",
     code: `"scripts": {
-  "lint": "eslint . && cairn check"
+  "lint": "eslint . && cairnkit check"
 }`,
   },
 ];
@@ -272,8 +272,8 @@ export default async function Home() {
               <span className="terminal__dot" />
             </div>
             <pre>
-              <span className="t-dim">$ </span>cairn check{"\n\n"}
-              <span className="t-red">✗ cairn check failed</span>
+              <span className="t-dim">$ </span>cairnkit check{"\n\n"}
+              <span className="t-red">✗ cairnkit check failed</span>
               {"\n\n"}
               {"  "}
               <span className="t-yellow">•</span> 1 anchor(s) are registered but never applied to an
@@ -484,7 +484,7 @@ export default async function Home() {
           <p className="eyebrow">cairnkit cloud</p>
           <h2 className="h">The check tells you it broke. It cannot tell you what it cost.</h2>
           <p className="lede">
-            <code>cairn check</code> catches a tour pointing at a button that no longer exists. It
+            <code>cairnkit check</code> catches a tour pointing at a button that no longer exists. It
             has nothing to say about the tour that works perfectly and still loses two thirds of
             people at step three — that one is not a bug in your repo, and no compiler will ever
             find it.

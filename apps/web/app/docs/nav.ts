@@ -56,7 +56,7 @@ export const DOC_NAV: DocSection[] = [
   {
     title: "Keeping tours correct",
     pages: [
-      { slug: "ci", title: "cairn check", blurb: "Failing the build when a tour breaks." },
+      { slug: "ci", title: "cairnkit check", blurb: "Failing the build when a tour breaks." },
       { slug: "audit", title: "Browser audit", blurb: "Catching anchors that never render." },
     ],
   },

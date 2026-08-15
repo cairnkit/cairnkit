@@ -28,14 +28,14 @@ src/cairn/flows.ts(45,44): error TS2345: Argument of type
   },
   {
     id: "check",
-    label: "cairn check",
+    label: "cairnkit check",
     when: "In CI, in about 0.1s",
     catches: "An anchor that still exists in the registry but is no longer applied to any element.",
     how: "A static scan of your source. It knows which anchors are declared, which are applied, and which flow breaks when one goes missing.",
     file: "Terminal",
     code: `$ npx cairnkit check src
 
-✗ cairn check failed
+✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - invite.settings-panel  (breaks "invite-candidate")  src/cairn/flows.ts:33

@@ -4,7 +4,7 @@ import { C, Callout, H2, P, Ul } from "@/components/docs/prose";
 import { Code } from "@/components/docs/code";
 import { PropsTable } from "@/components/docs/props-table";
 
-export const metadata = { title: "cairn check" };
+export const metadata = { title: "cairnkit check" };
 
 export default function Page() {
   return (
@@ -19,7 +19,7 @@ export default function Page() {
       ]}
     >
       <Callout kind="note" title="The other command">
-        <C>@cairnkit/cli</C> also ships <C>cairn init</C>, which scaffolds anchors, a flow and a
+        <C>@cairnkit/cli</C> also ships <C>cairnkit init</C>, which scaffolds anchors, a flow and a
         provider into an existing app. See <a href="/docs/install">Installation</a>.
       </Callout>
 
@@ -38,11 +38,11 @@ npx cairnkit check src app packages/ui`}</Code>
       <Callout kind="note" title="npx, or an npm script">
         <C>@cairnkit/cli</C> installs as a local dev dependency, so bare <C>cairn</C> is not on your
         shell PATH — use <C>npx</C>. Inside an npm script it is on PATH, so{" "}
-        <C>"lint": "cairn check"</C> works without <C>npx</C>.
+        <C>"lint": "cairnkit check"</C> works without <C>npx</C>.
       </Callout>
 
       <H2 id="output">Reading the output</H2>
-      <Code>{`✗ cairn check failed
+      <Code>{`✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
@@ -78,7 +78,7 @@ npx cairnkit check src app packages/ui`}</Code>
       />
 
       <H2 id="ci">In CI</H2>
-      <Code file="package.json">{`"scripts": { "lint": "eslint . && cairn check src" }`}</Code>
+      <Code file="package.json">{`"scripts": { "lint": "eslint . && cairnkit check src" }`}</Code>
       <Code file=".github/workflows/ci.yml">{`- run: npx cairnkit check src`}</Code>
       <P>
         Around 0.1s across 700 source files, so it belongs in the fast lane next to your linter

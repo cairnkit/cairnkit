@@ -24,7 +24,7 @@ CMS cannot become an XSS vector through a tour.
 only. cairnkit never reads or transmits DOM text, form values, or anything the
 user typed. If you add a feedback field, you own what the user puts in it.
 
-**The CLI.** `cairn check` runs in CI, often on untrusted branches. It only
+**The CLI.** `cairnkit check` runs in CI, often on untrusted branches. It only
 reads text files inside the directory it is given, refuses to follow symlinks
 out of that root, and never imports or executes project code.
 

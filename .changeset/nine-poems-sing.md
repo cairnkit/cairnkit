@@ -57,3 +57,17 @@ on its own. Segments are found in the stripped copy so a call quoted inside a
 docs snippet does not start a phantom flow, and step offsets are translated back
 to file coordinates so findings still point at the step rather than the top of
 the file.
+
+## Docs realigned
+
+Every doc, README and page that mentions the CLI now says `cairnkit`, and the
+sample failure output matches what the tool actually prints.
+
+Seven places showed `✗ cairn check failed`. The tool has always printed
+`✗ cairnkit check failed`, deliberately, because `cairnkit` is the only name
+that also works as `npx cairnkit` from a directory with nothing installed.
+
+That distinction is not cosmetic. `cairn` is a real bin alias and works once the
+package is installed, but `npx cairn` fetches an unrelated package of that name
+from the registry and runs it. One canonical spelling everywhere removes the
+chance of a reader copying the form that only works by accident.

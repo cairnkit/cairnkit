@@ -86,7 +86,7 @@ npm i -D @cairnkit/cli`}</Code>
           {
             name: "Node (for the CLI)",
             type: ">= 18",
-            description: "cairn check and the audit helper.",
+            description: "cairnkit check and the audit helper.",
           },
         ]}
       />
@@ -151,7 +151,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <H2 id="check">Wire up the check</H2>
       <Code file="package.json">{`"scripts": {
-  "lint": "eslint . && cairn check src"
+  "lint": "eslint . && cairnkit check src"
 }`}</Code>
     </DocPage>
   );

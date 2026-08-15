@@ -5,7 +5,7 @@ import { inviteFlow, questionsFlow } from "../src/walkthrough/flows";
 const BASE = "http://localhost:4200";
 
 /**
- * The third drift check. TypeScript catches a typo; `cairn check` catches an
+ * The third drift check. TypeScript catches a typo; `cairnkit check` catches an
  * element deleted from source. Only a browser catches an anchor that exists in
  * source but never renders — behind a feature flag, an empty state, or a
  * conditional that no longer fires.
