@@ -47,8 +47,16 @@
     "product-tour",
     "onboarding",
     "walkthrough",
+    "user-onboarding",
+    "guided-tour",
     "spotlight",
-    "react"
+    "coachmark",
+    "product-adoption",
+    "react",
+    "nextjs",
+    "typescript",
+    "developer-tools",
+    "ci"
   ],
   "repository": {
     "type": "git",
@@ -59,5 +67,8 @@
   "publishConfig": {
     "access": "public",
     "provenance": true
+  },
+  "bugs": {
+    "url": "https://github.com/cairnkit/cairnkit/issues"
   }
 }

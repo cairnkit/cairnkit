@@ -21,8 +21,8 @@ export default function Page() {
       <Code>{`npm i @cairnkit/core @cairnkit/react @cairnkit/ui @cairnkit/next
 npm i -D @cairnkit/cli`}</Code>
       <P>
-        Or let the CLI do it. It detects your framework, writes the files below, and prints the two
-        steps it deliberately leaves to you:
+        Or let the CLI do it. It detects your framework, writes those files into{" "}
+        <C>src/walkthrough/</C>, and prints the three steps it deliberately leaves to you:
       </P>
       <Code>{`npx cairnkit init
 
@@ -34,9 +34,11 @@ npm i -D @cairnkit/cli`}</Code>
         a provider. It never overwrites a file, and running it twice does nothing.
       </P>
       <Callout kind="note" title="It will not touch your layout">
-        Mounting the provider is the one step it prints rather than performs. Rewriting someone
+        Mounting the provider is the step it prints rather than performs. Rewriting someone
         else&apos;s root layout on first contact is not worth the minute it saves — if the edit goes
-        wrong there is nothing to undo.
+        wrong there is nothing to undo. The paths in the sections below are written for a project
+        doing this by hand; if you ran <C>init</C>, your files are already in{" "}
+        <C>src/walkthrough/</C> and you only need the mounting step.
       </Callout>
       <P>
         JavaScript projects get JavaScript. You lose the type registry, which is the part that turns
