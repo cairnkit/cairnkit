@@ -1,5 +1,5 @@
 /**
- * Browser audit — the drift check that neither TypeScript nor `cairn check`
+ * Browser audit — the drift check that neither TypeScript nor `cairnkit check`
  * can perform.
  *
  * Those two prove an anchor is *declared* and *applied in source*. Neither can
@@ -157,7 +157,7 @@ export async function auditFlows(page: AuditPage, flows: AuditOptions[]): Promis
     const detail = broken
       .map((result) => `  ${result.flowId}\n${result.failures.map((f) => `    - ${f}`).join("\n")}`)
       .join("\n");
-    throw new Error(`cairn audit failed — a tour points at UI that does not render:\n${detail}`);
+    throw new Error(`cairnkit audit failed — a tour points at UI that does not render:\n${detail}`);
   }
 
   return results;

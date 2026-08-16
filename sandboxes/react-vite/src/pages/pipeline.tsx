@@ -34,7 +34,18 @@ export function PipelinePage() {
         </div>
 
         <section className="panel" {...anchor(anchors.pipeline.table)}>
-          <div className="panel__head"><h2>Recent Activity</h2></div>
+          {/*
+            Deliberately a bare attribute rather than {...anchor(...)}.
+
+            Both forms are supported and the spread is what the docs teach, but
+            the bare one has its own branch in the scanner and shipped broken
+            once. This is the fixture that keeps CI honest about it; see the
+            note beside `exportCsv` in the anchor registry.
+          */}
+          <div className="panel__head">
+            <h2>Recent Activity</h2>
+            <button className="btn btn--quiet" data-cairn="pipeline.export-csv">Export CSV</button>
+          </div>
           <table>
             <thead>
               <tr><th>Candidate</th><th>Role</th><th>Stage</th><th>Updated</th></tr>

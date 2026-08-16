@@ -2,7 +2,7 @@ import { defineFlow } from "@cairnkit/core";
 import { anchors } from "./anchors";
 
 /**
- * A real Cairn tour, of the page describing Cairn.
+ * A real cairnkit tour, of the page describing cairnkit.
  *
  * Better than a video: it is the actual library, running the actual engine,
  * imported from the workspace — so it can never drift from what ships.
@@ -14,7 +14,7 @@ export const tourOfThisPage = defineFlow({
   steps: [
     {
       anchor: anchors.site.install,
-      title: "This is a real Cairn tour",
+      title: "This is a real cairnkit tour",
       body: "Not a video. The same engine you would install, running on this page.",
       placement: "bottom",
     },

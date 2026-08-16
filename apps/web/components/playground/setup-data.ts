@@ -226,7 +226,7 @@ export default function Page() {
         why: "Wire the check into lint so a broken tour fails the same command everything else fails.",
         code: `{
   "scripts": {
-    "lint": "next lint && cairn check",
+    "lint": "next lint && cairnkit check",
     "build": "next build"
   }
 }`,

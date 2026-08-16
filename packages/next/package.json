@@ -1,7 +1,7 @@
 {
   "name": "@cairnkit/next",
-  "version": "0.10.0",
-  "description": "Next.js router adapters for Cairn (App Router and Pages Router).",
+  "version": "0.12.1",
+  "description": "Next.js router adapters for cairnkit (App Router and Pages Router).",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,

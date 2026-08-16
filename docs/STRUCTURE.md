@@ -24,7 +24,7 @@ How the packages fit together, what belongs where, and the rules that keep it th
 | `@cairnkit/react` | core        | Headless hooks + provider. No styling.         |
 | `@cairnkit/ui`    | core, react | Styled components. Plain prefixed CSS.         |
 | `@cairnkit/next`  | react       | App Router + Pages Router adapters             |
-| `@cairnkit/cli`   | core        | `cairn check`                                  |
+| `@cairnkit/cli`   | core        | `cairnkit check`                                  |
 
 Splitting `react` from `ui` is what lets someone drive the engine with their own design system — and it is why we can ship styles without forcing Tailwind on anyone.
 

@@ -21,8 +21,8 @@ export default function Page() {
       <Code>{`npm i @cairnkit/core @cairnkit/react @cairnkit/ui @cairnkit/next
 npm i -D @cairnkit/cli`}</Code>
       <P>
-        Or let the CLI do it. It detects your framework, writes the files below, and prints the two
-        steps it deliberately leaves to you:
+        Or let the CLI do it. It detects your framework, writes those files into{" "}
+        <C>src/walkthrough/</C>, and prints the three steps it deliberately leaves to you:
       </P>
       <Code>{`npx cairnkit init
 
@@ -34,9 +34,11 @@ npm i -D @cairnkit/cli`}</Code>
         a provider. It never overwrites a file, and running it twice does nothing.
       </P>
       <Callout kind="note" title="It will not touch your layout">
-        Mounting the provider is the one step it prints rather than performs. Rewriting someone
+        Mounting the provider is the step it prints rather than performs. Rewriting someone
         else&apos;s root layout on first contact is not worth the minute it saves — if the edit goes
-        wrong there is nothing to undo.
+        wrong there is nothing to undo. The paths in the sections below are written for a project
+        doing this by hand; if you ran <C>init</C>, your files are already in{" "}
+        <C>src/walkthrough/</C> and you only need the mounting step.
       </Callout>
       <P>
         JavaScript projects get JavaScript. You lose the type registry, which is the part that turns
@@ -86,13 +88,13 @@ npm i -D @cairnkit/cli`}</Code>
           {
             name: "Node (for the CLI)",
             type: ">= 18",
-            description: "cairn check and the audit helper.",
+            description: "cairnkit check and the audit helper.",
           },
         ]}
       />
       <Callout kind="good" title="No React 19-only APIs">
-        Nothing in Cairn uses <C>use()</C>, actions, or any other React 19 addition, which is why 18
-        works rather than merely being declared.
+        Nothing in cairnkit uses <C>use()</C>, actions, or any other React 19 addition, which is why
+        18 works rather than merely being declared.
       </Callout>
 
       <H2 id="register">Register your types</H2>
@@ -151,7 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <H2 id="check">Wire up the check</H2>
       <Code file="package.json">{`"scripts": {
-  "lint": "eslint . && cairn check src"
+  "lint": "eslint . && cairnkit check src"
 }`}</Code>
     </DocPage>
   );

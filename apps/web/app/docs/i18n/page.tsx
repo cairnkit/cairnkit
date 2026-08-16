@@ -21,8 +21,8 @@ export default function Page() {
 
       <H2 id="translate">Your own catalogue</H2>
       <P>
-        Use <C>titleKey</C> and <C>bodyKey</C> instead, and hand the provider a resolver. Cairn does
-        not ship an i18n library and does not care which you use.
+        Use <C>titleKey</C> and <C>bodyKey</C> instead, and hand the provider a resolver. cairnkit
+        does not ship an i18n library and does not care which you use.
       </P>
       <Code>{`{ anchor: anchors.q.save, titleKey: "tour.save.title", bodyKey: "tour.save.body" }`}</Code>
       <Code file="providers.tsx">{`const t = useTranslations();          // next-intl
@@ -50,8 +50,8 @@ export default function Page() {
       <P>
         <strong>close</strong> labels the X in the corner and is deliberately separate from{" "}
         <strong>skip</strong>. They shared one label until 0.10, which told a screen-reader user
-        they were pressing Skip when the control beside it was also Skip. They are different acts
-        as well as different buttons — cairnkit reports which one ended the tour.
+        they were pressing Skip when the control beside it was also Skip. They are different acts as
+        well as different buttons — cairnkit reports which one ended the tour.
       </P>
 
       <H2 id="writing">Writing good step copy</H2>

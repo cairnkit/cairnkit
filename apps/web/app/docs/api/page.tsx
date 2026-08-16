@@ -84,7 +84,7 @@ TourDismissReason · TourExitReason`}</Code>
             name: "anchor_missing",
             type: "flowId, stepIndex, anchor, pathname",
             description:
-              "A step pointed at UI that was not on the page — what cairn check catches before release, seen from production.",
+              "A step pointed at UI that was not on the page — what cairnkit check catches before release, seen from production.",
           },
           {
             name: "step_feedback",
@@ -93,6 +93,34 @@ TourDismissReason · TourExitReason`}</Code>
           },
         ]}
       />
+
+      <P>
+        Every event is <C>{"{ name, props }"}</C>, so the callback maps onto an analytics client
+        directly. Nothing below needs an account with us.
+      </P>
+      <Code file="app/providers.tsx">{`<CairnProvider
+  flows={flows}
+  onEvent={(event) => posthog.capture(event.name, event.props)}
+>
+  {children}
+</CairnProvider>`}</Code>
+      <P>
+        Segment, Amplitude, Mixpanel and a plain <C>fetch</C> to your own collector take the same
+        shape. To send to a tool and to cloud, call both:
+      </P>
+      <Code file="app/providers.tsx">{`import { sendToCloud } from "@cairnkit/cloud";
+
+// Calls sharing a key share one transport, so an inline call during render is
+// also correct. Named here only because it is used alongside another handler.
+const toCloud = sendToCloud({ key: process.env.NEXT_PUBLIC_CAIRNKIT_KEY! });
+
+<CairnProvider
+  flows={flows}
+  onEvent={(event) => {
+    posthog.capture(event.name, event.props);
+    toCloud(event);
+  }}
+>`}</Code>
 
       <H2 id="react">@cairnkit/react</H2>
       <P>Headless bindings. No styling.</P>
@@ -144,7 +172,9 @@ TourDismissReason · TourExitReason`}</Code>
       <H2 id="cli">@cairnkit/cli</H2>
       <PropsTable
         rows={[
-          { name: "cairn check <dir>", type: "command", description: "Static drift check. Exits 1 on any finding." },
+          { name: "cairnkit check <dir>", type: "command", description: "Static drift check. Exits 1 on any finding." },
+          { name: "cairnkit status <dir>", type: "command", description: "Describe every anchor: whether an element carries it, how it was applied, where it was declared, and which flows point at it. Always exits 0 — describing is not judging." },
+          { name: "--json", type: "flag", description: "On check or status. Writes exactly one JSON object to stdout and every human-facing message to stderr, so the output pipes straight into a parser. The payload carries a version field." },
           { name: "auditFlow(page, opts)", type: "function", description: "Drives one flow in a browser and reports per-step." },
           { name: "auditFlows(page, list)", type: "function", description: "Several flows; throws one readable error if any fail." },
         ]}

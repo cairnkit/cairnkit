@@ -12,7 +12,7 @@ export default function Page() {
       slug=""
       toc={[
         { id: "problem", label: "The problem" },
-        { id: "approach", label: "How Cairn differs" },
+        { id: "approach", label: "How cairnkit differs" },
         { id: "layers", label: "Three layers of defence" },
         { id: "next", label: "Where to go next" },
       ]}
@@ -28,18 +28,18 @@ export default function Page() {
         the damage <em>after</em> it ships. The best case is that a user never notices.
       </P>
 
-      <H2 id="approach">How Cairn differs</H2>
+      <H2 id="approach">How cairnkit differs</H2>
       <P>
         Tours are typed data in your repository, anchors are verified in CI, and a broken tour fails
         the build before it reaches anyone.
       </P>
-      <Code>{`✗ cairn check failed
+      <Code>{`✗ cairnkit check failed
 
   • 1 anchor(s) are registered but never applied to an element  [anchors-applied]
       - questions.save  (breaks "create-questions")  src/walkthrough/flows.ts:35
       Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it.`}</Code>
       <Callout kind="note" title="Why this is possible at all">
-        Because Cairn lives in your repo rather than a dashboard. A no-code tool has no build to
+        Because cairnkit lives in your repo rather than a dashboard. A no-code tool has no build to
         fail — that is a structural difference, not a feature gap.
       </Callout>
 
@@ -49,8 +49,11 @@ export default function Page() {
           <strong>TypeScript</strong> — a typo in an anchor, flow id or event name will not compile.
         </li>
         <li>
-          <strong><C>cairn check</C></strong> — an element deleted from source fails CI in about a
-          second, naming the tour it breaks and the line to open.
+          <strong>
+            <C>cairnkit check</C>
+          </strong>{" "}
+          — an element deleted from source fails CI in about a second, naming the tour it breaks and
+          the line to open.
         </li>
         <li>
           <strong>Browser audit</strong> — an anchor that exists in source but never renders,

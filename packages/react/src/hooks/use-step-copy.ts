@@ -7,7 +7,7 @@ import { useCairn } from "../provider/cairn-context";
  * Resolves a step's copy.
  *
  * Inline `title`/`body` by default; `titleKey`/`bodyKey` go through the host's
- * `translate`. That is what keeps Cairn out of the i18n-library business —
+ * `translate`. That is what keeps cairnkit out of the i18n-library business —
  * next-intl, react-i18next or a plain lookup all work, and tenant-specific
  * vocabulary keeps whatever behaviour the host already has.
  */

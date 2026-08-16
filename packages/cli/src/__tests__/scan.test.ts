@@ -23,6 +23,100 @@ export const anchors = defineAnchors({ q: { save: "q.save" } });`,
     expect(ctx.applied.has("q.save")).toBe(true);
   });
 
+  it("keeps flows in one file apart", () => {
+    /*
+     * The parser used to work per file: it took the first `id:` it found and
+     * attributed every anchor in the file to it. A four-flow file reported one
+     * flow owning all of them, and `check` then named the wrong flow as broken.
+     */
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ a: { one: "a.one" }, b: { two: "b.two" } });`,
+      "flows.ts": `import { defineFlow } from "@cairnkit/core";
+import { anchors } from "./anchors";
+export const first = defineFlow({
+  id: "first-flow", version: 1, entryRoute: "/",
+  steps: [{ anchor: anchors.a.one, title: "A", body: "a" }],
+});
+export const second = defineFlow({
+  id: "second-flow", version: 1, entryRoute: "/two",
+  steps: [{ anchor: anchors.b.two, title: "B", body: "b" }],
+});`,
+    });
+
+    const ctx = scanProject(dir);
+
+    expect([...ctx.flowAnchors.keys()].sort()).toEqual(["first-flow", "second-flow"]);
+    expect(ctx.flowAnchors.get("first-flow")).toEqual(["a.one"]);
+    expect(ctx.flowAnchors.get("second-flow")).toEqual(["b.two"]);
+
+    // The step location has to be the step, not the top of the file, or a
+    // finding points somewhere useless.
+    expect(ctx.stepAt.get("second-flow::b.two")?.offset).toBeGreaterThan(
+      ctx.stepAt.get("first-flow::a.one")?.offset ?? 0,
+    );
+  });
+
+  it("keeps route config with the flow it belongs to", () => {
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ a: { one: "a.one" }, b: { two: "b.two" } });`,
+      "flows.ts": `import { defineFlow } from "@cairnkit/core";
+import { anchors } from "./anchors";
+export const first = defineFlow({
+  id: "first-flow", version: 1, entryRoute: "/",
+  pauseRoutes: ["/paused-for-first"],
+  steps: [{ anchor: anchors.a.one, title: "A", body: "a" }],
+});
+export const second = defineFlow({
+  id: "second-flow", version: 1, entryRoute: "/two",
+  steps: [{ anchor: anchors.b.two, title: "B", body: "b" }],
+});`,
+    });
+
+    const ctx = scanProject(dir);
+
+    expect(ctx.flowRoutes.get("first-flow")?.pause).toEqual(["/paused-for-first"]);
+    // The second flow declares none, and must not inherit its neighbour's.
+    expect(ctx.flowRoutes.get("second-flow")?.pause).toEqual([]);
+  });
+
+  it("reads the id from a data-cairn attribute rather than blanking it", () => {
+    /*
+     * `stripLiterals` pads out string contents, and a JSX attribute value is a
+     * string. Scanning the stripped text captured spaces instead of the id, so
+     * a registered anchor applied this way was reported as "not in the
+     * registry" and the finding could not say which value it meant.
+     */
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ help: { link: "help.link" } });`,
+      "Help.tsx": `export const H = () => <a data-cairn="help.link" href="/help" />;`,
+    });
+
+    const ctx = scanProject(dir);
+
+    expect([...ctx.literals]).toEqual(["help.link"]);
+    expect(ctx.applied.has("help.link")).toBe(true);
+    // The whole point of the finding is naming the offender, so it has to be
+    // locatable by its real id.
+    expect(ctx.literalAt.get("help.link")?.file).toContain("Help.tsx");
+  });
+
+  it("still ignores a data-cairn attribute quoted inside a template literal", () => {
+    // The guard that makes the fix above safe: a documentation snippet showing
+    // the attribute must not register as a real use of it.
+    const dir = project({
+      "anchors.ts": `import { defineAnchors } from "@cairnkit/core";
+export const anchors = defineAnchors({ real: { one: "real.one" } });`,
+      "Docs.tsx": `const sample = \`<button data-cairn="phantom.nope" />\`;
+export const D = () => <pre>{sample}</pre>;`,
+    });
+
+    const ctx = scanProject(dir);
+    expect([...ctx.literals]).toEqual([]);
+  });
+
   it("ignores code quoted inside a template literal", () => {
     // A docs page showing a defineAnchors sample must not register phantom
     // anchors — that false-failed the check on our own landing page.
@@ -127,7 +221,7 @@ export const anchors = defineAnchors({ nav: { invite: "nav.invite" } });`,
     // The scan skips files that cannot contribute, which is what makes it fast.
     // This fixture is the case that filter can get wrong: the id is present as
     // plain data under a name of the app's own choosing, so the only thing
-    // linking the file to Cairn is the id string itself. Miss it and a live
+    // linking the file to cairnkit is the id string itself. Miss it and a live
     // anchor reads as unapplied — the check fails a build for no reason.
     const dir = project({
       "anchors.ts": `import { defineAnchors } from "@cairnkit/core";

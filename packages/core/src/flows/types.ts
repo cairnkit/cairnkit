@@ -118,7 +118,7 @@ export type TourFlow = {
    * scope is not in front goes dormant, exactly as `pauseRoutes` does for a
    * route it does not cover. Leave it unset and nothing changes.
    *
-   * Cairn cannot work this out for itself. Anchors are routinely shared across
+   * cairnkit cannot work this out for itself. Anchors are routinely shared across
    * parts — one panel component reused by two tabs — so "my anchor is still
    * on the page" is no evidence of being in the right place. Acting on it
    * yields a guide that confidently describes the wrong feature, which is

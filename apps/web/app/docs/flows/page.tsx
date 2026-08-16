@@ -42,11 +42,31 @@ export const createQuestions = defineFlow({
       <P>A step ends when the user has actually done the thing, not when a timer expires.</P>
       <PropsTable
         rows={[
-          { name: "next", type: `{ type: "next" }`, description: "User presses Next. The default, for explanatory steps." },
-          { name: "click", type: `{ type: "click" }`, description: "User clicks the spotlit element itself." },
-          { name: "route", type: `{ type: "route"; pathname }`, description: "The pathname matches. For steps whose action navigates." },
-          { name: "event", type: `{ type: "event"; name }`, description: "Your app calls emitTourEvent — for async work like a save." },
-          { name: "condition", type: `{ type: "condition"; awaitAnchor }`, description: "Another anchor appears. For conditional branches." },
+          {
+            name: "next",
+            type: `{ type: "next" }`,
+            description: "User presses Next. The default, for explanatory steps.",
+          },
+          {
+            name: "click",
+            type: `{ type: "click" }`,
+            description: "User clicks the spotlit element itself.",
+          },
+          {
+            name: "route",
+            type: `{ type: "route"; pathname }`,
+            description: "The pathname matches. For steps whose action navigates.",
+          },
+          {
+            name: "event",
+            type: `{ type: "event"; name }`,
+            description: "Your app calls emitTourEvent — for async work like a save.",
+          },
+          {
+            name: "condition",
+            type: `{ type: "condition"; awaitAnchor }`,
+            description: "Another anchor appears. For conditional branches.",
+          },
         ]}
       />
       <Callout kind="note" title="Next disappears on purpose">
@@ -57,25 +77,77 @@ export const createQuestions = defineFlow({
       <H2 id="step">Step options</H2>
       <PropsTable
         rows={[
-          { name: "anchor", type: "RegisteredAnchor", required: true, description: "The element to spotlight." },
-          { name: "mobileAnchor", type: "RegisteredAnchor", description: "Used instead below the mobile breakpoint." },
+          {
+            name: "anchor",
+            type: "RegisteredAnchor",
+            required: true,
+            description: "The element to spotlight.",
+          },
+          {
+            name: "mobileAnchor",
+            type: "RegisteredAnchor",
+            description: "Used instead below the mobile breakpoint.",
+          },
           { name: "title / body", type: "string", description: "Literal copy." },
-          { name: "titleKey / bodyKey", type: "string", description: "Resolved through your translate function instead." },
-          { name: "placement", type: "Placement", default: `"bottom"`, description: "Where the card sits relative to the target." },
-          { name: "advanceOn", type: "AdvanceRule", default: `{ type: "next" }`, description: "What satisfies the step." },
-          { name: "optional", type: "boolean", default: "false", description: "Skip silently if the anchor never appears." },
-          { name: "waitForMs", type: "number", default: "4000", description: "How long to wait for a missing anchor." },
-          { name: "padding", type: "number", default: "8", description: "Spotlight padding around the target." },
-          { name: "beacon", type: "boolean", description: "Pulsing dot. Defaults on for click steps." },
-          { name: "onEnter", type: "(ctx) => void | Promise<void>", description: "Runs once when the step becomes active. `ctx.run(name)` calls an action published by useTourAction." },
-          { name: "onExit", type: '(dir, ctx) => void | Promise<void>', description: "Runs before leaving, in either direction. Awaited, so an animated close finishes before the next step measures." },
+          {
+            name: "titleKey / bodyKey",
+            type: "string",
+            description: "Resolved through your translate function instead.",
+          },
+          {
+            name: "placement",
+            type: "Placement",
+            default: `"bottom"`,
+            description: "Where the card sits relative to the target.",
+          },
+          {
+            name: "advanceOn",
+            type: "AdvanceRule",
+            default: `{ type: "next" }`,
+            description: "What satisfies the step.",
+          },
+          {
+            name: "optional",
+            type: "boolean",
+            default: "false",
+            description: "Skip silently if the anchor never appears.",
+          },
+          {
+            name: "waitForMs",
+            type: "number",
+            default: "4000",
+            description: "How long to wait for a missing anchor.",
+          },
+          {
+            name: "padding",
+            type: "number",
+            default: "8",
+            description: "Spotlight padding around the target.",
+          },
+          {
+            name: "beacon",
+            type: "boolean",
+            description: "Pulsing dot. Defaults on for click steps.",
+          },
+          {
+            name: "onEnter",
+            type: "(ctx) => void | Promise<void>",
+            description:
+              "Runs once when the step becomes active. `ctx.run(name)` calls an action published by useTourAction.",
+          },
+          {
+            name: "onExit",
+            type: "(dir, ctx) => void | Promise<void>",
+            description:
+              "Runs before leaving, in either direction. Awaited, so an animated close finishes before the next step measures.",
+          },
         ]}
       />
 
       <H2 id="versions">Versioning</H2>
       <P>
         Bump <C>version</C> whenever you add, remove or reorder steps. Progress is persisted, and
-        the version is what tells Cairn a saved step index is no longer meaningful.
+        the version is what tells cairnkit a saved step index is no longer meaningful.
       </P>
     </DocPage>
   );

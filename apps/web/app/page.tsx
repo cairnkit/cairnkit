@@ -7,8 +7,16 @@ import { SiteNav } from "@/components/site-nav";
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
 import {
-  IconArrow, IconExit, IconFlow, IconForward, IconLayers, IconPause,
-  IconRegistry, IconShield, IconSwitch, IconTarget,
+  IconArrow,
+  IconExit,
+  IconFlow,
+  IconForward,
+  IconLayers,
+  IconPause,
+  IconRegistry,
+  IconShield,
+  IconSwitch,
+  IconTarget,
 } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StartTour } from "@/components/start-tour";
@@ -29,7 +37,7 @@ const STEPS = [
     icon: <IconTarget />,
     file: "QuestionsPage.tsx",
     title: "Mark the elements",
-    body: "A single spread. Your components import nothing else from Cairn.",
+    body: "A single spread. Your components import nothing else from cairnkit.",
     code: `<button {...anchor(anchors.questions.save)}>
   Save
 </button>`,
@@ -54,7 +62,7 @@ const STEPS = [
     title: "Wire the check into CI",
     body: "Now a deleted button fails the build instead of a customer's onboarding.",
     code: `"scripts": {
-  "lint": "eslint . && cairn check"
+  "lint": "eslint . && cairnkit check"
 }`,
   },
 ];
@@ -96,20 +104,56 @@ const COMPARISON = [
   ["Targets elements by", "CSS selector", "CSS selector", "Visual picker", "Typed anchor"],
   ["You rename a class", "Breaks silently", "Breaks silently", "Breaks silently", "Won't compile"],
   ["You delete the element", "Breaks silently", "Breaks silently", "Breaks silently", "Fails CI"],
-  ["Element stops rendering", "Breaks silently", "Breaks silently", "Breaks silently", "Fails the audit"],
+  [
+    "Element stops rendering",
+    "Breaks silently",
+    "Breaks silently",
+    "Breaks silently",
+    "Fails the audit",
+  ],
   ["Step inside a modal", "Often breaks", "Often breaks", "Works", "Works"],
 ];
 
 /** kb gzipped, measured from dist. `bar` is the share of the widest row. */
 const PACKAGES = [
-  { name: "@cairnkit/core", kb: "2.8 kb", bar: 41, note: "Engine. Zero dependencies.", optional: false },
-  { name: "@cairnkit/react", kb: "4.0 kb", bar: 58, note: "Headless hooks and provider.", optional: false },
+  {
+    name: "@cairnkit/core",
+    kb: "2.8 kb",
+    bar: 41,
+    note: "Engine. Zero dependencies.",
+    optional: false,
+  },
+  {
+    name: "@cairnkit/react",
+    kb: "4.0 kb",
+    bar: 58,
+    note: "Headless hooks and provider.",
+    optional: false,
+  },
   { name: "@cairnkit/next", kb: "0.3 kb", bar: 4, note: "Router adapters.", optional: true },
-  { name: "@cairnkit/ui", kb: "7.0 kb", bar: 100, note: "Prebuilt overlay, JS + CSS.", optional: true },
+  {
+    name: "@cairnkit/ui",
+    kb: "7.0 kb",
+    bar: 100,
+    note: "Prebuilt overlay, JS + CSS.",
+    optional: true,
+  },
+  {
+    name: "@cairnkit/cloud",
+    kb: "2.8 kb",
+    bar: 37,
+    note: "Reports events to cloud.",
+    optional: true,
+  },
 ] as const;
 
 const TOTALS = [
-  { label: "Headless", kb: "7.0 kb", bar: 40, note: "core + react + next. Bring your own overlay." },
+  {
+    label: "Headless",
+    kb: "7.0 kb",
+    bar: 40,
+    note: "core + react + next. Bring your own overlay.",
+  },
   { label: "Everything", kb: "17.9 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
 ] as const;
 
@@ -142,8 +186,12 @@ export default async function Home() {
       <SiteNav
         extra={
           <>
-            <a className="hide-sm" href="#how">How it works</a>
-            <a className="hide-sm" href="#compare">Comparison</a>
+            <a className="hide-sm" href="#how">
+              How it works
+            </a>
+            <a className="hide-sm" href="#compare">
+              Comparison
+            </a>
           </>
         }
       />
@@ -152,7 +200,7 @@ export default async function Home() {
         <h1>Product tours that fail your build, not your users.</h1>
         <p>
           Every other tour tool targets a CSS selector, so a rename breaks it silently and a
-          customer finds out first. Cairn puts tours in your repo as typed data and fails CI the
+          customer finds out first. cairnkit puts tours in your repo as typed data and fails CI the
           moment one points at UI that no longer exists.
         </p>
 
@@ -224,8 +272,8 @@ export default async function Home() {
               <span className="terminal__dot" />
             </div>
             <pre>
-              <span className="t-dim">$ </span>cairn check{"\n\n"}
-              <span className="t-red">✗ cairn check failed</span>
+              <span className="t-dim">$ </span>cairnkit check{"\n\n"}
+              <span className="t-red">✗ cairnkit check failed</span>
               {"\n\n"}
               {"  "}
               <span className="t-yellow">•</span> 1 anchor(s) are registered but never applied to an
@@ -236,7 +284,9 @@ export default async function Home() {
               <span className="t-dim">{"  src/walkthrough/flows.ts:35"}</span>
               {"\n"}
               <span className="t-dim">
-                {"      Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it."}
+                {
+                  "      Spread {...anchor(...)} on the element, or remove the anchor and the step pointing at it."
+                }
               </span>
             </pre>
           </div>
@@ -307,7 +357,7 @@ export default async function Home() {
           <h2 className="h">Nobody follows the script</h2>
           <p className="lede">
             They click ahead, wander into a different flow, or open a modal you did not plan for.
-            Most tours die at that point. Cairn expects it.
+            Most tours die at that point. cairnkit expects it.
           </p>
           <Reveal>
             <div {...anchor(anchors.site.offpath)} className="scenarios demo-target">
@@ -319,7 +369,7 @@ export default async function Home() {
                     {row.did}
                   </p>
                   <p className="scenario__does">
-                    <span className="scenario__label">Cairn does</span>
+                    <span className="scenario__label">cairnkit does</span>
                     {row.does}
                   </p>
                   <code className="scenario__field">{row.field}</code>
@@ -335,7 +385,7 @@ export default async function Home() {
           <p className="eyebrow">Comparison</p>
           <h2 className="h">What happens when the UI changes</h2>
           <p className="lede">
-            Not a speed benchmark — Cairn is not faster than driver.js. This is the axis that
+            Not a speed benchmark — cairnkit is not faster than driver.js. This is the axis that
             actually costs you: what each tool does the day someone edits a component.
           </p>
 
@@ -347,7 +397,7 @@ export default async function Home() {
                   <th>driver.js</th>
                   <th>Shepherd</th>
                   <th>Pendo</th>
-                  <th className="ours">Cairn</th>
+                  <th className="ours">cairnkit</th>
                 </tr>
               </thead>
               <tbody>
@@ -418,32 +468,80 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="cta">
+      {/*
+        The one thing the library cannot do for you, and the only place on this
+        page that mentions a hosted product.
+
+        Positioned after `#packages` on purpose: by here a reader has seen the
+        drift argument, the size, and the licence, so an optional paid companion
+        reads as the next question rather than the pitch the page was always
+        building to. The MIT promise is restated inside the section for the same
+        reason — the fastest way to lose this audience is to look like the free
+        thing was a funnel.
+      */}
+      <section className="section cloudband" id="cloud">
         <div className="wrap">
-          <h2>Stop shipping broken tours</h2>
-          <p>
-            MIT licensed, 2.8 kb of engine, and a CI check that tells you before your users do.
+          <p className="eyebrow">cairnkit cloud</p>
+          <h2 className="h">The check tells you it broke. It cannot tell you what it cost.</h2>
+          <p className="lede">
+            <code>cairnkit check</code> catches a tour pointing at a button that no longer exists. It
+            has nothing to say about the tour that works perfectly and still loses two thirds of
+            people at step three — that one is not a bug in your repo, and no compiler will ever
+            find it.
           </p>
+
+          <div className="editor">
+            <div className="editor__bar">
+              <span className="editor__dot" />
+              <span className="editor__dot" />
+              <span className="editor__dot" />
+              <span className="editor__file">app/providers.tsx</span>
+            </div>
+            <pre>
+              {highlight(`import { sendToCloud } from "@cairnkit/cloud";
+
+<CairnProvider flows={flows} onEvent={sendToCloud({ key })}>`)}
+            </pre>
+          </div>
+
+          <p className="lede">
+            You already pass <code>onEvent</code>. Pointing it at cloud is one import and 2.8 kb,
+            and what comes back is completion rate per flow, the step people quit on, and a Slack
+            message the moment an anchor goes missing in production. Point it at PostHog instead and
+            the library does not care — this is an option, not the plan.
+          </p>
+
           <div className="cta__row">
-            <a className="btn btn--primary" href={site.repo}>Get started on GitHub</a>
-            <StartTour />
+            <a className="btn btn--primary" href={site.cloud}>
+              Join the cloud waitlist
+            </a>
+            <Link className="btn btn--ghost" href="/docs/api">
+              Read the events it sends
+            </Link>
           </div>
         </div>
       </section>
 
+      {/*
+        One close, not two.
+
+        This was two adjacent `.cta` sections — "Stop shipping broken tours" and
+        "Put it in your repo" — with the same treatment, the same argument and
+        four competing destinations. The headline that names the pain survived;
+        the other was a restatement of the how-it-works section above.
+      */}
       <section className="cta">
         <div className="wrap">
-          <h2 className="h">Put it in your repo</h2>
-          <p className="lede" style={{ margin: "0 auto 26px" }}>
-            Five minutes to a working tour. An afternoon to a guide that cannot silently break.
+          <h2 className="h">Stop shipping broken tours</h2>
+          <p className="lede">
+            MIT licensed, 2.8 kb of engine, and a CI check that tells you before your users do. Five
+            minutes to a working tour; an afternoon to one that cannot silently break.
           </p>
           <div className="cta__row">
             <Link className="btn btn--primary" href="/docs/install">
               Get started
             </Link>
-            <Link className="btn btn--ghost" href="/docs">
-              Browse the docs
-            </Link>
+            <StartTour />
           </div>
         </div>
       </section>
@@ -451,13 +549,16 @@ export default async function Home() {
       <footer className="footer">
         <div className="wrap footer__row">
           <Mark size={17} />
-          <span>MIT © {new Date().getFullYear()} {site.name}</span>
+          <span>
+            MIT © {new Date().getFullYear()} {site.name}
+          </span>
           <span>
             Authored by{" "}
             <a className="byline" href={site.authorUrl} target="_blank" rel="noreferrer">
               {site.author}
             </a>
           </span>
+          <a href={site.cloud}>Cloud</a>
           <a href={site.repo}>GitHub</a>
           <a href={site.npm}>npm</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>

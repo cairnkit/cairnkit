@@ -14,7 +14,7 @@ export type TourAnchorProps = {
  * `{...anchor(id)}` is the normal route and works on anything that spreads its
  * props onto a DOM node. Plenty of components do not — third-party ones you
  * cannot edit, and design-system components that accept only a fixed set. The
- * attribute silently vanishes there, and `cairn check` still passes, because
+ * attribute silently vanishes there, and `cairnkit check` still passes, because
  * the anchor *is* referenced in source. That failure surfaces only in a
  * browser, which is the worst place to find it.
  *

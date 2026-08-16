@@ -1,10 +1,4 @@
-import {
-  anchorsFile,
-  flowsFile,
-  providerFile,
-  registerFile,
-  routerAdapterFile,
-} from "./templates";
+import { anchorsFile, flowsFile, providerFile, registerFile, routerAdapterFile } from "./templates";
 import type { Context, FileAction, Plan, Reader } from "./types";
 
 const REQUIRED = ["@cairnkit/core", "@cairnkit/react", "@cairnkit/ui"];
@@ -67,7 +61,7 @@ export function plan(context: Context, reader: Reader, dirOverride?: string): Pl
     add("cairn.d.ts", registerFile("./anchors"), "narrows ids to your own literals");
   } else {
     warnings.push(
-      "No tsconfig.json found. Cairn works in JavaScript, but the typed-anchor registry — the thing that turns a rename into a compile error — needs TypeScript.",
+      "No tsconfig.json found. cairnkit works in JavaScript, but the typed-anchor registry — the thing that turns a rename into a compile error — needs TypeScript.",
     );
   }
 
@@ -157,8 +151,7 @@ function isCompiled(dir: string, include: string[]): boolean {
  * and costs nothing if we are wrong about their setup.
  */
 function nextSteps(context: Context, dir: string): Plan["nextSteps"] {
-  const provider =
-    aliasSpecifier(context, dir, "cairn-provider") ?? `./${dir}/cairn-provider`;
+  const provider = aliasSpecifier(context, dir, "cairn-provider") ?? `./${dir}/cairn-provider`;
 
   const mount = (file: string, body: string[]) => ({
     text: "Mount the provider — it has to wrap your app, not sit beside it.",
@@ -203,8 +196,20 @@ function nextSteps(context: Context, dir: string): Plan["nextSteps"] {
     ];
   }
 
+  /*
+   * Vite's entry, wherever it actually is.
+   *
+   * This named `src/main.tsx` unconditionally, while the Next branches above
+   * resolve their path from the detected framework dir. `create-vite` does put
+   * the entry under `src/`, so the assumption was right nearly always and wrong
+   * silently the rest of the time: the step pointed at a file the reader did
+   * not have. `usesSrcDir` is already how the generated files pick their home
+   * three lines up, so the instruction may as well agree with them.
+   */
+  const viteEntry = context.usesSrcDir ? "src/main.tsx" : "main.tsx";
+
   const steps: Plan["nextSteps"] = [
-    mount(context.bundler === "vite" ? "src/main.tsx" : "your root component", [
+    mount(context.bundler === "vite" ? viteEntry : "your root component", [
       "<CairnRuntime>",
       "  <App />",
       "</CairnRuntime>",

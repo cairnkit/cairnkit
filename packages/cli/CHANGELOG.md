@@ -1,5 +1,169 @@
 # @cairnkit/cli
 
+## 0.12.1
+
+### Patch Changes
+
+- 690a711: Correct the CLI's npm description, fill in missing package metadata, and expand two thin READMEs.
+
+  No code changed. All of this ships inside the published tarball, which is why it
+  needs a release to reach anyone.
+
+  **`@cairnkit/cli`'s description said `cairn check`.** The CLI has always printed
+  `cairnkit check`, and the docs were aligned on that in the previous release, but
+  the npm description was missed. It is the single most visible surface there is:
+  the package page, search results, and every registry dashboard. Fixed.
+
+  **`cairnkit` and `@cairnkit/ui` had no `bugs` field** and five keywords where the
+  other five packages carry thirteen. `cairnkit` was also writing its keywords with
+  spaces, so `"product tour"` never matched a search for `product-tour`. Both now
+  match the rest.
+
+  **Two READMEs were thin enough to be unhelpful.** `@cairnkit/next` documented two
+  of its three exports, leaving `appRouterAdapter` unmentioned, and said nothing
+  about why the package exists at all. `cairnkit` did not explain what `init`
+  produces, or that `npx cairn` fetches an unrelated package of that name while
+  `npx cairnkit` resolves to this one.
+
+  Also corrects the install page, which said `init` prints "the two steps it
+  deliberately leaves to you". It prints three, and it writes into
+  `src/walkthrough/` rather than the `app/` paths used by the manual instructions
+  further down the page.
+
+  - @cairnkit/core@0.12.1
+
+## 0.12.0
+
+### Minor Changes
+
+- 34e5937: Add `cairn status`, `--json` on both commands, and fix flows in one file being merged into one.
+
+  ## `--json`
+
+  `check` and the new `status` command both take `--json`. In that mode stdout
+  carries exactly one JSON object and every human-facing message goes to stderr,
+  so the output can be piped straight into a parser.
+
+  ```
+  npx cairnkit status --json
+  npx cairnkit check --json
+  ```
+
+  The payload carries a `version` field, because it is a contract the moment
+  anything consumes it and a consumer needs to tell an old shape from a new one
+  without guessing from which keys happen to be present.
+
+  ## `cairn status`
+
+  Answers "what is there", where `check` answers "is anything wrong": every
+  anchor, whether an element carries it, whether it got there through the typed
+  spread or a bare `data-cairn` attribute, where it was declared, and which flows
+  point at it. Always exits 0, because describing a project is not a verdict on
+  it.
+
+  This exists mainly for tooling. An agent asked to add a tour needs the current
+  anchor graph before it can write a sensible one, and that graph is not
+  derivable by grepping: it needs the registry path resolution and the rule that
+  flow files reference anchors rather than apply them. CI annotations and editor
+  integrations want the same shape, so it lives in the CLI rather than behind a
+  separate integration.
+
+  ## Flows in one file were merged into one
+
+  Found while building the above. The scanner parsed flows per _file_: it took the
+  first `id:` it found and attributed every anchor, pause route and handoff in
+  that file to it. A file holding four `defineFlow` calls reported one flow owning
+  all of them.
+
+  The visible symptom was `check` naming the wrong flow. Given two flows in one
+  file, an anchor used only by the second was reported as breaking the first:
+
+  ```
+  - b.two  (breaks "first-flow")     ← before, wrong
+  - b.two  (breaks "second-flow")    ← after
+  ```
+
+  Route config leaked the same way, so one flow's `pauseRoutes` were attributed to
+  another and `route-conflicts` was reasoning about the wrong pairs.
+
+  The scanner now cuts the file into one segment per `defineFlow(` and parses each
+  on its own. Segments are found in the stripped copy so a call quoted inside a
+  docs snippet does not start a phantom flow, and step offsets are translated back
+  to file coordinates so findings still point at the step rather than the top of
+  the file.
+
+  ## Docs realigned
+
+  Every doc, README and page that mentions the CLI now says `cairnkit`, and the
+  sample failure output matches what the tool actually prints.
+
+  Seven places showed `✗ cairn check failed`. The tool has always printed
+  `✗ cairnkit check failed`, deliberately, because `cairnkit` is the only name
+  that also works as `npx cairnkit` from a directory with nothing installed.
+
+  That distinction is not cosmetic. `cairn` is a real bin alias and works once the
+  package is installed, but `npx cairn` fetches an unrelated package of that name
+  from the registry and runs it. One canonical spelling everywhere removes the
+  chance of a reader copying the form that only works by accident.
+
+  ## `init` names the Vite entry where it actually is
+
+  The Next branches resolve the file to edit from the detected framework
+  directory, so they already said `app/layout.tsx` or `src/pages/_app.tsx`
+  correctly. The Vite branch named `src/main.tsx` unconditionally.
+
+  `create-vite` does put the entry under `src/`, so the assumption held nearly
+  always and failed silently the rest of the time: the instruction pointed at a
+  file the reader did not have. It now follows `usesSrcDir`, which is already how
+  the generated files choose their own home.
+
+### Patch Changes
+
+- @cairnkit/core@0.12.0
+
+## 0.11.2
+
+### Patch Changes
+
+- 5109388: Report the anchor id when a `data-cairn` attribute is not in the registry, and stop reporting registered ones.
+
+  `cairn check` scans a stripped copy of each file, where comments and string
+  contents are replaced with same-length padding so that a `defineAnchors({...})`
+  quoted inside a docs snippet cannot register phantom anchors.
+
+  A JSX attribute value is a string literal, so the `data-cairn="..."` scan was
+  reading that padding rather than the id. Two consequences, both on the raw
+  attribute path only:
+
+  - **Every** `data-cairn` attribute was reported as "not in the registry", even
+    when it was registered, because the value being looked up was a run of spaces.
+  - The finding could not name the offending value, so the report read
+    `- ␣␣␣␣␣ src/components/help.tsx:2` with a blank where the id should be.
+
+  The scan now reads the value from the original source and skips any match whose
+  offset no longer begins with `data-cairn=` in the stripped copy. That guard is
+  what preserves the original protection: a comment or template literal is blanked
+  wholesale, attribute name included, so a documented example still does not count
+  as a real use, while a genuine attribute keeps its name because only the quoted
+  value is padded.
+
+  Applying anchors the documented way, `{...anchor(anchors.group.key)}`, was never
+  affected: those are matched as identifiers rather than as strings.
+
+  - @cairnkit/core@0.11.2
+
+## 0.11.1
+
+### Patch Changes
+
+- @cairnkit/core@0.11.1
+
+## 0.11.0
+
+### Patch Changes
+
+- @cairnkit/core@0.11.0
+
 ## 0.10.0
 
 ### Patch Changes

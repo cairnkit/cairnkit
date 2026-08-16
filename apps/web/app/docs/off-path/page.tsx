@@ -84,8 +84,8 @@ export default function Page() {
       </P>
       <Code>{`pauseRoutes: ["/settings", "/billing"]`}</Code>
       <Callout kind="good" title="Pauses, never ends">
-        Glancing at another page should cost the user nothing. An earlier version of Cairn ended the
-        tour here, which treated a legitimate choice as a mistake.
+        Glancing at another page should cost the user nothing. An earlier version of cairnkit ended
+        the tour here, which treated a legitimate choice as a mistake.
       </Callout>
 
       <H2 id="leaving">Leaving the page a step lives on</H2>
@@ -94,7 +94,7 @@ export default function Page() {
         browser Back button, or follows a link, while the guide is mid-flow on another page.
       </P>
       <P>
-        Cairn records the pathname each step became active on. When a step&rsquo;s anchor goes
+        cairnkit records the pathname each step became active on. When a step&rsquo;s anchor goes
         missing it compares the two:
       </P>
       <Ul>
@@ -138,12 +138,12 @@ function InvitePage() {
         A guide whose scope is not in front goes dormant, exactly as <C>pauseRoutes</C> does for a
         route it does not cover — so switching back picks up on the step you left.
       </P>
-      <Callout kind="warn" title="Cairn cannot work this out on its own">
+      <Callout kind="warn" title="cairnkit cannot work this out on its own">
         The obvious shortcut is &ldquo;my anchor vanished, so I must have left&rdquo;. It does not
         hold. Anchors are routinely shared between tabs — one settings panel reused by both, a tab
         strip that belongs to neither — so a guide can survive the switch and describe the wrong
         feature with total confidence. That is worse than stopping, and it is why the app has to say
-        where it is rather than have Cairn guess.
+        where it is rather than have cairnkit guess.
       </Callout>
       <Callout kind="good" title="Opt in, per flow">
         A flow with no <C>scope</C> goes anywhere, and an app that never calls <C>useTourScope</C>{" "}
@@ -197,7 +197,7 @@ useEffect(() => {
       </Ul>
       <Callout kind="warn" title="Two constraints the CLI enforces">
         A route must not appear in both <C>pauseRoutes</C> and <C>handoffRoutes</C>, and no flow may
-        hand off to itself. Both would be ambiguous, so <C>cairn check</C> rejects them rather than
+        hand off to itself. Both would be ambiguous, so <C>cairnkit check</C> rejects them rather than
         letting the engine guess.
       </Callout>
       <P>

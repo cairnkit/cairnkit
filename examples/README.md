@@ -54,7 +54,7 @@ reason about from the source:
    The overlay portals _into_ the dialog so it survives the focus trap.
 3. **Deep link.** Visit `/?tour=invite-candidate` to start a guide from a URL.
 4. **Break it.** Delete a `{...anchor(...)}` spread from a page and run
-   `pnpm --filter @cairnkit/cli exec cairn check examples/react-vite/src`.
+   `pnpm --filter @cairnkit/cli exec cairnkit check examples/react-vite/src`.
 
 This app is also the proof the engine is not Next-specific: its whole router
 integration is [ten lines](./react-vite/src/router-adapter.ts).

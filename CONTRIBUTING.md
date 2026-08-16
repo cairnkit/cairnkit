@@ -57,7 +57,7 @@ packages/core     engine — anchors, flows, advance rules. Zero runtime deps.
 packages/react    headless hooks and provider. No styling.
 packages/ui       prebuilt overlay. Plain prefixed CSS.
 packages/next     Next.js router adapters.
-packages/cli      cairn check, and the browser audit helper.
+packages/cli      cairnkit check, and the browser audit helper.
 examples/         real consumers, and the audit fixture.
 apps/web          cairnkit.dev — landing page and docs.
 ```
@@ -156,7 +156,7 @@ npm i /tmp/dist/cairnkit-core-*.tgz
 ## Reporting a bug
 
 The most useful report includes the flow definition, the anchor involved, and
-whether `cairn check` passes. If it passes but the tour still breaks, that is a
+whether `cairnkit check` passes. If it passes but the tour still breaks, that is a
 gap in the check itself, which is worth knowing about.
 
 For security issues, see [SECURITY.md](./SECURITY.md) — please don't open a

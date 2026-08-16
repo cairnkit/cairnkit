@@ -3,7 +3,7 @@ import type { TourDismissReason } from "../flows/types";
 /** Signals the host app emits so a step can wait on real work finishing. */
 export type TourEventName = string & { readonly __cairnEvent?: unique symbol };
 
-/** Analytics events Cairn emits outward. One callback, any destination. */
+/** Analytics events cairnkit emits outward. One callback, any destination. */
 export type CairnEvent =
   | { name: "flow_started"; props: { flowId: string; version: number } }
   | { name: "step_viewed"; props: { flowId: string; stepIndex: number; anchor: string } }
