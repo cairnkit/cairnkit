@@ -16,10 +16,19 @@
   },
   "keywords": [
     "cairnkit",
-    "product tour",
+    "product-tour",
     "onboarding",
+    "walkthrough",
+    "user-onboarding",
+    "guided-tour",
+    "spotlight",
+    "coachmark",
+    "product-adoption",
     "react",
-    "nextjs"
+    "nextjs",
+    "typescript",
+    "developer-tools",
+    "ci"
   ],
   "repository": {
     "type": "git",
@@ -30,5 +39,8 @@
   "scripts": {
     "build": "node -e \"process.exit(0)\"",
     "typecheck": "node -e \"process.exit(0)\""
+  },
+  "bugs": {
+    "url": "https://github.com/cairnkit/cairnkit/issues"
   }
 }
