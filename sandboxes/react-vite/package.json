@@ -8,9 +8,9 @@
     "preview": "vite preview --port 4200"
   },
   "dependencies": {
-    "@cairnkit/core": "^0.12.1",
-    "@cairnkit/react": "^0.12.1",
-    "@cairnkit/ui": "^0.12.1",
+    "@cairnkit/core": "^0.12.2",
+    "@cairnkit/react": "^0.12.2",
+    "@cairnkit/ui": "^0.12.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.14.2"
