@@ -1,5 +1,12 @@
 # @cairnkit/next
 
+## 0.12.3
+
+### Patch Changes
+
+- Updated dependencies [264bf96]
+  - @cairnkit/react@0.12.3
+
 ## 0.12.2
 
 ### Patch Changes
