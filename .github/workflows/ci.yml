@@ -19,6 +19,14 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
 
+      # A property of the published file, not of the source, so nothing above
+      # can see it. Every module in react, ui and next declares "use client" and
+      # none of those survive bundling, so without the build step that puts it
+      # back, any server component importing from them throws at module
+      # evaluation. That shipped in every version up to 0.12.1.
+      - name: Verify client bundles declare "use client"
+        run: node scripts/client-directive.mjs check
+
       # `pnpm typecheck` and `pnpm build` filter to ./packages/**, so the docs
       # site was never checked here at all — Vercel was the only thing that
       # would notice a broken page, and only after merge.
@@ -27,7 +35,6 @@ jobs:
           pnpm --filter @cairnkit/web exec tsc --noEmit
           pnpm --filter @cairnkit/web build
       - run: pnpm test
-
       # Dogfooding: the example app and the site are real consumers, so the
       # drift check that protects our users protects us first.
       - run: node packages/cli/dist/bin.js check examples/react-vite/src apps/web
