@@ -1,5 +1,11 @@
 # cairnkit
 
+## 0.12.2
+
+### Patch Changes
+
+- @cairnkit/cli@0.12.2
+
 ## 0.12.1
 
 ### Patch Changes
