@@ -150,7 +150,7 @@ const PACKAGES = [
 const TOTALS = [
   {
     label: "Headless",
-    kb: "7.0 kb",
+    kb: "7.1 kb",
     bar: 40,
     note: "core + react + next. Bring your own overlay.",
   },
@@ -166,7 +166,7 @@ export default async function Home() {
    * more effectively than it argues for you.
    */
   const metrics: { value: string; label: string; live?: boolean }[] = [
-    { value: "7.0 kb", label: "headless, gzipped" },
+    { value: "7.1 kb", label: "headless, gzipped" },
     { value: "0", label: "runtime dependencies" },
     { value: "~0.1s", label: "CI check, 700 files" },
     { value: "3", label: "layers of drift defence" },
@@ -430,7 +430,7 @@ export default async function Home() {
           <h2 className="h">Small, and mostly optional</h2>
           <p className="lede">
             Take the engine alone and drive it with your own components, or take the overlay too.
-            Headless lands at 7.0 kb — about what driver.js costs, for rather more.
+            Headless lands at 7.1 kb — about what driver.js costs, for rather more.
           </p>
 
           <div {...anchor(anchors.site.packages)} className="pkgs demo-target">

@@ -148,7 +148,7 @@ All three are right for **`examples/next-app`**, and for a future `npx cairnkit 
 
 1. **Does `ui` earn a separate package?** Yes. It carries the only third-party
    runtime dependency (`@floating-ui/dom`) and a stylesheet, neither of which
-   belongs in a headless install. Headless is 7.0 kb; the overlay adds 6.9.
+   belongs in a headless install. Headless is 7.1 kb; the overlay adds 6.9.
 2. **Does `dom/` belong in `core`, given core is otherwise environment-free?**
    Yes, but it must stay SSR-safe. `resolveAnchor` once read `document` in a
    default parameter, which threw during server rendering before any guard

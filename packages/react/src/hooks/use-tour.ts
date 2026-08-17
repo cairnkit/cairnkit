@@ -185,9 +185,23 @@ export function useTour() {
     // "the element is genuinely gone" and ended a tour that was about to wake.
     if (statusFor !== anchorId || statusAt !== pathname) return;
 
+    /*
+     * Still reported when the step is optional, because "this section was never
+     * there" is worth knowing: a step that skips for everyone is a step to
+     * delete. But it is flagged, because it is not a fault, and a consumer
+     * counting these as broken anchors would otherwise report every intended
+     * skip as breakage. Only set when true, so nothing already reading this
+     * event changes behaviour.
+     */
     onEvent?.({
       name: "anchor_missing",
-      props: { flowId: flow.id, stepIndex, anchor: String(step.anchor), pathname },
+      props: {
+        flowId: flow.id,
+        stepIndex,
+        anchor: String(step.anchor),
+        pathname,
+        ...(step.optional ? ({ optional: true } as const) : null),
+      },
     });
 
     if (step.optional) {
