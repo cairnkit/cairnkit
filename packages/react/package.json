@@ -21,8 +21,8 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
+    "build": "tsup && node ../../scripts/client-directive.mjs apply",
+    "dev": "tsup --watch --onSuccess \"node ../../scripts/client-directive.mjs apply\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
