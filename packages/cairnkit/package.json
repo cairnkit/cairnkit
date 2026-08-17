@@ -1,6 +1,6 @@
 {
   "name": "cairnkit",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "Run the cairnkit CLI without installing anything: npx cairnkit init",
   "license": "MIT",
   "type": "module",

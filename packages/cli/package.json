@@ -1,6 +1,6 @@
 {
   "name": "@cairnkit/cli",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "cairnkit check — fails the build when a tour points at UI that no longer exists.",
   "license": "MIT",
   "type": "module",
