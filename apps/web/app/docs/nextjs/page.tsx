@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DocPage } from "@/components/docs/doc-page";
-import { C, Callout, H2, H3, P, Ul } from "@/components/docs/prose";
+import { C, Callout, H2, P, Ul } from "@/components/docs/prose";
 import { Code } from "@/components/docs/code";
 
 export const metadata = { title: "Next.js" };

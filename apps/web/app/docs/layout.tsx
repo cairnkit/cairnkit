@@ -3,8 +3,6 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { DocsSidebar } from "@/components/docs/sidebar";
-import { Mark } from "@/components/mark";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { site } from "../site";
 import "./docs.css";
 
