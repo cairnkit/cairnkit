@@ -1,5 +1,13 @@
 # @cairnkit/ui
 
+## 0.12.4
+
+### Patch Changes
+
+- Updated dependencies [c13b012]
+  - @cairnkit/core@0.12.4
+  - @cairnkit/react@0.12.4
+
 ## 0.12.3
 
 ### Patch Changes
