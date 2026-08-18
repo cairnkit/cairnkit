@@ -96,6 +96,13 @@ One event per tour signal — `flow_started`, `step_viewed`, `flow_completed`,
 Plus a `runId` per pass through a tour, so starting the same tour twice is two
 runs rather than one confused sequence.
 
+`anchor_missing` carries one field worth knowing about if you count these
+yourself. A step marked `optional` points at something that legitimately may not
+be there, and its absence is reported with `props.optional === true`. Treat those
+as breakage and every intended skip becomes a broken anchor in your numbers. The
+flag is absent, never `false`, on a required step, so filtering on a truthy value
+leaves older events counting as they always did.
+
 The session id is opaque, random, and kept in `localStorage` for 30 minutes of
 inactivity. It is not a cookie and not a user id.
 

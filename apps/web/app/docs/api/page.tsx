@@ -82,9 +82,9 @@ TourDismissReason · TourExitReason`}</Code>
           },
           {
             name: "anchor_missing",
-            type: "flowId, stepIndex, anchor, pathname",
+            type: "flowId, stepIndex, anchor, pathname, optional?",
             description:
-              "A step pointed at UI that was not on the page — what cairnkit check catches before release, seen from production.",
+              "A step pointed at UI that was not on the page — what cairnkit check catches before release, seen from production. `optional: true` is set when the step declared itself optional, so an expected absence can be told from a break: count these as breakage and a guide skipping a step exactly as intended reads as a broken anchor. Absent, never false, on a required step.",
           },
           {
             name: "step_feedback",
