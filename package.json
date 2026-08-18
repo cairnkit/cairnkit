@@ -27,18 +27,19 @@
     "audit:published": "node scripts/audit-published.mjs --audit-level high"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
-    "prettier": "^3.4.2",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
-    "vitest": "^3.2.4",
-    "jsdom": "^25.0.1",
-    "@testing-library/react": "^16.1.0",
+    "@changesets/cli": "^2.27.11",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.1.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "esbuild": "0.25.12",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@types/react": "^19.0.0",
-    "@changesets/cli": "^2.27.11"
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
   },
   "pnpm": {
     "overrides": {

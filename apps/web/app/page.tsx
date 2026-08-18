@@ -118,30 +118,30 @@ const COMPARISON = [
 const PACKAGES = [
   {
     name: "@cairnkit/core",
-    kb: "2.8 kb",
-    bar: 41,
+    kb: "2.3 kb",
+    bar: 42,
     note: "Engine. Zero dependencies.",
     optional: false,
   },
   {
     name: "@cairnkit/react",
-    kb: "4.0 kb",
-    bar: 58,
+    kb: "2.9 kb",
+    bar: 53,
     note: "Headless hooks and provider.",
     optional: false,
   },
-  { name: "@cairnkit/next", kb: "0.3 kb", bar: 4, note: "Router adapters.", optional: true },
+  { name: "@cairnkit/next", kb: "0.2 kb", bar: 4, note: "Router adapters.", optional: true },
   {
     name: "@cairnkit/ui",
-    kb: "7.0 kb",
+    kb: "5.5 kb",
     bar: 100,
     note: "Prebuilt overlay, JS + CSS.",
     optional: true,
   },
   {
     name: "@cairnkit/cloud",
-    kb: "2.8 kb",
-    bar: 37,
+    kb: "1.7 kb",
+    bar: 31,
     note: "Reports events to cloud.",
     optional: true,
   },
@@ -150,11 +150,11 @@ const PACKAGES = [
 const TOTALS = [
   {
     label: "Headless",
-    kb: "7.1 kb",
+    kb: "5.4 kb",
     bar: 40,
     note: "core + react + next. Bring your own overlay.",
   },
-  { label: "Everything", kb: "17.9 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
+  { label: "Everything", kb: "14.9 kb", bar: 100, note: "Adds the overlay and @floating-ui/dom." },
 ] as const;
 
 export default async function Home() {
@@ -166,7 +166,7 @@ export default async function Home() {
    * more effectively than it argues for you.
    */
   const metrics: { value: string; label: string; live?: boolean }[] = [
-    { value: "7.1 kb", label: "headless, gzipped" },
+    { value: "5.4 kb", label: "headless, gzipped" },
     { value: "0", label: "runtime dependencies" },
     { value: "~0.1s", label: "CI check, 700 files" },
     { value: "3", label: "layers of drift defence" },
@@ -430,7 +430,7 @@ export default async function Home() {
           <h2 className="h">Small, and mostly optional</h2>
           <p className="lede">
             Take the engine alone and drive it with your own components, or take the overlay too.
-            Headless lands at 7.1 kb — about what driver.js costs, for rather more.
+            Headless lands at 5.4 kb — about what driver.js costs, for rather more.
           </p>
 
           <div {...anchor(anchors.site.packages)} className="pkgs demo-target">
@@ -484,8 +484,8 @@ export default async function Home() {
           <p className="eyebrow">cairnkit cloud</p>
           <h2 className="h">The check tells you it broke. It cannot tell you what it cost.</h2>
           <p className="lede">
-            <code>cairnkit check</code> catches a tour pointing at a button that no longer exists. It
-            has nothing to say about the tour that works perfectly and still loses two thirds of
+            <code>cairnkit check</code> catches a tour pointing at a button that no longer exists.
+            It has nothing to say about the tour that works perfectly and still loses two thirds of
             people at step three — that one is not a bug in your repo, and no compiler will ever
             find it.
           </p>
@@ -505,7 +505,7 @@ export default async function Home() {
           </div>
 
           <p className="lede">
-            You already pass <code>onEvent</code>. Pointing it at cloud is one import and 2.8 kb,
+            You already pass <code>onEvent</code>. Pointing it at cloud is one import and 1.7 kb,
             and what comes back is completion rate per flow, the step people quit on, and a Slack
             message the moment an anchor goes missing in production. Point it at PostHog instead and
             the library does not care — this is an option, not the plan.
@@ -534,7 +534,7 @@ export default async function Home() {
         <div className="wrap">
           <h2 className="h">Stop shipping broken tours</h2>
           <p className="lede">
-            MIT licensed, 2.8 kb of engine, and a CI check that tells you before your users do. Five
+            MIT licensed, 2.3 kb of engine, and a CI check that tells you before your users do. Five
             minutes to a working tour; an afternoon to one that cannot silently break.
           </p>
           <div className="cta__row">

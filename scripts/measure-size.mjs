@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Measures what each package actually costs, gzipped.
+ * Measures what each package actually costs a consumer, minified and gzipped.
  *
  * The numbers on the landing page were measured by hand once, which is how
  * `@cairnkit/ui` came to advertise 4.3 kb while really costing 6.4 — the CSS
@@ -10,17 +10,49 @@
  *   node scripts/measure-size.mjs
  *   node scripts/measure-size.mjs --check   # fails if the site is stale
  *
+ * **Minified here, not in what we publish.** `dist/` deliberately ships
+ * readable: a consumer stepping into cairnkit in a debugger should see
+ * `resolveAnchor`, not `f`, and their own bundler minifies `node_modules` in a
+ * production build regardless. Which is exactly why measuring the unminified
+ * file was the wrong number — it counted whitespace and identifier length that
+ * no user ever downloads, and overstated the library by about a quarter.
+ *
+ * So this reports the cost after the step every consumer's build performs, and
+ * `dist/` is untouched by it. Nothing here changes a published byte.
+ *
  * Measures the built ESM entry plus any CSS the package requires. That is the
  * honest ceiling: a consumer importing one hook will tree-shake below it,
  * but nobody can end up above it.
  */
 import { gzipSync } from "node:zlib";
+/*
+ * Pinned exactly in the root package.json, unlike everything around it.
+ *
+ * The output of this script is a published claim that CI fails on, so it has to
+ * be reproducible. Minifiers change what they emit between versions, and a
+ * floating range would eventually shift a number by a tenth of a kilobyte on
+ * somebody else's machine and fail a build that changed nothing.
+ */
+import { transformSync } from "esbuild";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const kb = (bytes) => `${(bytes / 1024).toFixed(1)} kb`;
+
+/**
+ * Minify the way a consumer's bundler would, then gzip.
+ *
+ * The loader follows the extension because CSS minified as JavaScript is a
+ * syntax error rather than a smaller file, and a silent fallback would report a
+ * number nobody could explain. An already-minified dependency passes through
+ * this unchanged, which is why `@floating-ui/dom` needs no special case.
+ */
+function measure(path, source) {
+  const loader = path.endsWith(".css") ? "css" : "js";
+  return transformSync(source, { minify: true, loader }).code;
+}
 
 function gzipped(...paths) {
   let total = 0;
@@ -30,7 +62,7 @@ function gzipped(...paths) {
       console.error(`✗ Missing ${path} — run \`pnpm build\` first.`);
       process.exit(1);
     }
-    total += gzipSync(readFileSync(full)).length;
+    total += gzipSync(measure(path, readFileSync(full, "utf8"))).length;
   }
   return total;
 }
@@ -69,7 +101,7 @@ const headless = by("@cairnkit/core") + by("@cairnkit/react") + by("@cairnkit/ne
 const everything = headless + by("@cairnkit/ui") + gzipped(FLOATING_UI);
 const widest = Math.max(...sizes.map((s) => s.bytes), 1);
 
-console.log("\n  Gzipped, built output\n");
+console.log("\n  Minified and gzipped, as a consumer's bundler ships it\n");
 for (const s of sizes) {
   const bar = "█".repeat(Math.max(1, Math.round((s.bytes / widest) * 24)));
   const label = s.optional ? `${s.name} (optional)` : s.name;

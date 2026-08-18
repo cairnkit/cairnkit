@@ -27,6 +27,9 @@ importers:
       '@types/react':
         specifier: ^19.0.0
         version: 19.0.0
+      esbuild:
+        specifier: 0.25.12
+        version: 0.25.12
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1

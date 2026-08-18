@@ -24,7 +24,7 @@ How the packages fit together, what belongs where, and the rules that keep it th
 | `@cairnkit/react` | core        | Headless hooks + provider. No styling.         |
 | `@cairnkit/ui`    | core, react | Styled components. Plain prefixed CSS.         |
 | `@cairnkit/next`  | react       | App Router + Pages Router adapters             |
-| `@cairnkit/cli`   | core        | `cairnkit check`                                  |
+| `@cairnkit/cli`   | core        | `cairnkit check`                               |
 
 Splitting `react` from `ui` is what lets someone drive the engine with their own design system — and it is why we can ship styles without forcing Tailwind on anyone.
 
@@ -148,7 +148,7 @@ All three are right for **`examples/next-app`**, and for a future `npx cairnkit 
 
 1. **Does `ui` earn a separate package?** Yes. It carries the only third-party
    runtime dependency (`@floating-ui/dom`) and a stylesheet, neither of which
-   belongs in a headless install. Headless is 7.1 kb; the overlay adds 6.9.
+   belongs in a headless install. Headless is 5.4 kb; the overlay adds 5.5.
 2. **Does `dom/` belong in `core`, given core is otherwise environment-free?**
    Yes, but it must stay SSR-safe. `resolveAnchor` once read `document` in a
    default parameter, which threw during server rendering before any guard
