@@ -146,18 +146,23 @@ And three answers to the user not following the script — because they never do
 `pauseRoutes` pauses rather than ends. Glancing at a different option should
 cost the user nothing.
 
+All three take patterns as well as exact pathnames — `"/projects/:slug"` for one
+segment, `"/docs/*"` for the rest — because a detail route cannot be listed one
+id at a time, and an uncovered one lets the tour run onto a page holding none of
+its anchors.
+
 ---
 
 ## Packages
 
 | Package                             | What it is                                                    |
 | ----------------------------------- | ------------------------------------------------------------- |
-| [`@cairnkit/core`](packages/core)   | Engine. **Zero runtime dependencies**, 2.8 kb gzipped         |
-| [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 4.0 kb                 |
-| [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 7.0 kb (JS + CSS) |
+| [`@cairnkit/core`](packages/core)   | Engine. **Zero runtime dependencies**, 2.3 kb gzipped         |
+| [`@cairnkit/react`](packages/react) | Headless hooks + provider. No styling, 2.9 kb                 |
+| [`@cairnkit/ui`](packages/ui)       | Prebuilt spotlight, tooltip card, launcher. 5.5 kb (JS + CSS) |
 | [`@cairnkit/next`](packages/next)   | App Router and Pages Router adapters                          |
-| [`@cairnkit/cloud`](packages/cloud) | Optional. Reports tour events to cairnkit cloud, 2.8 kb       |
-| [`@cairnkit/cli`](packages/cli)     | `cairnkit check`                                                 |
+| [`@cairnkit/cloud`](packages/cloud) | Optional. Reports tour events to cairnkit cloud, 1.7 kb       |
+| [`@cairnkit/cli`](packages/cli)     | `cairnkit check`                                              |
 
 `core` is framework-free; React is one binding, not the architecture. Router
 access goes through a ten-line adapter, so react-router or TanStack Router is

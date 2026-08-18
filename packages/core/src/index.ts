@@ -15,6 +15,7 @@ export type {
 export { defineFlow } from "./flows/define-flow";
 export { createFlowRegistry, getFlow, type FlowRegistry } from "./flows/registry";
 export { resolveResumeStep } from "./flows/resume";
+export { matchRoute } from "./flows/match-route";
 export type {
   AdvanceRule,
   Placement,

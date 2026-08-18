@@ -91,23 +91,38 @@ export type TourFlow = {
   id: RegisteredFlowId;
   /** Bump when steps are added, removed or reordered — invalidates saved progress. */
   version: number;
-  /** Where the flow begins. Launching elsewhere navigates here first. */
+  /**
+   * Where the flow begins. Launching elsewhere navigates here first.
+   *
+   * A concrete pathname, never a pattern, unlike the three route fields below.
+   * The engine navigates to this one, and a pattern is something you test a
+   * pathname against rather than somewhere you can send a browser.
+   */
   entryRoute: string;
   /**
    * Routes this flow does not cover. The tour goes dormant rather than ending:
    * returning to a covered route resumes on the same step, so exploring a side
    * path costs the user nothing.
+   *
+   * Exact pathnames, or patterns: `:name` matches one segment and a trailing
+   * `*` matches the rest. `/projects/:slug` is the case this exists for, since
+   * a detail route cannot be enumerated and leaving it uncovered means the tour
+   * runs on into a page it knows nothing about and ends as `anchor-missing`.
    */
   pauseRoutes?: string[];
   /**
    * Where to pick up when the user navigates ahead of the guide — they click
    * the button a step before it is described. Only ever applied forwards.
+   *
+   * `pathname` takes the same patterns as `pauseRoutes`.
    */
   resumeAt?: { pathname: string; stepIndex: number }[];
   /**
    * Routes belonging to a different guide. Landing on one switches flows, so a
    * legitimate alternative route to the same goal keeps the user guided.
    * Checked before `pauseRoutes`.
+   *
+   * `pathname` takes the same patterns as `pauseRoutes`.
    */
   handoffRoutes?: { pathname: string; flowId: RegisteredFlowId }[];
   /**

@@ -1,4 +1,5 @@
 import { resolveResumeStep } from "../flows/resume";
+import { matchRoute } from "../flows/match-route";
 import type { TourFlow } from "../flows/types";
 
 export type RouteDecision =
@@ -24,10 +25,10 @@ export function decideForRoute(
   pathname: string,
   stepIndex: number,
 ): RouteDecision {
-  const handoff = flow.handoffRoutes?.find((entry) => entry.pathname === pathname);
+  const handoff = flow.handoffRoutes?.find((entry) => matchRoute(entry.pathname, pathname));
   if (handoff) return { kind: "handoff", flowId: handoff.flowId };
 
-  if (flow.pauseRoutes?.includes(pathname)) return { kind: "pause" };
+  if (flow.pauseRoutes?.some((route) => matchRoute(route, pathname))) return { kind: "pause" };
 
   const resumeIndex = resolveResumeStep(flow, pathname, stepIndex);
   if (resumeIndex !== null) return { kind: "resume", stepIndex: resumeIndex };

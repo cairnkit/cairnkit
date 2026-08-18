@@ -15,6 +15,7 @@ export default function Page() {
         { id: "resume", label: "resumeAt" },
         { id: "handoff", label: "handoffRoutes" },
         { id: "pause", label: "pauseRoutes" },
+        { id: "patterns", label: "Dynamic routes" },
         { id: "leaving", label: "Leaving a step's page" },
         { id: "scope", label: "scope" },
         { id: "rules", label: "Rules and precedence" },
@@ -86,6 +87,46 @@ export default function Page() {
       <Callout kind="good" title="Pauses, never ends">
         Glancing at another page should cost the user nothing. An earlier version of cairnkit ended
         the tour here, which treated a legitimate choice as a mistake.
+      </Callout>
+
+      <H2 id="patterns">Dynamic routes</H2>
+      <P>
+        <C>resumeAt</C>, <C>handoffRoutes</C> and <C>pauseRoutes</C> all take patterns as well as
+        exact pathnames. A detail route cannot be listed one id at a time, and leaving it uncovered
+        is not neutral: the tour keeps running onto a page holding none of its anchors, and ends as{" "}
+        <C>anchor-missing</C> — which your analytics then reports as a broken anchor.
+      </P>
+      <Code>{`pauseRoutes: [
+  "/settings",           // exact, and still the common case
+  "/projects/:slug",     // :name matches exactly one segment
+  "/docs/*",             // * matches the rest
+]`}</Code>
+      <PropsTable
+        rows={[
+          {
+            name: "/settings",
+            type: "exact",
+            description:
+              "No : or * anywhere, so it is compared as a string. Every flow written before patterns existed behaves exactly as it did.",
+          },
+          {
+            name: ":name",
+            type: "one segment",
+            description:
+              "/projects/:slug matches /projects/acme and not /projects/acme/keys. One segment on purpose: a flow pausing on a detail page must not also pause on everything beneath it, where a different guide may be taking over.",
+          },
+          {
+            name: "*",
+            type: "the rest",
+            description:
+              "/docs/* matches /docs/install and /docs/install/next, but not /docs itself — otherwise a flow launched from an index would pause on the page it started on.",
+          },
+        ]}
+      />
+      <Callout kind="note" title="entryRoute is not a pattern">
+        It is the one route cairnkit <em>navigates to</em> rather than tests against, so it stays a
+        concrete pathname. A guide that walks users onto a detail screen needs a real id to send them
+        to.
       </Callout>
 
       <H2 id="leaving">Leaving the page a step lives on</H2>

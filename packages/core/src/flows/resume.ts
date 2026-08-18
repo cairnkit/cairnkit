@@ -1,4 +1,5 @@
 import type { TourFlow } from "./types";
+import { matchRoute } from "./match-route";
 
 /**
  * Where the tour should pick up when the user navigates ahead of the guide.
@@ -14,7 +15,7 @@ export function resolveResumeStep(
   pathname: string,
   stepIndex: number,
 ): number | null {
-  const match = flow.resumeAt?.find((entry) => entry.pathname === pathname);
+  const match = flow.resumeAt?.find((entry) => matchRoute(entry.pathname, pathname));
   if (!match) return null;
 
   // Only ever move forward. Rewinding someone already deep in a form would

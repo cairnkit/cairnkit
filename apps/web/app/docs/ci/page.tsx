@@ -73,7 +73,7 @@ npx cairnkit check src app packages/ui`}</Code>
             name: "route-conflicts",
             type: "error",
             description:
-              "A route in both pauseRoutes and handoffRoutes, or a flow handing off to itself.",
+              "A route in both pauseRoutes and handoffRoutes, or a flow handing off to itself. Overlap is judged with the engine's own matcher, so pausing /projects/:slug while handing off /projects/acme is caught too.",
           },
         ]}
       />
