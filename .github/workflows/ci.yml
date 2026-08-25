@@ -80,10 +80,16 @@ jobs:
       # The third drift check, and the only one that needs a browser.
       # TypeScript catches a typo, `cairn check` catches a deleted element,
       # and this catches an anchor that exists in source but never renders.
+      #
+      # Two projects share this browser: `example` audits the tours, and `docs`
+      # asserts no page on the site scrolls sideways at 390px. The site had no
+      # layout gate and shipped a 14px overflow that clipped the theme toggle
+      # off the edge of every page, which is the same bug cloud had already
+      # grown a gate for.
       - name: Install Playwright browser
         run: pnpm --filter @cairnkit/example-react-vite exec playwright install --with-deps chromium
 
-      - name: Audit tours in a real browser
+      - name: Audit tours and site layout in a real browser
         run: pnpm --filter @cairnkit/example-react-vite exec playwright test
 
       - uses: actions/upload-artifact@v4

@@ -50,7 +50,13 @@ export function SiteNav({
           {/* Last of the links and not marked out, because it is the optional
               paid thing on a page whose argument is the free one. */}
           <a href={site.cloud}>Cloud</a>
-          <a href={site.repo}>GitHub</a>
+          {/* `hide-sm` for the reason the docs badge carries it: five items and a
+              wordmark do not fit a 390px phone, and the footer links GitHub on
+              every page. Cloud stays because it is the one with somewhere to
+              go. */}
+          <a className="hide-sm" href={site.repo}>
+            GitHub
+          </a>
           <ThemeToggle />
         </div>
       </div>

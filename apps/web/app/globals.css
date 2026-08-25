@@ -2420,13 +2420,23 @@ body {
 }
 
 /* The docs badge and five nav items do not fit a 375px phone together; the
-   badge is the least load-bearing of them. */
+   badge is the least load-bearing of them.
+   
+   Dropping the badge and tightening to 15px was the first attempt and was not
+   enough — measured at 390px the row still came to 283px against 251px of room,
+   so the document was 404px wide and the whole page scrolled sideways with the
+   theme toggle clipped off the edge. Closing 32px on gaps alone would take them
+   to about 8px, which reads as one run-on word.
+   
+   So GitHub goes too, on the same reasoning that removed the badge: it is the
+   least load-bearing of what is left, because the footer carries it on every
+   page and Cloud is the link with somewhere to go. */
 @media (max-width: 640px) {
   .doc-badge {
     display: none;
   }
   .nav__links {
-    gap: 15px;
+    gap: 12px;
     font-size: 14px;
   }
 }
