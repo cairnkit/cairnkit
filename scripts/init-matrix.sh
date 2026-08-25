@@ -131,7 +131,7 @@ echo ""
 echo "── check, against what init just wrote ──────────────────────────"
 
 # The two commands are one workflow and were tested as if they were two. What a
-# new user actually does is run init and then wire `cairn check` into CI, and
+# new user actually does is run init and then wire `cairnkit check` into CI, and
 # nothing here proved that the second understands the layout the first chose.
 #
 # Uses the no-src project on purpose: `check` given no argument has to find the

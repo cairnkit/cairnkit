@@ -293,94 +293,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="section textured" id="how">
-        <div className="wrap">
-          <p className="eyebrow">How it works</p>
-          <h2 className="h">Four steps, then it is yours</h2>
-          <p className="lede">
-            No visual editor, no separate dashboard to keep in sync. Tours live next to the code
-            they describe and move with it.
-          </p>
-
-          <Reveal>
-            <div {...anchor(anchors.site.steps)} className="flow demo-target">
-              {STEPS.map((step, index) => (
-                <article className="fstep glass" key={step.title}>
-                  <div className="fstep__top">
-                    <span className="fstep__icon">{step.icon}</span>
-                    <h3>{step.title}</h3>
-                    <span className="fstep__n">0{index + 1}</span>
-                  </div>
-                  <p>{step.body}</p>
-                  <div className="editor">
-                    <div className="editor__bar">
-                      <span className="editor__dot" />
-                      <span className="editor__dot" />
-                      <span className="editor__dot" />
-                      <span className="editor__file">{step.file}</span>
-                    </div>
-                    <pre>{highlight(step.code)}</pre>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* The page can describe a tour, or it can let you run one. This is the
-          cheapest possible route to the second. */}
-      <section className="section" id="try">
-        <div className="wrap tryband">
-          <div className="tryband__copy">
-            <p className="eyebrow">Try it</p>
-            <h2 className="h">Run one, right now</h2>
-            <p className="lede">
-              A real tour against a real UI. Change the placement, padding and advance rule, watch
-              the spotlight move, then copy the flow that produced it. Nothing to install.
-            </p>
-            <Link className="btn btn--primary" href="/playground">
-              Open the playground <IconArrow />
-            </Link>
-          </div>
-          <ul className="tryband__list">
-            <li>Three scenarios, including a step anchored inside a modal</li>
-            <li>Launcher positions and icons, on a launcher that really works</li>
-            <li>End-to-end React and Next.js setups, file by file</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="section textured" id="offpath">
-        <div className="wrap">
-          <p className="eyebrow">Real users</p>
-          <h2 className="h">Nobody follows the script</h2>
-          <p className="lede">
-            They click ahead, wander into a different flow, or open a modal you did not plan for.
-            Most tours die at that point. cairnkit expects it.
-          </p>
-          <Reveal>
-            <div {...anchor(anchors.site.offpath)} className="scenarios demo-target">
-              {OFFPATH.map((row) => (
-                <article className="scenario glass" key={row.field}>
-                  <div className="scenario__icon">{row.icon}</div>
-                  <p className="scenario__did">
-                    <span className="scenario__label">They did</span>
-                    {row.did}
-                  </p>
-                  <p className="scenario__does">
-                    <span className="scenario__label">cairnkit does</span>
-                    {row.does}
-                  </p>
-                  <code className="scenario__field">{row.field}</code>
-                </article>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="section" id="compare">
+      <section className="section textured" id="compare">
         <div className="wrap">
           <p className="eyebrow">Comparison</p>
           <h2 className="h">What happens when the UI changes</h2>
@@ -421,6 +334,93 @@ export default async function Home() {
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <section className="section" id="how">
+        <div className="wrap">
+          <p className="eyebrow">How it works</p>
+          <h2 className="h">Four steps, then it is yours</h2>
+          <p className="lede">
+            No visual editor, no separate dashboard to keep in sync. Tours live next to the code
+            they describe and move with it.
+          </p>
+
+          <Reveal>
+            <div {...anchor(anchors.site.steps)} className="flow demo-target">
+              {STEPS.map((step, index) => (
+                <article className="fstep glass" key={step.title}>
+                  <div className="fstep__top">
+                    <span className="fstep__icon">{step.icon}</span>
+                    <h3>{step.title}</h3>
+                    <span className="fstep__n">0{index + 1}</span>
+                  </div>
+                  <p>{step.body}</p>
+                  <div className="editor">
+                    <div className="editor__bar">
+                      <span className="editor__dot" />
+                      <span className="editor__dot" />
+                      <span className="editor__dot" />
+                      <span className="editor__file">{step.file}</span>
+                    </div>
+                    <pre>{highlight(step.code)}</pre>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* The page can describe a tour, or it can let you run one. This is the
+          cheapest possible route to the second. */}
+      <section className="section textured" id="try">
+        <div className="wrap tryband">
+          <div className="tryband__copy">
+            <p className="eyebrow">Try it</p>
+            <h2 className="h">Run one, right now</h2>
+            <p className="lede">
+              A real tour against a real UI. Change the placement, padding and advance rule, watch
+              the spotlight move, then copy the flow that produced it. Nothing to install.
+            </p>
+            <Link className="btn btn--primary" href="/playground">
+              Open the playground <IconArrow />
+            </Link>
+          </div>
+          <ul className="tryband__list">
+            <li>Three scenarios, including a step anchored inside a modal</li>
+            <li>Launcher positions and icons, on a launcher that really works</li>
+            <li>End-to-end React and Next.js setups, file by file</li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="section" id="offpath">
+        <div className="wrap">
+          <p className="eyebrow">Real users</p>
+          <h2 className="h">Nobody follows the script</h2>
+          <p className="lede">
+            They click ahead, wander into a different flow, or open a modal you did not plan for.
+            Most tours die at that point. cairnkit expects it.
+          </p>
+          <Reveal>
+            <div {...anchor(anchors.site.offpath)} className="scenarios demo-target">
+              {OFFPATH.map((row) => (
+                <article className="scenario glass" key={row.field}>
+                  <div className="scenario__icon">{row.icon}</div>
+                  <p className="scenario__did">
+                    <span className="scenario__label">They did</span>
+                    {row.did}
+                  </p>
+                  <p className="scenario__does">
+                    <span className="scenario__label">cairnkit does</span>
+                    {row.does}
+                  </p>
+                  <code className="scenario__field">{row.field}</code>
+                </article>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
