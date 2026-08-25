@@ -30,7 +30,7 @@
     "@changesets/cli": "^2.27.11",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.1.0",
-    "@types/node": "^22.10.0",
+    "@types/node": "^26.2.0",
     "@types/react": "^19.0.0",
     "esbuild": "0.25.12",
     "jsdom": "^25.0.1",
