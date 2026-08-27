@@ -1,5 +1,9 @@
 # cairnkit
 
+[![npm](https://img.shields.io/npm/v/cairnkit?label=npm&color=4f46e5)](https://www.npmjs.com/package/cairnkit) [![license](https://img.shields.io/npm/l/cairnkit?color=4f46e5)](https://github.com/cairnkit/cairnkit/blob/main/LICENSE) ![no install](https://img.shields.io/badge/no%20install-npx-4f46e5)
+
+![A rename breaks a tour, and cairnkit check fails the build with the rule, the file and the line](https://raw.githubusercontent.com/cairnkit/cairnkit/main/brand/readme/check-fails.gif)
+
 A launcher for [`@cairnkit/cli`](https://www.npmjs.com/package/@cairnkit/cli), so
 the first command works before anything is installed:
 
@@ -42,12 +46,12 @@ empty directory, which is the whole reason this package exists.
 
 ## The rest of cairnkit
 
-| Package                                                            | What it is                                     |
-| ------------------------------------------------------------------ | ---------------------------------------------- |
-| [`@cairnkit/core`](https://www.npmjs.com/package/@cairnkit/core)   | The engine. No framework, no dependencies.     |
-| [`@cairnkit/react`](https://www.npmjs.com/package/@cairnkit/react) | Headless React bindings.                       |
+| Package                                                            | What it is                                      |
+| ------------------------------------------------------------------ | ----------------------------------------------- |
+| [`@cairnkit/core`](https://www.npmjs.com/package/@cairnkit/core)   | The engine. No framework, no dependencies.      |
+| [`@cairnkit/react`](https://www.npmjs.com/package/@cairnkit/react) | Headless React bindings.                        |
 | [`@cairnkit/ui`](https://www.npmjs.com/package/@cairnkit/ui)       | Prebuilt overlay: spotlight, card and launcher. |
-| [`@cairnkit/next`](https://www.npmjs.com/package/@cairnkit/next)   | Next.js router adapters.                       |
+| [`@cairnkit/next`](https://www.npmjs.com/package/@cairnkit/next)   | Next.js router adapters.                        |
 | [`@cairnkit/cli`](https://www.npmjs.com/package/@cairnkit/cli)     | `check`, `status` and `init`.                   |
 
 Docs: **[cairnkit.dev](https://cairnkit.dev)**

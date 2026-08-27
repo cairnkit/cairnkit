@@ -6,6 +6,7 @@ import { highlight } from "@/components/ui/highlight";
 import { SiteNav } from "@/components/site-nav";
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
+import { FrameworkSwitcher } from "@/components/framework-switcher";
 import {
   IconArrow,
   IconExit,
@@ -237,22 +238,18 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Support matrix, stated plainly. It was the first thing people asked
-          and the site answered it nowhere. */}
-      <section className="compat">
-        <div className="wrap compat__in">
-          <span className="compat__label">Verified against</span>
-          <ul className="compat__list">
-            {[
-              "React 18 & 19",
-              "Next.js 14, 15, 16",
-              "App & Pages Router",
-              "Server-rendered",
-              "Vite & any router",
-            ].map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
+      {/* Support matrix, answered in code rather than claimed in pills.
+
+          This was a row of five phrases: "React 18 & 19", "App & Pages
+          Router", and so on. All true, none of it useful to someone deciding
+          whether to install — what they want is the file they will have to
+          write, in their own framework. The version list survives inside the
+          component, under the copy. */}
+      <section className="section" id="stack">
+        <div className="wrap">
+          <Reveal>
+            <FrameworkSwitcher />
+          </Reveal>
         </div>
       </section>
 
@@ -530,18 +527,51 @@ export default async function Home() {
         four competing destinations. The headline that names the pain survived;
         the other was a restatement of the how-it-works section above.
       */}
+      {/* Two columns, and the reason is the hero.
+
+          This was a centred heading over a centred lede over two centred
+          buttons, which is the exact shape the hero has. Stacked at opposite
+          ends of the page they read as the same block twice, and the closing
+          one lost by comparison because it had no product beside it.
+
+          The terminal is the other half of the argument. `#failure` near the
+          top shows this command going red; this shows the same reporter on a
+          day when nothing is broken. Same command, same output format, the
+          two outcomes the page is actually about. */}
       <section className="cta">
-        <div className="wrap">
-          <h2 className="h">Stop shipping broken tours</h2>
-          <p className="lede">
-            MIT licensed, 2.3 kb of engine, and a CI check that tells you before your users do. Five
-            minutes to a working tour; an afternoon to one that cannot silently break.
-          </p>
-          <div className="cta__row">
-            <Link className="btn btn--primary" href="/docs/install">
-              Get started
-            </Link>
-            <StartTour />
+        <div className="wrap ctaband">
+          <div className="ctaband__copy">
+            <h2 className="h">Stop shipping broken tours</h2>
+            <p className="lede">
+              MIT licensed, 2.3 kb of engine, and a CI check that tells you before your users do.
+              Five minutes to a working tour; an afternoon to one that cannot silently break.
+            </p>
+            <div className="cta__row">
+              <Link className="btn btn--primary" href="/docs/install">
+                Get started
+              </Link>
+              <StartTour />
+            </div>
+          </div>
+
+          {/* Verbatim from `reporters/console.ts`, down to the middle dot and
+              the wording. An invented success line would be the one piece of
+              fake terminal output on a page whose whole claim is that the
+              terminal tells you the truth. */}
+          <div className="terminal ctaband__term">
+            <div className="terminal__bar">
+              <span className="terminal__dot" />
+              <span className="terminal__dot" />
+              <span className="terminal__dot" />
+            </div>
+            <pre>
+              <span className="t-dim">$ </span>cairnkit check{"\n\n"}
+              <span className="t-green">
+                ✓ cairnkit check · 12 anchors, all applied, no route conflicts
+              </span>
+              {"\n\n"}
+              <span className="t-dim">$ </span>echo $?{"\n"}0
+            </pre>
           </div>
         </div>
       </section>

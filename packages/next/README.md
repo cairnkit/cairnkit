@@ -1,5 +1,9 @@
 # @cairnkit/next
 
+[![npm](https://img.shields.io/npm/v/@cairnkit%2Fnext?label=npm&color=4f46e5)](https://www.npmjs.com/package/@cairnkit/next) [![license](https://img.shields.io/npm/l/@cairnkit%2Fnext?color=4f46e5)](https://github.com/cairnkit/cairnkit/blob/main/LICENSE) ![min+gzip](https://img.shields.io/badge/min%2Bgzip-0.2%20kb-4f46e5)
+
+![A tour crossing a route boundary and resuming on the next page](https://raw.githubusercontent.com/cairnkit/cairnkit/main/brand/readme/tour.gif)
+
 Next.js router adapters for [cairnkit](https://cairnkit.dev), so a tour can move
 a reader between routes and pick up where it left off.
 
@@ -42,8 +46,8 @@ import { usePagesRouterAdapter } from "@cairnkit/next";
 
 ## API
 
-| Export                    | Use                                                    |
-| ------------------------- | ------------------------------------------------------ |
+| Export                    | Use                                                     |
+| ------------------------- | ------------------------------------------------------- |
 | `useAppRouterAdapter()`   | App Router. **Preferred.**                              |
 | `usePagesRouterAdapter()` | Pages Router.                                           |
 | `appRouterAdapter()`      | Non-hook form, kept for callers that cannot use a hook. |

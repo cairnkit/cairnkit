@@ -1,5 +1,9 @@
 # @cairnkit/react
 
+[![npm](https://img.shields.io/npm/v/@cairnkit%2Freact?label=npm&color=4f46e5)](https://www.npmjs.com/package/@cairnkit/react) [![license](https://img.shields.io/npm/l/@cairnkit%2Freact?color=4f46e5)](https://github.com/cairnkit/cairnkit/blob/main/LICENSE) ![min+gzip](https://img.shields.io/badge/min%2Bgzip-2.9%20kb-4f46e5)
+
+![A three-step tour running, spotlight moving between elements](https://raw.githubusercontent.com/cairnkit/cairnkit/main/brand/readme/tour.gif)
+
 Headless React bindings for [cairnkit](https://cairnkit.dev). No styling, no
 router assumptions — bring your own components, or add
 [`@cairnkit/ui`](https://www.npmjs.com/package/@cairnkit/ui) for the prebuilt

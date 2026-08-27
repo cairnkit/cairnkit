@@ -131,32 +131,49 @@ p.lede {
 }
 
 /* ── hero ────────────────────────────────────────────────────────── */
+/* Centred, and the alignment was the only thing making this hero feel off.
+   The glow behind it is a radial at 50% 0% and the proof strip under it is
+   centred across the full width, so left-aligned copy in a 1080px column was
+   one of three alignments stacked on top of each other. */
 .hero {
   padding-block: 92px 72px;
+  text-align: center;
 }
 .hero h1 {
   font-size: clamp(38px, 6vw, 60px);
   line-height: 1.05;
   letter-spacing: -0.035em;
-  margin: 0 0 20px;
+  margin: 0 auto 20px;
   font-weight: 680;
   max-width: 17ch;
+  text-wrap: balance;
 }
 .hero p {
   color: var(--muted);
   font-size: 19px;
   max-width: 58ch;
-  margin: 0 0 32px;
+  margin: 0 auto 32px;
+  text-wrap: pretty;
 }
+/* The box is centred; its contents are not. `text-align` inherits, and the
+   install command is long enough to wrap, so without this the second line of a
+   shell command sits centred under the first, which reads as a pull quote. */
+/* `max-content` rather than a chosen px width: the box is exactly as wide as
+   the command it holds, so there is no dead space beside Copy and nothing to
+   re-tune if the command ever changes. `max-width` then caps it at the column
+   on a narrow screen, where the code clips to an ellipsis instead. */
 .hero__install {
-  max-width: 460px;
-  margin-bottom: 16px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  text-align: left;
 }
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 }
 
 .btn {
@@ -186,11 +203,12 @@ p.lede {
 }
 
 /* ── code ────────────────────────────────────────────────────────── */
-/* Items align to the top so the $ and the Copy button stay on the first line
-   when the command wraps to three. */
+/* Centred now that the command is a single clipped line. This aligned to the
+   top when it could wrap to three, which left the $ and Copy stranded against
+   the first line of a taller box. */
 .snippet {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   background: var(--snip-bg);
   color: var(--snip-fg);
@@ -199,10 +217,6 @@ p.lede {
   padding: 6px 8px 6px 16px;
   min-height: 44px;
   font-size: 14px;
-}
-.snippet__dollar,
-.copy {
-  margin-top: 3px;
 }
 .snippet code {
   color: var(--snip-fg);
@@ -428,13 +442,17 @@ pre {
 .snippet {
   min-width: 0;
 }
-/* Wraps rather than clipping. The command names three packages and simply does
-   not fit one line on a narrow screen; hiding the tail loses the point. */
+/* Clips rather than wrapping, which is the opposite of what this did before.
+   Wrapping kept the whole command visible and broke it across two lines even
+   on a desktop, where there is room for one. Now the box is wide enough for
+   the full command at desktop widths, and narrower screens get an ellipsis.
+   Nothing is lost by that: Copy always writes the full string, never what is
+   on screen. */
 .snippet code {
   min-width: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  padding: 9px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .snippet code::-webkit-scrollbar {
   display: none;
@@ -589,8 +607,9 @@ pre {
 }
 
 /* ── CTA band ─────────────────────────────────────────────────────────── */
+/* Left-aligned now that it is two columns. Centred copy beside a left-aligned
+   terminal gives the eye two different starting edges in one row. */
 .cta {
-  text-align: center;
   padding-block: 76px;
   border-top: 1px solid var(--line);
 }
@@ -602,29 +621,51 @@ pre {
 }
 .cta p {
   color: var(--muted);
-  margin: 0 auto 26px;
+  margin: 0 0 26px;
   max-width: 46ch;
 }
 .cta__row {
   display: flex;
   gap: 12px;
-  justify-content: center;
   flex-wrap: wrap;
 }
 
+/* Copy slightly narrower than the terminal: the terminal holds one long
+   monospace line that must not wrap, and the prose is the thing that can give
+   up width. `align-items: center` because the two columns are different
+   heights by nature and a shared top edge leaves the shorter one floating. */
+.ctaband {
+  display: grid;
+  gap: 32px;
+}
+@media (min-width: 900px) {
+  .ctaband {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+}
+.ctaband__copy {
+  min-width: 0;
+}
+.ctaband__term {
+  min-width: 0;
+}
+/* Smaller than the failing terminal near the top of the page. That one is the
+   argument and earns the room; this one is a footnote confirming it. */
+.ctaband__term pre {
+  font-size: 12.5px;
+  padding: 16px 18px;
+}
+
 /* ── cloud band ───────────────────────────────────────────────────────────
-   Left aligned throughout, including the code block.
+   Left aligned throughout, including the code block, which `.editor` was not:
+   a `margin: auto` centred it against everything else on the band.
 
-   This section reuses `.editor` and `.cta__row`, and both are built for
-   centred contexts — `.cta__row` sets `justify-content: center`, and the
-   editor was being centred by a `margin: auto`. Everything else on the band
-   (`.eyebrow`, `h2.h`, `p.lede`) is already left aligned, so the two centred
-   children read as a mistake rather than a choice.
-
-   Scoped under `.cloudband` rather than overriding the shared classes, and
-   written as two class selectors so it beats the single-class `.cta__row`
-   without needing `!important` — that rule is defined twice in this file, and
-   a same-specificity override would depend on which copy came last. */
+   `.cloudband .cta__row` used to also force `justify-content: flex-start`,
+   because a second copy of `.cta__row` further down this file set `center` and
+   won on source order. Both consumers of the class are left-aligned sections
+   now, so that duplicate is gone and left is simply the default. */
 .cloudband .editor {
   max-width: 44rem;
   margin: 28px 0 0;
@@ -633,7 +674,6 @@ pre {
   margin-top: 22px;
 }
 .cloudband .cta__row {
-  justify-content: flex-start;
   margin-top: 30px;
 }
 
@@ -988,47 +1028,154 @@ body {
   overflow-x: auto;
 }
 
-/* ── proof strip ──────────────────────────────────────────────────────────
-   Sits directly under the hero. Four numbers a reader can verify beat any
-   number of adjectives, and it gives the page a beat before the terminal. */
-.compat {
-  border-bottom: 1px solid var(--line);
+/* ── framework switcher ───────────────────────────────────────────────────
+   Replaced a row of pills that claimed compatibility. The pills are still
+   here, under the copy, because the version matrix is the fastest answer to
+   the narrow question. The code is the answer to the real one.
+
+   Two columns on desktop, with the copy narrower than the panel: the panel
+   holds fixed-width monospace and is the thing that must not wrap. */
+.fw {
+  display: grid;
+  gap: 32px;
+  align-items: start;
 }
-/* `padding-block`, not the shorthand: this class sits on the same element as
-   `.wrap`, and `padding: 16px 0` resets its 24px inset, which put the pills
-   against the screen edge on a phone. */
-.compat__in {
+@media (min-width: 900px) {
+  .fw {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1fr);
+    gap: 56px;
+  }
+}
+.fw__copy {
+  min-width: 0;
+}
+/* `lh` reserves whole lines of this heading's own leading, which is the only
+   unit that tracks a clamp()ed font size. Without a floor the heading is two
+   lines for "Next.js App Router" and one for "No router", and pressing a tab
+   moved everything under it by 55px. `balance` stops the last word sitting
+   alone on the second line. */
+.fw__h {
+  margin-bottom: 14px;
+  min-height: 2lh;
+  text-wrap: balance;
+}
+/* The framework name is the only thing on the page that changes when a tab is
+   pressed and is not inside the panel, so it carries the accent. Without it
+   the heading looks static and the tabs look like they did nothing. */
+.fw__target {
+  color: var(--accent);
+}
+.fw__blurb {
+  /* Same reservation, for the same reason: a two-line blurb and a three-line
+     blurb would otherwise shift the pills on every tab press. */
+  min-height: 4lh;
+}
+/* Wrapping is right here and wrong on the tab strip: these are facts in no
+   particular order, so a second row costs nothing. */
+.fw__pills {
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 10px 18px;
-  padding-block: 16px;
-}
-.compat__label {
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-/* Centred in its own right. As a wrapping flex child it forms its own rows,
-   and the parent's centring does not reach them. */
-.compat__list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 8px;
-  list-style: none;
-  margin: 0;
+  margin: 22px 0 0;
   padding: 0;
+  list-style: none;
 }
-.compat__list li {
+.fw__pills li {
   font-size: 13px;
   color: var(--fg);
   padding: 4px 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--bg-soft);
+}
+
+/* Declared after the base rule, not beside the grid definition above: same
+   specificity means source order decides, and placed first this lost to the
+   mobile floor and reserved a phantom line on every desktop viewport. The
+   heading needs no breakpoint, because `balance` gives it two lines at every
+   width. */
+@media (min-width: 900px) {
+  .fw__blurb {
+    min-height: 3lh;
+  }
+}
+
+.fw__panel {
+  min-width: 0;
+}
+/* `overflow-x: auto` and not `flex-wrap`: four labels wrapping to two rows
+   pushes the code panel down by a row height on the widths where it happens,
+   and the tab strip stops reading as one control. */
+.fw__tabs {
+  display: flex;
+  /* `max-content` is the whole fix: as a block-level flex container this
+     stretched to the panel width and drew its border across ~300px of nothing
+     after the last tab. Shrink to the tabs, and still scroll rather than
+     overflow once four labels are wider than a phone. */
+  width: max-content;
+  max-width: 100%;
+  gap: 2px;
+  padding: 4px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-soft);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.fw__tabs::-webkit-scrollbar {
+  display: none;
+}
+.fw__tab {
+  flex: none;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    background 140ms ease;
+}
+.fw__tab:hover {
+  color: var(--fg);
+}
+/* Raised rather than underlined, matching the segmented controls elsewhere:
+   the active option is a surface above the group, not a marked list entry. */
+.fw__tab--on {
+  background: var(--bg);
+  border-color: var(--line);
+  color: var(--fg);
+  font-weight: 560;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+/* The floor belongs on the `pre` rather than the block, sized to the tallest
+   of the four snippets, so switching tabs never resizes the panel. `.editor
+   pre` is border-box with 14px of padding top and bottom, so the floor has to
+   carry that too: a px floor on the wrapper missed by exactly those 28px. */
+.fw__editor pre {
+  min-height: calc(15lh + 28px);
+}
+.fw__docs {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13.5px;
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+.fw__docs:hover {
+  color: var(--fg);
+}
+.fw__docs svg {
+  width: 13px;
+  height: 13px;
 }
 
 .proof {
@@ -1065,13 +1212,6 @@ body {
 .proof__item span {
   font-size: 13px;
   color: var(--muted);
-}
-
-.cta__row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
 @media (max-width: 720px) {
