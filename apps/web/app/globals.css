@@ -131,32 +131,49 @@ p.lede {
 }
 
 /* ── hero ────────────────────────────────────────────────────────── */
+/* Centred, and the alignment was the only thing making this hero feel off.
+   The glow behind it is a radial at 50% 0% and the proof strip under it is
+   centred across the full width, so left-aligned copy in a 1080px column was
+   one of three alignments stacked on top of each other. */
 .hero {
   padding-block: 92px 72px;
+  text-align: center;
 }
 .hero h1 {
   font-size: clamp(38px, 6vw, 60px);
   line-height: 1.05;
   letter-spacing: -0.035em;
-  margin: 0 0 20px;
+  margin: 0 auto 20px;
   font-weight: 680;
   max-width: 17ch;
+  text-wrap: balance;
 }
 .hero p {
   color: var(--muted);
   font-size: 19px;
   max-width: 58ch;
-  margin: 0 0 32px;
+  margin: 0 auto 32px;
+  text-wrap: pretty;
 }
+/* The box is centred; its contents are not. `text-align` inherits, and the
+   install command is long enough to wrap, so without this the second line of a
+   shell command sits centred under the first, which reads as a pull quote. */
+/* `max-content` rather than a chosen px width: the box is exactly as wide as
+   the command it holds, so there is no dead space beside Copy and nothing to
+   re-tune if the command ever changes. `max-width` then caps it at the column
+   on a narrow screen, where the code clips to an ellipsis instead. */
 .hero__install {
-  max-width: 460px;
-  margin-bottom: 16px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  text-align: left;
 }
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 }
 
 .btn {
@@ -186,11 +203,12 @@ p.lede {
 }
 
 /* ── code ────────────────────────────────────────────────────────── */
-/* Items align to the top so the $ and the Copy button stay on the first line
-   when the command wraps to three. */
+/* Centred now that the command is a single clipped line. This aligned to the
+   top when it could wrap to three, which left the $ and Copy stranded against
+   the first line of a taller box. */
 .snippet {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   background: var(--snip-bg);
   color: var(--snip-fg);
@@ -199,10 +217,6 @@ p.lede {
   padding: 6px 8px 6px 16px;
   min-height: 44px;
   font-size: 14px;
-}
-.snippet__dollar,
-.copy {
-  margin-top: 3px;
 }
 .snippet code {
   color: var(--snip-fg);
@@ -428,13 +442,17 @@ pre {
 .snippet {
   min-width: 0;
 }
-/* Wraps rather than clipping. The command names three packages and simply does
-   not fit one line on a narrow screen; hiding the tail loses the point. */
+/* Clips rather than wrapping, which is the opposite of what this did before.
+   Wrapping kept the whole command visible and broke it across two lines even
+   on a desktop, where there is room for one. Now the box is wide enough for
+   the full command at desktop widths, and narrower screens get an ellipsis.
+   Nothing is lost by that: Copy always writes the full string, never what is
+   on screen. */
 .snippet code {
   min-width: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  padding: 9px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .snippet code::-webkit-scrollbar {
   display: none;
