@@ -1,5 +1,9 @@
 # @cairnkit/core
 
+[![npm](https://img.shields.io/npm/v/@cairnkit%2Fcore?label=npm&color=4f46e5)](https://www.npmjs.com/package/@cairnkit/core) [![license](https://img.shields.io/npm/l/@cairnkit%2Fcore?color=4f46e5)](https://github.com/cairnkit/cairnkit/blob/main/LICENSE) ![min+gzip](https://img.shields.io/badge/min%2Bgzip-2.3%20kb-4f46e5)
+
+![An anchor renamed in one file, caught as a type error and then by cairnkit check](https://raw.githubusercontent.com/cairnkit/cairnkit/main/brand/readme/check-fails.gif)
+
 Framework-free engine for in-app product tours that fail the build instead of
 the user. **Zero runtime dependencies.**
 
@@ -31,7 +35,9 @@ export const flow = defineFlow({
   id: "invite-candidate",
   version: 1,
   entryRoute: "/pipeline",
-  steps: [{ anchor: anchors.invite.send, title: "Send it", body: "Nothing goes out until you click." }],
+  steps: [
+    { anchor: anchors.invite.send, title: "Send it", body: "Nothing goes out until you click." },
+  ],
 });
 ```
 

@@ -1,5 +1,7 @@
 # @cairnkit/cloud
 
+[![npm](https://img.shields.io/npm/v/@cairnkit%2Fcloud?label=npm&color=4f46e5)](https://www.npmjs.com/package/@cairnkit/cloud) [![license](https://img.shields.io/npm/l/@cairnkit%2Fcloud?color=4f46e5)](https://github.com/cairnkit/cairnkit/blob/main/LICENSE) ![min+gzip](https://img.shields.io/badge/min%2Bgzip-1.7%20kb-4f46e5)
+
 Send cairnkit tour events to [cairnkit cloud](https://cloud.cairnkit.dev).
 
 ```bash

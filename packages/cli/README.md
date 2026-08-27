@@ -1,5 +1,9 @@
 # @cairnkit/cli
 
+[![npm](https://img.shields.io/npm/v/@cairnkit%2Fcli?label=npm&color=4f46e5)](https://www.npmjs.com/package/@cairnkit/cli) [![license](https://img.shields.io/npm/l/@cairnkit%2Fcli?color=4f46e5)](https://github.com/cairnkit/cairnkit/blob/main/LICENSE) ![runs in](https://img.shields.io/badge/runs%20in-~1s-4f46e5)
+
+![cairnkit check exiting 1 on an anchor that is registered but never applied](https://raw.githubusercontent.com/cairnkit/cairnkit/main/brand/readme/check-fails.gif)
+
 `cairnkit check` — fails the build when a tour points at UI that no longer exists.
 
 ```bash
