@@ -117,6 +117,43 @@ export function CairnRuntime({ children }: { children: ReactNode }) {
 }
 \`\`\`
 
+The \`router\` prop is the one framework-specific decision, and it is the thing
+most worth getting right. Pick the adapter for your setup:
+
+- Next.js App Router: \`useAppRouterAdapter()\` from @cairnkit/next
+- Next.js Pages Router: \`usePagesRouterAdapter()\` from @cairnkit/next
+- react-router, TanStack Router, anything else: ten lines you write, below
+- No router at all: \`memoryRouter\` from @cairnkit/react
+
+\`\`\`tsx
+// Pages Router, in pages/_app.tsx
+import { usePagesRouterAdapter } from "@cairnkit/next";
+
+<CairnProvider flows={flows} router={usePagesRouterAdapter()}>
+\`\`\`
+
+\`\`\`ts
+// Any other router. RouterAdapter is two functions, nothing more.
+import type { RouterAdapter } from "@cairnkit/react";
+
+export function useReactRouterAdapter(): RouterAdapter {
+  const navigate = useNavigate();
+  return {
+    usePathname: () => useLocation().pathname,
+    navigate: (href) => navigate(href),
+  };
+}
+\`\`\`
+
+\`\`\`tsx
+// No router in the app at all. Do NOT hand-write one that returns a fixed "/":
+// it reports the wrong route everywhere, so pauseRoutes never pauses and
+// resumeAt never catches up.
+import { memoryRouter } from "@cairnkit/react";
+
+<CairnProvider flows={flows} router={memoryRouter}>
+\`\`\`
+
 Then mount it in app/layout.tsx, wrapping children:
 
 \`\`\`tsx
