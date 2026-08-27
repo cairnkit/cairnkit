@@ -100,9 +100,11 @@ export default function PlaygroundPage() {
       <section className="wrap pg__section">
         <h2>Set it up, end to end</h2>
         <p className="pg__lede">
-          Every file you end up with, for both frameworks. These are trimmed from the examples in
-          the repository, which CI typechecks, builds and runs a browser audit against — so they
-          cannot quietly drift from code that works.
+          Every file you end up with, for the two setups the repository ships as runnable examples.
+          CI typechecks, builds and runs a browser audit against both, so they cannot quietly drift
+          from code that works. Pages Router, TanStack and no-router-at-all are the same four files
+          with a different adapter: <a href="/docs/nextjs">Next.js</a> and{" "}
+          <a href="/docs/react">React</a> cover each one.
         </p>
         <SetupGuide />
       </section>

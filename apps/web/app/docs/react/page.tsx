@@ -70,15 +70,29 @@ export function useTanStackAdapter(): RouterAdapter {
 }`}</Code>
 
       <H2 id="norouter">No router at all</H2>
-      <P>A single-page app with no routing still works — every route feature simply never fires.</P>
-      <Code>{`const staticAdapter = {
-  usePathname: () => "/",
-  navigate: () => {},
-};`}</Code>
-      <Callout kind="note" title="What you lose">
-        Only the cross-route behaviour: <C>resumeAt</C>, <C>handoffRoutes</C>, <C>pauseRoutes</C>{" "}
-        and <C>route</C> steps. Anchors, the other four advance rules, and modal support are
-        unaffected.
+      <P>
+        A single-page app with no routing still works, and you do not have to write an adapter for
+        it. <C>memoryRouter</C> ships in the package and is the same object the test suite runs on.
+      </P>
+      <Code>{`import { CairnProvider, memoryRouter } from "@cairnkit/react";
+
+<CairnProvider flows={flows} router={memoryRouter}>`}</Code>
+      <P>
+        It reads <C>window.location.pathname</C> on every render and navigates with{" "}
+        <C>window.location.assign</C>. Every route feature is driven off that one value, so all of
+        them work: the guide navigates, the browser loads the page, and the engine reads the new
+        path and picks up where it should.
+      </P>
+      <Callout kind="note" title="What this costs">
+        A full page load per navigation instead of a client-side transition, which is what a real
+        router adapter buys you. Nothing is switched off: <C>resumeAt</C>, <C>handoffRoutes</C>,{" "}
+        <C>pauseRoutes</C> and <C>route</C> steps all still fire, because each is evaluated against
+        the pathname on the render after the load.
+      </Callout>
+      <Callout kind="warn" title="Do not hand-write a fixed pathname">
+        An adapter whose <C>usePathname</C> returns a constant <C>&quot;/&quot;</C> looks equivalent
+        and is not. It reports the wrong route on every page, so <C>pauseRoutes</C> never pauses,{" "}
+        <C>resumeAt</C> never catches up, and a <C>route</C> step either fires immediately or never.
       </Callout>
 
       <H2 id="mount">Mounting</H2>
