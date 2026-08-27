@@ -6,6 +6,7 @@ import { highlight } from "@/components/ui/highlight";
 import { SiteNav } from "@/components/site-nav";
 import { anchor } from "@cairnkit/core";
 import { Install } from "@/components/install";
+import { FrameworkSwitcher } from "@/components/framework-switcher";
 import {
   IconArrow,
   IconExit,
@@ -237,22 +238,18 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Support matrix, stated plainly. It was the first thing people asked
-          and the site answered it nowhere. */}
-      <section className="compat">
-        <div className="wrap compat__in">
-          <span className="compat__label">Verified against</span>
-          <ul className="compat__list">
-            {[
-              "React 18 & 19",
-              "Next.js 14, 15, 16",
-              "App & Pages Router",
-              "Server-rendered",
-              "Vite & any router",
-            ].map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
+      {/* Support matrix, answered in code rather than claimed in pills.
+
+          This was a row of five phrases: "React 18 & 19", "App & Pages
+          Router", and so on. All true, none of it useful to someone deciding
+          whether to install — what they want is the file they will have to
+          write, in their own framework. The version list survives inside the
+          component, under the copy. */}
+      <section className="section" id="stack">
+        <div className="wrap">
+          <Reveal>
+            <FrameworkSwitcher />
+          </Reveal>
         </div>
       </section>
 
