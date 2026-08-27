@@ -607,8 +607,9 @@ pre {
 }
 
 /* ── CTA band ─────────────────────────────────────────────────────────── */
+/* Left-aligned now that it is two columns. Centred copy beside a left-aligned
+   terminal gives the eye two different starting edges in one row. */
 .cta {
-  text-align: center;
   padding-block: 76px;
   border-top: 1px solid var(--line);
 }
@@ -620,29 +621,51 @@ pre {
 }
 .cta p {
   color: var(--muted);
-  margin: 0 auto 26px;
+  margin: 0 0 26px;
   max-width: 46ch;
 }
 .cta__row {
   display: flex;
   gap: 12px;
-  justify-content: center;
   flex-wrap: wrap;
 }
 
+/* Copy slightly narrower than the terminal: the terminal holds one long
+   monospace line that must not wrap, and the prose is the thing that can give
+   up width. `align-items: center` because the two columns are different
+   heights by nature and a shared top edge leaves the shorter one floating. */
+.ctaband {
+  display: grid;
+  gap: 32px;
+}
+@media (min-width: 900px) {
+  .ctaband {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+}
+.ctaband__copy {
+  min-width: 0;
+}
+.ctaband__term {
+  min-width: 0;
+}
+/* Smaller than the failing terminal near the top of the page. That one is the
+   argument and earns the room; this one is a footnote confirming it. */
+.ctaband__term pre {
+  font-size: 12.5px;
+  padding: 16px 18px;
+}
+
 /* ── cloud band ───────────────────────────────────────────────────────────
-   Left aligned throughout, including the code block.
+   Left aligned throughout, including the code block, which `.editor` was not:
+   a `margin: auto` centred it against everything else on the band.
 
-   This section reuses `.editor` and `.cta__row`, and both are built for
-   centred contexts — `.cta__row` sets `justify-content: center`, and the
-   editor was being centred by a `margin: auto`. Everything else on the band
-   (`.eyebrow`, `h2.h`, `p.lede`) is already left aligned, so the two centred
-   children read as a mistake rather than a choice.
-
-   Scoped under `.cloudband` rather than overriding the shared classes, and
-   written as two class selectors so it beats the single-class `.cta__row`
-   without needing `!important` — that rule is defined twice in this file, and
-   a same-specificity override would depend on which copy came last. */
+   `.cloudband .cta__row` used to also force `justify-content: flex-start`,
+   because a second copy of `.cta__row` further down this file set `center` and
+   won on source order. Both consumers of the class are left-aligned sections
+   now, so that duplicate is gone and left is simply the default. */
 .cloudband .editor {
   max-width: 44rem;
   margin: 28px 0 0;
@@ -651,7 +674,6 @@ pre {
   margin-top: 22px;
 }
 .cloudband .cta__row {
-  justify-content: flex-start;
   margin-top: 30px;
 }
 
@@ -1190,13 +1212,6 @@ body {
 .proof__item span {
   font-size: 13px;
   color: var(--muted);
-}
-
-.cta__row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
 @media (max-width: 720px) {

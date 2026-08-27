@@ -527,18 +527,51 @@ export default async function Home() {
         four competing destinations. The headline that names the pain survived;
         the other was a restatement of the how-it-works section above.
       */}
+      {/* Two columns, and the reason is the hero.
+
+          This was a centred heading over a centred lede over two centred
+          buttons, which is the exact shape the hero has. Stacked at opposite
+          ends of the page they read as the same block twice, and the closing
+          one lost by comparison because it had no product beside it.
+
+          The terminal is the other half of the argument. `#failure` near the
+          top shows this command going red; this shows the same reporter on a
+          day when nothing is broken. Same command, same output format, the
+          two outcomes the page is actually about. */}
       <section className="cta">
-        <div className="wrap">
-          <h2 className="h">Stop shipping broken tours</h2>
-          <p className="lede">
-            MIT licensed, 2.3 kb of engine, and a CI check that tells you before your users do. Five
-            minutes to a working tour; an afternoon to one that cannot silently break.
-          </p>
-          <div className="cta__row">
-            <Link className="btn btn--primary" href="/docs/install">
-              Get started
-            </Link>
-            <StartTour />
+        <div className="wrap ctaband">
+          <div className="ctaband__copy">
+            <h2 className="h">Stop shipping broken tours</h2>
+            <p className="lede">
+              MIT licensed, 2.3 kb of engine, and a CI check that tells you before your users do.
+              Five minutes to a working tour; an afternoon to one that cannot silently break.
+            </p>
+            <div className="cta__row">
+              <Link className="btn btn--primary" href="/docs/install">
+                Get started
+              </Link>
+              <StartTour />
+            </div>
+          </div>
+
+          {/* Verbatim from `reporters/console.ts`, down to the middle dot and
+              the wording. An invented success line would be the one piece of
+              fake terminal output on a page whose whole claim is that the
+              terminal tells you the truth. */}
+          <div className="terminal ctaband__term">
+            <div className="terminal__bar">
+              <span className="terminal__dot" />
+              <span className="terminal__dot" />
+              <span className="terminal__dot" />
+            </div>
+            <pre>
+              <span className="t-dim">$ </span>cairnkit check{"\n\n"}
+              <span className="t-green">
+                ✓ cairnkit check · 12 anchors, all applied, no route conflicts
+              </span>
+              {"\n\n"}
+              <span className="t-dim">$ </span>echo $?{"\n"}0
+            </pre>
           </div>
         </div>
       </section>
