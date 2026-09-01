@@ -92,7 +92,7 @@ jobs:
       - name: Audit tours and site layout in a real browser
         run: pnpm --filter @cairnkit/example-react-vite exec playwright test
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
